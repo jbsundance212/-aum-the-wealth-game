@@ -57,7 +57,16 @@ export function QuestionRunner({
 
   return (
     <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <Text style={[T.body, styles.question]}>{data.question}</Text>
+      {data.scenario ? (
+        <View style={styles.scenarioCard}>
+          <Text style={styles.scenarioLabel}>SCENARIO</Text>
+          <Text style={styles.scenarioBody}>{data.scenario}</Text>
+        </View>
+      ) : null}
+
+      {data.question ? (
+        <Text style={[T.body, styles.question]}>{data.question}</Text>
+      ) : null}
 
       <View style={styles.options}>
         {LABELS.filter((l) => data.options[l]).map((l) => {
@@ -146,6 +155,26 @@ export function QuestionRunner({
 
 const styles = StyleSheet.create({
   content: { padding: 18, paddingBottom: 80 },
+  scenarioCard: {
+    backgroundColor: C.cream,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: C.divider,
+    padding: 16,
+    marginBottom: 20,
+  },
+  scenarioLabel: {
+    fontFamily: FONT.bodyMedium,
+    fontSize: 10,
+    letterSpacing: 1.6,
+    color: C.accent,
+    marginBottom: 8,
+  },
+  scenarioBody: {
+    fontFamily: FONT.body,
+    fontSize: 14,
+    lineHeight: 22,
+    color: C.ink,
+  },
   question: {
     fontSize: 16,
     lineHeight: 25,

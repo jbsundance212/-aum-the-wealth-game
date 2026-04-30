@@ -1,5 +1,6 @@
 export type QuestionBlock = {
   question: string;
+  scenario: string;
   options: { A: string; B: string; C: string; D: string };
   correct: "A" | "B" | "C" | "D" | null;
   sterlingCorrect: string;

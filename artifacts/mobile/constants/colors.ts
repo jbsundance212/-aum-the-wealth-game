@@ -12,6 +12,7 @@ const palette = {
   bg: "#FAFAFA",
   surface: "#FFFFFF",
   surfaceAlt: "#F4F4F4",
+  cream: "#FAF7F2",
   divider: "#E5E5E5",
   dividerStrong: "#D4D4D4",
   ink: "#3C4858",

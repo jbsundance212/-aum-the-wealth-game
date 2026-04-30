@@ -49,6 +49,7 @@ function parseQuestionBlock(raw) {
   if (!text) {
     return {
       question: "",
+      scenario: "",
       options: { A: "", B: "", C: "", D: "" },
       correct: null,
       sterlingCorrect: "",
@@ -58,6 +59,7 @@ function parseQuestionBlock(raw) {
 
   const lines = text.split(/\n/);
   const headerLines = [];
+  const scenarioLines = [];
   const questionLines = [];
   const options = { A: "", B: "", C: "", D: "" };
   let correct = null;
@@ -71,6 +73,24 @@ function parseQuestionBlock(raw) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmed = line.trim();
+
+    // SCENARIO marker: capture the situational briefing that precedes
+    // the QUESTION (used by Diagnostic blocks). Recognises three forms:
+    //   "SCENARIO: <text>"
+    //   "SCENARIO — <TITLE>: <text>"   (e.g. "SCENARIO — GRAND SYNTHESIS:")
+    //   "DIAGNOSTIC SCENARIO — DAY N"  (heading; body on following lines)
+    const scMatch = trimmed.match(/^(?:DIAGNOSTIC\s+)?SCENARIO(?:\s*[—:\-]\s*(.*))?$/i);
+    if (scMatch) {
+      mode = "scenario";
+      let after = (scMatch[1] || "").trim();
+      // Strip an inner ALL-CAPS title segment like "GRAND SYNTHESIS CASE STUDY:"
+      const titleStrip = after.match(/^[A-Z][A-Z\s\-—]{2,}:\s*(.*)$/);
+      if (titleStrip) after = titleStrip[1].trim();
+      // Only push if it's substantive prose (contains lowercase) — avoids
+      // pushing labels like "DAY 28" or "THE FINAL EXAMINATION".
+      if (after && /[a-z]/.test(after)) scenarioLines.push(after);
+      continue;
+    }
 
     const optMatch = trimmed.match(/^([A-D])\)\s*(.*)$/);
     if (optMatch) {
@@ -123,7 +143,7 @@ function parseQuestionBlock(raw) {
     }
 
     if (
-      mode === "header" &&
+      (mode === "header" || mode === "scenario") &&
       /^(QUESTION|Question|The question)[:\s]/.test(trimmed)
     ) {
       foundQuestionMarker = true;
@@ -138,6 +158,8 @@ function parseQuestionBlock(raw) {
 
     if (mode === "header") {
       if (trimmed) headerLines.push(line);
+    } else if (mode === "scenario") {
+      scenarioLines.push(line);
     } else if (mode === "question") {
       questionLines.push(line);
     } else if (mode === "option" && currentOption) {
@@ -166,8 +188,13 @@ function parseQuestionBlock(raw) {
   }
 
   const hasQuiz = !!correct && !!options.A && !!options.B;
+  const scenario = scenarioLines
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
   return {
     question: question.trim(),
+    scenario,
     options,
     correct,
     sterlingCorrect: sterlingCorrect.trim(),
