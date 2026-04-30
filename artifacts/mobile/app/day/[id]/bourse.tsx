@@ -463,7 +463,7 @@ function RunningPhase({
 
   return (
     <View>
-      <View style={[styles.tickerHeader, { borderColor: positive ? C.positive : C.accent }]}>
+      <View style={styles.tickerHeader}>
         <View style={styles.tickerHeaderRow}>
           <Text style={styles.tickerHeaderLabel}>{envLabel.toUpperCase()}</Text>
           <Text style={styles.tickerCountdown}>T-{String(seconds).padStart(2, "0")}s</Text>
@@ -747,44 +747,49 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
   },
   tickerHeader: {
-    backgroundColor: C.ink,
-    padding: 18,
-    borderWidth: 2,
+    backgroundColor: C.surface,
+    paddingVertical: 16,
+    paddingLeft: 16,
+    paddingRight: 18,
+    borderLeftWidth: 2,
+    borderLeftColor: C.accent,
   },
   tickerHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   tickerHeaderLabel: {
     fontFamily: FONT.bodyMedium,
-    fontSize: 10,
-    letterSpacing: 1.6,
-    color: "#B5BCC7",
+    fontSize: 9,
+    letterSpacing: 0.9,
+    color: C.accent,
   },
   tickerCountdown: {
     fontFamily: FONT.monoBold,
-    fontSize: 14,
+    fontSize: 11,
     color: C.accent,
     letterSpacing: 1,
   },
   tickerPnl: {
     fontFamily: FONT.monoBold,
-    fontSize: 42,
-    marginTop: 12,
-    letterSpacing: -1.5,
-    paddingHorizontal: 6,
+    fontSize: 32,
+    marginTop: 10,
+    letterSpacing: -1,
+    paddingHorizontal: 4,
     alignSelf: "flex-start",
   },
   tickerPortfolio: {
     fontFamily: FONT.mono,
-    fontSize: 12,
-    color: "#B5BCC7",
+    fontSize: 10,
+    color: C.inkMuted,
     marginTop: 6,
+    letterSpacing: 0.4,
   },
   progressOuter: {
     height: 2,
-    backgroundColor: "#5C6573",
-    marginTop: 12,
+    backgroundColor: C.divider,
+    marginTop: 14,
   },
   progressInner: { height: 2, backgroundColor: C.accent },
   tickerSection: {
