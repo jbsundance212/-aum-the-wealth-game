@@ -5,6 +5,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { C } from "@/constants/colors";
+import { BrandMark } from "@/src/components/BrandMark";
 import { FONT } from "@/src/theme/typography";
 import { fmtMoney, useStore } from "@/src/data/store";
 
@@ -35,7 +36,7 @@ export function Header({ title, eyebrow, back, showBalance = true }: Props) {
           </Pressable>
         ) : (
           <View style={styles.brand}>
-            <Text style={styles.brandMark}>AUM</Text>
+            <BrandMark height={22} />
             <View style={styles.brandRule} />
             <Text style={styles.brandTag}>VANE-BUCKLEY TRUST</Text>
           </View>
@@ -77,13 +78,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.6,
     color: C.ink,
   },
-  brand: { flexDirection: "row", alignItems: "center", gap: 10 },
-  brandMark: {
-    fontFamily: FONT.bodyBold,
-    fontSize: 20,
-    letterSpacing: 4,
-    color: C.ink,
-  },
+  brand: { flexDirection: "row", alignItems: "center", gap: 12 },
   brandRule: { width: 1, height: 18, backgroundColor: C.ink },
   brandTag: {
     fontFamily: FONT.bodyMedium,

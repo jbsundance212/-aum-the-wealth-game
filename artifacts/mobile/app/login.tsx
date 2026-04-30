@@ -13,6 +13,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { C } from "@/constants/colors";
+import { BrandMark } from "@/src/components/BrandMark";
 import { Button } from "@/src/components/Button";
 import { useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
@@ -53,8 +54,7 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.brand}>
-          <Text style={styles.brandMark}>AUM</Text>
-          <View style={styles.brandRule} />
+          <BrandMark height={56} />
           <Text style={styles.brandTag}>THE WEALTH GAME</Text>
         </View>
 
@@ -120,19 +120,13 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: C.bg },
   content: { paddingHorizontal: 22 },
-  brand: { flexDirection: "row", alignItems: "center", gap: 12 },
-  brandMark: {
-    fontFamily: FONT.bodyBold,
-    fontSize: 26,
-    letterSpacing: 5,
-    color: C.ink,
-  },
-  brandRule: { width: 1, height: 22, backgroundColor: C.ink },
+  brand: { alignItems: "flex-start", gap: 6 },
   brandTag: {
     fontFamily: FONT.bodyMedium,
     fontSize: 10,
-    letterSpacing: 1.6,
+    letterSpacing: 2,
     color: C.inkMuted,
+    marginLeft: 2,
   },
   crest: { alignItems: "center", marginTop: 36, gap: 10 },
   portrait: {
