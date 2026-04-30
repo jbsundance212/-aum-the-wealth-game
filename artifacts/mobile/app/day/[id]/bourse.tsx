@@ -408,13 +408,8 @@ function AllocatePhase({
         {params.assets.map((asset: BourseAsset, i: number) => (
           <View key={asset.name} style={styles.assetRow}>
             <View style={styles.assetTop}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.assetName}>{asset.label || asset.name}</Text>
-                <Text style={styles.assetCode}>{asset.name.toUpperCase()}</Text>
-              </View>
-              <Text style={styles.assetWeight}>
-                {String(allocs[i] || 0).padStart(2, "0")}%
-              </Text>
+              <Text style={styles.assetName}>{asset.name.toUpperCase()}</Text>
+              <Text style={styles.assetWeight}>{allocs[i] || 0}%</Text>
             </View>
             <Slider
               minimumValue={0}
@@ -426,10 +421,6 @@ function AllocatePhase({
               thumbTintColor={C.accent}
               onValueChange={(v) => onUpdate(i, v)}
             />
-            <Text style={styles.assetMeta}>
-              μ {(asset.drift * 100).toFixed(1)}%   ·   σ{" "}
-              {(asset.volatility * 100).toFixed(1)}%
-            </Text>
           </View>
         ))}
       </View>
@@ -743,23 +734,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: C.ink,
   },
-  assetCode: {
-    fontFamily: FONT.mono,
-    fontSize: 10,
-    color: C.inkMuted,
-    letterSpacing: 1,
-    marginTop: 4,
-  },
   assetWeight: {
     fontFamily: FONT.monoBold,
     fontSize: 22,
     color: C.ink,
-  },
-  assetMeta: {
-    fontFamily: FONT.mono,
-    fontSize: 11,
-    color: C.inkMuted,
-    marginTop: 6,
   },
   allocHint: {
     fontFamily: FONT.body,
