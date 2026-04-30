@@ -18,10 +18,10 @@ const palette = {
   ink: "#3C4858",
   inkSoft: "#5B6573",
   inkMuted: "#8A93A0",
-  accent: "#A35252",
-  accentDark: "#7E3E3E",
+  accent: "#CC0000",
+  accentDark: "#990000",
   positive: "#5B7A5B",
-  negative: "#A35252",
+  negative: "#CC0000",
   gold: "#B5973F",
   scrim: "rgba(60,72,88,0.72)",
 };
