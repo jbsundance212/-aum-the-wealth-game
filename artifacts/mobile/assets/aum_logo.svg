@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="600" height="200">
+  <rect width="600" height="200" fill="#FFFFFF"/>
+  <rect x="20" y="121" width="11" height="34" fill="#BBBBBB"/>
+  <rect x="36" y="99" width="11" height="56" fill="#444444"/>
+  <rect x="52" y="85" width="11" height="70" fill="#111111"/>
+  <rect x="68" y="69" width="11" height="86" fill="#CC0000"/>
+  <text x="90" y="155" font-family="'Times New Roman', Times, serif" font-weight="700" font-size="120" fill="#CC0000">AUM</text>
+</svg>

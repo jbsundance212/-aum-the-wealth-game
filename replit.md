@@ -43,6 +43,29 @@ The script understands two question formats (early days use
 (no quiz) — flagged with `hasQuiz: false` so the Momentum screen
 renders the narrative variant.
 
+### Brand mark
+
+The AUM mark (4 ascending bars climbing grey → `#CC0000`, then bold
+"AUM" in Times serif `#CC0000`) lives as a React Native SVG component
+at `artifacts/mobile/src/components/BrandMark.tsx`. The same artwork
+is mirrored as a static SVG at `artifacts/mobile/assets/aum_logo.svg`
+and rendered to a 1200×1200 PNG splash asset at
+`artifacts/mobile/assets/images/splash.png` via
+`artifacts/mobile/scripts/render-splash.sh` (uses ImageMagick `magick`).
+
+The mark appears in three places:
+- Native splash — `app.json` → `expo.splash.image`
+- JS splash overlay — `src/components/SplashOverlay.tsx`, mounted from
+  `app/_layout.tsx`; holds for 700 ms then fades out (320 ms) once
+  fonts are loaded so the hand-off from native splash to first route
+  is seamless.
+- Login (`app/login.tsx`) and the global Header (`src/components/Header.tsx`).
+
+To regenerate the splash PNG after editing the SVG:
+```
+cd artifacts/mobile && ./scripts/render-splash.sh
+```
+
 ### Routes (file-based)
 
 ```

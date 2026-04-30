@@ -21,6 +21,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { C } from "@/constants/colors";
+import { SplashOverlay } from "@/src/components/SplashOverlay";
 import { TransactionToast } from "@/src/components/TransactionToast";
 import { StoreProvider } from "@/src/data/store";
 
@@ -71,7 +72,7 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) return null;
+  const ready = fontsLoaded || !!fontError;
 
   return (
     <SafeAreaProvider>
@@ -84,6 +85,7 @@ export default function RootLayout() {
                   <StatusBar style="dark" backgroundColor={C.bg} />
                   <RootStack />
                   <TransactionToast />
+                  <SplashOverlay ready={ready} />
                 </View>
               </StoreProvider>
             </KeyboardProvider>
