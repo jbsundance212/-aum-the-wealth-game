@@ -475,7 +475,7 @@ function RunningPhase({
               color: positive ? C.positive : C.accent,
               backgroundColor: flash.interpolate({
                 inputRange: [0, 1],
-                outputRange: ["transparent", positive ? "#E8F0E8" : "#F5E5E5"],
+                outputRange: ["transparent", positive ? "#FFEEEE" : "#F5E5E5"],
               }),
             },
           ]}

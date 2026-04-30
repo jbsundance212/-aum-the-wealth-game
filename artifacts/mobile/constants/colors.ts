@@ -20,7 +20,7 @@ const palette = {
   inkMuted: "#8A94A6",
   accent: "#CC0000",
   accentDark: "#990000",
-  positive: "#5B7A5B",
+  positive: "#CC0000",
   negative: "#CC0000",
   gold: "#B5973F",
   scrim: "rgba(60,72,88,0.72)",
