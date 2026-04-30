@@ -29,6 +29,21 @@ function s(v) {
   return String(v == null ? "" : v).replace(/\r/g, "").trim();
 }
 
+// Bourse asset class display names. The Excel master uses short generic
+// names ("Cash", "Bonds", etc.); the app surfaces the full institutional
+// labels below. Keep this map in sync with the JSON post-substitution.
+const ASSET_NAME_REMAP = {
+  Cash: "CASH & T-BILLS",
+  Bonds: "SOVEREIGN BONDS",
+  Equities: "EQUITIES — VALUE & GROWTH",
+  Gold: "GOLD & PRECIOUS METALS",
+  Property: "REAL ESTATE — REITS",
+  Alternatives: "COMMODITIES · TIPS · HEDGE FUNDS",
+};
+function remapAssetName(name) {
+  return ASSET_NAME_REMAP[name] || name;
+}
+
 function youtubeId(url) {
   if (!url) return "";
   const m =
@@ -237,18 +252,21 @@ function parseBourseParams(raw) {
   const assetsObj = obj.asset_rules || obj.assets_rules || obj.assets || {};
   const assets = Array.isArray(assetsObj)
     ? assetsObj.map((a) => ({
-        name: a.name,
+        name: remapAssetName(a.name),
         drift: Number(a.drift) || 0,
         volatility: Number(a.volatility) || 0,
         label: a.label || "",
       }))
     : Object.entries(assetsObj).map(([name, v]) => ({
-        name,
+        name: remapAssetName(name),
         drift: Number(v.drift) || 0,
         volatility: Number(v.volatility) || 0,
         label: v.label || "",
       }));
-  const optimal = obj.optimal_allocation || obj.optimalAllocation || {};
+  const rawOptimal = obj.optimal_allocation || obj.optimalAllocation || {};
+  const optimal = Object.fromEntries(
+    Object.entries(rawOptimal).map(([k, v]) => [remapAssetName(k), v]),
+  );
   return {
     env: obj.env || "Environment",
     label: obj.label || obj.env || "Market Environment",

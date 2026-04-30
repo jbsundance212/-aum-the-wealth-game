@@ -67,49 +67,49 @@
       "description": "The 5-year Breakeven rate has crossed 3.2%. CPI is running at 7.8%. The Fed is behind the curve. Your $100,000 Bourse stake must survive 30 seconds of inflationary erosion across 6 asset classes.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": -0.6,
           "volatility": 0.1,
           "label": "Losing purchasing power at 7.8% per year"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.8,
           "volatility": 0.4,
           "label": "Duration destruction — rising yields hurt bond prices"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.2,
           "volatility": 0.6,
           "label": "Mixed — value beats growth in inflation"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.4,
           "volatility": 0.3,
           "label": "Classic inflation hedge — appreciating"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.3,
           "volatility": 0.2,
           "label": "Real asset — outperforms in inflation"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.5,
           "volatility": 0.4,
           "label": "Commodities and TIPS outperforming"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 5,
-        "Equities": 20,
-        "Gold": 25,
-        "Property": 25,
-        "Alternatives": 20
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 25,
+        "REAL ESTATE — REITS": 25,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 20
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -185,49 +185,49 @@
       "description": "OPEC+ has announced a 2 million barrel per day production cut. Energy prices are surging. Supply-side inflation is building while growth is deteriorating. Classic stagflationary environment.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": -0.3,
           "volatility": 0.1,
           "label": "Inflation eroding but better than bonds"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.7,
           "volatility": 0.3,
           "label": "Rising inflation expectations hurting bonds"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.1,
           "volatility": 0.7,
           "label": "Energy sector up, rest of market under pressure"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Inflation hedge performing"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.1,
           "volatility": 0.2,
           "label": "Neutral — real asset but rate pressure building"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.8,
           "volatility": 0.4,
           "label": "Energy commodities surging on supply cut"
         }
       ],
       "optimalAllocation": {
-        "Cash": 10,
-        "Bonds": 5,
-        "Equities": 15,
-        "Gold": 20,
-        "Property": 10,
-        "Alternatives": 40
+        "CASH & T-BILLS": 10,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 15,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 40
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -303,49 +303,49 @@
       "description": "Unemployment has fallen to 3.3%. Wage growth is running at 6.2% against 1.8% productivity. Unit labor costs are rising at 4.4% — the wage-price spiral trigger. The Fed is about to act.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.1,
           "volatility": 0.1,
           "label": "Short-term rates rising with Fed action"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.5,
           "volatility": 0.3,
           "label": "Rate hike cycle beginning — duration hurts"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.1,
           "volatility": 0.5,
           "label": "Late cycle — value beats growth"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Inflation protection building"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.2,
           "volatility": 0.2,
           "label": "Real asset but rate sensitivity building"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "TIPS and commodities outperforming"
         }
       ],
       "optimalAllocation": {
-        "Cash": 20,
-        "Bonds": 5,
-        "Equities": 25,
-        "Gold": 20,
-        "Property": 15,
-        "Alternatives": 15
+        "CASH & T-BILLS": 20,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 25,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 15,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -421,49 +421,49 @@
       "description": "The government has announced a $2 trillion infrastructure programme financed by new bond issuance. Unemployment is 3.8%. The economy is at full capacity. Crowding out and inflation are the primary risks.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Short rates rising as inflation builds"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.6,
           "volatility": 0.4,
           "label": "Heavy supply + inflation = bond bear market"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.2,
           "volatility": 0.5,
           "label": "Infrastructure beneficiaries outperform"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Deficit monetisation risk supporting gold"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.4,
           "volatility": 0.3,
           "label": "Infrastructure spending supports real assets"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.4,
           "volatility": 0.3,
           "label": "Materials and construction commodities surge"
         }
       ],
       "optimalAllocation": {
-        "Cash": 15,
-        "Bonds": 5,
-        "Equities": 30,
-        "Gold": 20,
-        "Property": 20,
-        "Alternatives": 10
+        "CASH & T-BILLS": 15,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 30,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 20,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -539,49 +539,49 @@
       "description": "GDP growth is decelerating. The yield curve has flattened. Credit spreads are 80 basis points above their cycle tights. Corporate margins are being squeezed. The cycle is approaching its peak.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "High short rates — cash is earning well"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.2,
           "volatility": 0.3,
           "label": "Flat curve — limited upside, rate risk remains"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.1,
           "volatility": 0.6,
           "label": "Defensive beats cyclical — rotate now"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Late cycle hedge performing"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.1,
           "volatility": 0.3,
           "label": "Rate sensitivity — negative at cycle peak"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.1,
           "volatility": 0.4,
           "label": "Modest commodity support fading"
         }
       ],
       "optimalAllocation": {
-        "Cash": 25,
-        "Bonds": 10,
-        "Equities": 30,
-        "Gold": 20,
-        "Property": 5,
-        "Alternatives": 10
+        "CASH & T-BILLS": 25,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 30,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -657,49 +657,49 @@
       "description": "The Federal Reserve has raised rates 300 basis points over 12 months. Transmission is working — mortgage rates have risen from 3% to 6.8%. The equity multiple is compressing. Duration is the primary risk.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.5,
           "volatility": 0.1,
           "label": "T-Bills now yielding 5.25% — cash is competitive"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.9,
           "volatility": 0.5,
           "label": "Rising rates destroying bond prices — avoid duration"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.3,
           "volatility": 0.7,
           "label": "Multiple compression — growth stocks especially"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": -0.1,
           "volatility": 0.4,
           "label": "High real rates are negative for gold"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.4,
           "volatility": 0.3,
           "label": "Mortgage rates rising — property under pressure"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.1,
           "volatility": 0.3,
           "label": "Mixed — commodities neutral, TIPS outperforming nominal bonds"
         }
       ],
       "optimalAllocation": {
-        "Cash": 40,
-        "Bonds": 5,
-        "Equities": 25,
-        "Gold": 5,
-        "Property": 5,
-        "Alternatives": 20
+        "CASH & T-BILLS": 40,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 25,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 20
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -775,49 +775,49 @@
       "description": "The 3-month/10-year Treasury spread has inverted to -85 basis points. Campbell Harvey's indicator is triggered. Credit spreads are widening. The recession clock is running — historically 12-18 months to confirmed recession.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.4,
           "volatility": 0.1,
           "label": "High short rates — hold cash while awaiting recession"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Long bonds beginning to rally as recession priced in"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.4,
           "volatility": 0.7,
           "label": "Equity markets pricing recession risk — volatile"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Safe haven demand building"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.3,
           "volatility": 0.3,
           "label": "Rate transmission hurting property"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": -0.1,
           "volatility": 0.4,
           "label": "Commodity demand falling with growth outlook"
         }
       ],
       "optimalAllocation": {
-        "Cash": 30,
-        "Bonds": 25,
-        "Equities": 20,
-        "Gold": 15,
-        "Property": 5,
-        "Alternatives": 5
+        "CASH & T-BILLS": 30,
+        "SOVEREIGN BONDS": 25,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -893,49 +893,49 @@
       "description": "The Senior Loan Officer Survey shows 18% net loosening — the most accommodative credit conditions in 5 years. Small business loan growth is running at 12%. The credit multiplier is working. Risk appetite is building.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": -0.1,
           "volatility": 0.1,
           "label": "Opportunity cost of cash is rising — deploy it"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.1,
           "volatility": 0.2,
           "label": "Tight spreads — limited upside in credit"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.6,
           "volatility": 0.5,
           "label": "Credit expansion fuels equity bull market"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": -0.1,
           "volatility": 0.3,
           "label": "Risk-on environment reduces gold demand"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.5,
           "volatility": 0.3,
           "label": "Easy credit fuels property appreciation"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Risk assets broadly benefiting from credit expansion"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 10,
-        "Equities": 45,
-        "Gold": 5,
-        "Property": 25,
-        "Alternatives": 10
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 45,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 25,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1011,49 +1011,49 @@
       "description": "Three major CLOs have suspended redemptions. Repo market overnight rates have spiked 45 basis points above Fed Funds. Prime broker margin requirements are increasing. Shadow banking stress is building rapidly.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Direct government cash — safest asset in shadow stress"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.3,
           "volatility": 0.5,
           "label": "Structured bonds facing forced selling"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.5,
           "volatility": 0.8,
           "label": "Leveraged equity holders facing margin calls"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Safe haven demand spiking"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.2,
           "volatility": 0.3,
           "label": "Illiquid — cannot exit in shadow stress"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": -0.4,
           "volatility": 0.6,
           "label": "Shadow banking instruments facing forced selling"
         }
       ],
       "optimalAllocation": {
-        "Cash": 50,
-        "Bonds": 10,
-        "Equities": 10,
-        "Gold": 20,
-        "Property": 5,
-        "Alternatives": 5
+        "CASH & T-BILLS": 50,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 10,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1129,49 +1129,49 @@
       "description": "A globally systemically important financial institution has announced losses of 8x its stated VaR. Interbank lending has frozen. CDS spreads on financial names have doubled. This is a full systemic event.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.1,
           "volatility": 0.1,
           "label": "Government-backed cash — the only true safe haven"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.4,
           "volatility": 0.7,
           "label": "Corporate bonds — counterparty risk spiking"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.8,
           "volatility": 1.2,
           "label": "Financial sector leading market collapse"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.5,
           "volatility": 0.5,
           "label": "Classic systemic crisis safe haven — surging"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.3,
           "volatility": 0.4,
           "label": "Illiquid and credit-dependent — avoid"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": -0.6,
           "volatility": 0.9,
           "label": "Shadow banking vehicles — zero bid"
         }
       ],
       "optimalAllocation": {
-        "Cash": 55,
-        "Bonds": 5,
-        "Equities": 5,
-        "Gold": 30,
-        "Property": 3,
-        "Alternatives": 2
+        "CASH & T-BILLS": 55,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 5,
+        "GOLD & PRECIOUS METALS": 30,
+        "REAL ESTATE — REITS": 3,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 2
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1247,49 +1247,49 @@
       "description": "A $3 trillion commercial real estate market has revealed widespread Ponzi finance. Lenders are refusing to refinance. Forced selling has begun. Asset prices are in freefall. The Minsky Moment has arrived.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.1,
           "volatility": 0.1,
           "label": "The ultimate safe haven in Minsky — hold maximum"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.3,
           "volatility": 0.6,
           "label": "Credit bonds being sold in panic — avoid"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.7,
           "volatility": 1,
           "label": "Forced selling cascade — all equities falling"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.6,
           "volatility": 0.5,
           "label": "Minsky moments drive maximum gold demand"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.9,
           "volatility": 0.8,
           "label": "The epicentre — Ponzi finance unwinding here"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": -0.5,
           "volatility": 0.8,
           "label": "Leveraged alternatives facing forced liquidation"
         }
       ],
       "optimalAllocation": {
-        "Cash": 50,
-        "Bonds": 5,
-        "Equities": 5,
-        "Gold": 35,
-        "Property": 0,
-        "Alternatives": 5
+        "CASH & T-BILLS": 50,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 5,
+        "GOLD & PRECIOUS METALS": 35,
+        "REAL ESTATE — REITS": 0,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1365,49 +1365,49 @@
       "description": "The VIX has spiked to 32. Three major carry trade currencies are selling off simultaneously. The yen is surging as carry traders buy it back. Emerging market currencies are falling sharply. Global risk-off is in progress.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "USD cash — the carry funding currency is appreciating"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.2,
           "volatility": 0.4,
           "label": "Flight to quality — government bonds rally"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.4,
           "volatility": 0.8,
           "label": "Risk-off — equities selling across all markets"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.4,
           "volatility": 0.5,
           "label": "Classic safe haven demand in FX vol"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.2,
           "volatility": 0.3,
           "label": "Illiquid — cannot exit quickly in FX vol"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": -0.3,
           "volatility": 0.6,
           "label": "EM assets and carry instruments collapsing"
         }
       ],
       "optimalAllocation": {
-        "Cash": 40,
-        "Bonds": 20,
-        "Equities": 15,
-        "Gold": 20,
-        "Property": 3,
-        "Alternatives": 2
+        "CASH & T-BILLS": 40,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 15,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 3,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 2
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1483,49 +1483,49 @@
       "description": "Brent crude has fallen to $52 — 28% below the Saudi fiscal breakeven of $72. GCC reserves are being drawn. UAE mortgage rates have risen to 7.2% following Fed tightening. Regional property markets are under pressure.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "USD cash — peg stress is positive for USD holdings"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.1,
           "volatility": 0.3,
           "label": "GCC sukuk spreads widening as fiscal pressure builds"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.3,
           "volatility": 0.6,
           "label": "GCC equities under pressure from oil decline"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.4,
           "volatility": 0.4,
           "label": "Peg stress drives GCC investors to gold"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.5,
           "volatility": 0.5,
           "label": "UAE property — negative carry at 7.2% mortgage rates"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": -0.2,
           "volatility": 0.4,
           "label": "Regional alternative assets under pressure"
         }
       ],
       "optimalAllocation": {
-        "Cash": 35,
-        "Bonds": 10,
-        "Equities": 20,
-        "Gold": 25,
-        "Property": 5,
-        "Alternatives": 5
+        "CASH & T-BILLS": 35,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 25,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1601,49 +1601,49 @@
       "description": "ALL FOUR QUADRANTS ARE RED: GDP contracting, inflation above target, yield curve inverted, oil below GCC breakeven. This is the most challenging macro environment possible — stagflation with credit stress and GCC fiscal pressure simultaneously.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "Short-dated T-Bills — the last safe harbour"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.2,
           "volatility": 0.5,
           "label": "Duration risk remains even in recession — stagflation"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.6,
           "volatility": 0.9,
           "label": "Stagflation with credit stress — worst equity environment"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.5,
           "volatility": 0.5,
           "label": "The ultimate four-quadrant-red asset — maximum demand"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.4,
           "volatility": 0.4,
           "label": "Negative carry + recession = double property pressure"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": -0.3,
           "volatility": 0.6,
           "label": "Commodities mixed — energy supported but demand falling"
         }
       ],
       "optimalAllocation": {
-        "Cash": 40,
-        "Bonds": 10,
-        "Equities": 10,
-        "Gold": 30,
-        "Property": 5,
-        "Alternatives": 5
+        "CASH & T-BILLS": 40,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 10,
+        "GOLD & PRECIOUS METALS": 30,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1719,49 +1719,49 @@
       "description": "T-Bills yield only 0.8%. Equities have fallen to 12x earnings. The yield curve has steepened. The recovery is beginning. Your $100,000 Bourse stake must be deployed from cash into the right recovery assets.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": -0.002,
           "volatility": 0.001,
           "label": "T-Bills at 0.8% — opportunity cost is now high"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.003,
           "volatility": 0.003,
           "label": "Steep curve — long bonds rallying as rates fall"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.007,
           "volatility": 0.007,
           "label": "12x earnings — deep value, recovery upside"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.002,
           "volatility": 0.003,
           "label": "Moderate — not the primary recovery asset"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.004,
           "volatility": 0.004,
           "label": "Recovery in real assets beginning"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.003,
           "volatility": 0.005,
           "label": "Credit recovery — high yield and private credit"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 15,
-        "Equities": 45,
-        "Gold": 5,
-        "Property": 15,
-        "Alternatives": 15
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 15,
+        "EQUITIES — VALUE & GROWTH": 45,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 15,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1837,49 +1837,49 @@
       "description": "The Fed has just announced its first rate cut — from 5.25% to 5.0%. Inflation has fallen to 2.8%. The recession the yield curve predicted has arrived. Long bonds are beginning their rally. Your $100,000 must capture the duration trade.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": -0.001,
           "volatility": 0.001,
           "label": "T-Bill yields falling as Fed cuts — redeploy cash"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.008,
           "volatility": 0.004,
           "label": "Long bonds surging — rate cuts drive capital gains"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.003,
           "volatility": 0.006,
           "label": "Rate cuts supportive but recession dampens earnings"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.004,
           "volatility": 0.004,
           "label": "Rate cuts positive for gold — real rates falling"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.002,
           "volatility": 0.003,
           "label": "Mortgage rates falling — property stabilising"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.002,
           "volatility": 0.004,
           "label": "Credit recovery beginning as default risk falls"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 40,
-        "Equities": 20,
-        "Gold": 20,
-        "Property": 10,
-        "Alternatives": 5
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 40,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -1955,49 +1955,49 @@
       "description": "IG credit spreads have widened to 200bps — above historical average — as recession fears build. Investment grade companies are fundamentally sound but markets are pricing distress. Your $100,000 must navigate between safety and credit opportunity.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.003,
           "volatility": 0.001,
           "label": "T-Bills at 5% — competitive risk-free yield"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.005,
           "volatility": 0.004,
           "label": "Government bonds rallying on flight to quality"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.004,
           "volatility": 0.008,
           "label": "Equities under pressure from recession fears"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.003,
           "volatility": 0.004,
           "label": "Safe haven demand building"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.002,
           "volatility": 0.004,
           "label": "Property under pressure from credit tightening"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.004,
           "volatility": 0.005,
           "label": "IG credit at 200bps offering above-average income"
         }
       ],
       "optimalAllocation": {
-        "Cash": 20,
-        "Bonds": 25,
-        "Equities": 10,
-        "Gold": 15,
-        "Property": 5,
-        "Alternatives": 25
+        "CASH & T-BILLS": 20,
+        "SOVEREIGN BONDS": 25,
+        "EQUITIES — VALUE & GROWTH": 10,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 25
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -2073,49 +2073,49 @@
       "description": "HY spreads have reached 650bps — recession-level pricing. Senior secured bonds yield 10.5%. The Fed has begun cutting rates. This is the Vulture's moment. Your $100,000 must capture the credit recovery.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.001,
           "volatility": 0.001,
           "label": "T-Bills falling as Fed cuts — redeploy"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.004,
           "volatility": 0.003,
           "label": "Government bonds rallying with rate cuts"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.003,
           "volatility": 0.007,
           "label": "Recovery beginning but volatile"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.002,
           "volatility": 0.004,
           "label": "Stable — rate cuts mildly supportive"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.002,
           "volatility": 0.004,
           "label": "Recovery in real assets beginning"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.009,
           "volatility": 0.006,
           "label": "HY credit at 650bps — best risk-adjusted return"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 20,
-        "Equities": 15,
-        "Gold": 10,
-        "Property": 10,
-        "Alternatives": 40
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 15,
+        "GOLD & PRECIOUS METALS": 10,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 40
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -2191,49 +2191,49 @@
       "description": "CAPE has fallen to 13x following a 40% equity market decline. FCF yields average 7.5%. This is the generational equity buying opportunity. Your $100,000 must be deployed into the right equity segments.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.001,
           "volatility": 0.001,
           "label": "T-Bills at 2% — opportunity cost now high"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.003,
           "volatility": 0.003,
           "label": "Government bonds stable with low rates"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.009,
           "volatility": 0.008,
           "label": "Deep value equities — 13x CAPE, 7.5% FCF yield"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.001,
           "volatility": 0.003,
           "label": "Gold neutral — risk-on reduces safe haven demand"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.004,
           "volatility": 0.004,
           "label": "Real assets recovering with equities"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.005,
           "volatility": 0.005,
           "label": "Credit recovery alongside equity recovery"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 10,
-        "Equities": 55,
-        "Gold": 5,
-        "Property": 15,
-        "Alternatives": 10
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 55,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 15,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -2309,49 +2309,49 @@
       "description": "Real rates are negative. The dollar is weakening. Oil is at $88. Copper is at cycle highs. Central banks are buying gold. Every commodity indicator is flashing. Your $100,000 must navigate the commodity supercycle.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": -0.004,
           "volatility": 0.001,
           "label": "Negative real rates destroying cash purchasing power"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.005,
           "volatility": 0.004,
           "label": "Negative real rates hurt nominal bonds"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.002,
           "volatility": 0.006,
           "label": "Mixed — energy equities surge, tech suffers"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.006,
           "volatility": 0.004,
           "label": "All three gold drivers aligned — maximum positive"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.004,
           "volatility": 0.003,
           "label": "Real asset — inflation protection"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.007,
           "volatility": 0.005,
           "label": "Commodities and energy — supercycle in progress"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 5,
-        "Equities": 20,
-        "Gold": 30,
-        "Property": 15,
-        "Alternatives": 25
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 30,
+        "REAL ESTATE — REITS": 15,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 25
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -2427,49 +2427,49 @@
       "description": "Cap rates are rising as mortgage rates climb to 7%. Negatively leveraged properties are under pressure. Over-supplied markets are correcting. Your $100,000 must avoid the real estate trap and position for the eventual recovery.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.004,
           "volatility": 0.001,
           "label": "High short rates — cash is competitive"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.002,
           "volatility": 0.003,
           "label": "Government bonds — safe haven in property stress"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.001,
           "volatility": 0.006,
           "label": "Mixed — real estate equities hurt, others neutral"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.003,
           "volatility": 0.004,
           "label": "Stable store of value in property stress"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.006,
           "volatility": 0.005,
           "label": "Cap rate expansion destroying leveraged equity"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.003,
           "volatility": 0.004,
           "label": "Infrastructure with regulated returns outperforming"
         }
       ],
       "optimalAllocation": {
-        "Cash": 30,
-        "Bonds": 20,
-        "Equities": 15,
-        "Gold": 15,
-        "Property": 5,
-        "Alternatives": 15
+        "CASH & T-BILLS": 30,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 15,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -2545,49 +2545,49 @@
       "description": "Two environments in one simulation: first 15 seconds represent late-cycle peak (high leverage, tight spreads, record multiples). Final 15 seconds represent post-crisis opportunity (distressed pricing, low leverage). Your $100,000 must recognise the transition.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.001,
           "volatility": 0.001,
           "label": "Preserve for the post-crisis deployment"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.002,
           "volatility": 0.004,
           "label": "Credit spreads widening in late cycle"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.003,
           "volatility": 0.007,
           "label": "Late-cycle: declining. Post-crisis: surging"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.003,
           "volatility": 0.004,
           "label": "Safe haven during cycle transition"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.004,
           "volatility": 0.005,
           "label": "Cap rate expansion — late cycle property pain"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.002,
           "volatility": 0.005,
           "label": "Private credit opportunity building"
         }
       ],
       "optimalAllocation": {
-        "Cash": 35,
-        "Bonds": 10,
-        "Equities": 15,
-        "Gold": 20,
-        "Property": 5,
-        "Alternatives": 15
+        "CASH & T-BILLS": 35,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 15,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -2663,49 +2663,49 @@
       "description": "VIX is at 12 — near decade lows. Late-cycle signals are building. This is the moment to buy cheap protection before volatility spikes. Your $100,000 must be positioned for both the calm AND the coming storm.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.002,
           "volatility": 0.001,
           "label": "T-Bills yielding 5% — attractive risk-free return"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.001,
           "volatility": 0.002,
           "label": "Government bonds stable in low volatility regime"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.003,
           "volatility": 0.003,
           "label": "Bull market continuing — but expensive"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.001,
           "volatility": 0.003,
           "label": "Stable — good moment to build gold position"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.002,
           "volatility": 0.003,
           "label": "Real assets stable in current environment"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.004,
           "volatility": 0.003,
           "label": "Put options: cheap now, valuable when VIX spikes"
         }
       ],
       "optimalAllocation": {
-        "Cash": 25,
-        "Bonds": 15,
-        "Equities": 30,
-        "Gold": 10,
-        "Property": 10,
-        "Alternatives": 10
+        "CASH & T-BILLS": 25,
+        "SOVEREIGN BONDS": 15,
+        "EQUITIES — VALUE & GROWTH": 30,
+        "GOLD & PRECIOUS METALS": 10,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -2781,49 +2781,49 @@
       "description": "Markets have fallen sharply and valuations are attractive. You need to rapidly increase equity exposure but want to manage the transition carefully. Futures allow immediate implementation. Your $100,000 must be deployed efficiently.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.001,
           "volatility": 0.001,
           "label": "Margin posting for futures — essential buffer"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.003,
           "volatility": 0.003,
           "label": "Government bonds — tactical duration increase"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.008,
           "volatility": 0.007,
           "label": "Recovery underway — futures provide rapid exposure"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.002,
           "volatility": 0.003,
           "label": "Stable in recovery environment"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.003,
           "volatility": 0.004,
           "label": "Real assets recovering alongside equities"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.004,
           "volatility": 0.004,
           "label": "Commodity futures — recovery in hard assets"
         }
       ],
       "optimalAllocation": {
-        "Cash": 15,
-        "Bonds": 15,
-        "Equities": 45,
-        "Gold": 5,
-        "Property": 10,
-        "Alternatives": 10
+        "CASH & T-BILLS": 15,
+        "SOVEREIGN BONDS": 15,
+        "EQUITIES — VALUE & GROWTH": 45,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -2899,49 +2899,49 @@
       "description": "The Fed has begun its rate cut cycle. The yield curve is uninverting. The 2-year is falling rapidly while the 10-year falls more slowly. Long bonds are the primary beneficiary. Your $100,000 must capture the steepening trade.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": -0.001,
           "volatility": 0.001,
           "label": "Short rates falling with Fed cuts — redeploy cash"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.007,
           "volatility": 0.004,
           "label": "Long bonds surging as the curve steepens — core trade"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.002,
           "volatility": 0.006,
           "label": "Rate cuts supportive but recession dampens earnings"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.003,
           "volatility": 0.004,
           "label": "Lower real rates support gold"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.002,
           "volatility": 0.003,
           "label": "Mortgage rates falling — property stabilising"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.003,
           "volatility": 0.004,
           "label": "Credit recovery alongside rate normalisation"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 45,
-        "Equities": 20,
-        "Gold": 15,
-        "Property": 10,
-        "Alternatives": 5
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 45,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3017,49 +3017,49 @@
       "description": "Both equities AND bonds are falling simultaneously — the 60/40 portfolio is breaking down. This is the environment where genuine alternative alpha strategies prove their value. Your $100,000 must navigate beyond the traditional portfolio.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.002,
           "volatility": 0.001,
           "label": "Safe in the breakdown — T-Bills protected"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.005,
           "volatility": 0.004,
           "label": "Rising inflation hurting both equities and bonds"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.005,
           "volatility": 0.007,
           "label": "60/40 breakdown — equities falling"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.004,
           "volatility": 0.004,
           "label": "Monetary hedge performing"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.003,
           "volatility": 0.004,
           "label": "Rate sensitivity hurting property"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.007,
           "volatility": 0.004,
           "label": "CTA crisis alpha + CAT bonds + merger arb outperforming"
         }
       ],
       "optimalAllocation": {
-        "Cash": 20,
-        "Bonds": 5,
-        "Equities": 15,
-        "Gold": 20,
-        "Property": 5,
-        "Alternatives": 35
+        "CASH & T-BILLS": 20,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 15,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 35
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3135,49 +3135,49 @@
       "description": "The Federal Reserve is at 5.25%. The Bank of Japan is at 0.1% defending yield curve control. The ECB is at 4%. Massive policy divergence is creating currency and bond market dislocations. Your $100,000 must navigate the macro divergence.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.004,
           "volatility": 0.001,
           "label": "USD cash at 5.25% — highest-yielding reserve currency"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.002,
           "volatility": 0.005,
           "label": "JGB stress from YCC — mixed global bond picture"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.001,
           "volatility": 0.006,
           "label": "Mixed — US strong, Japan weakening on yen"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.003,
           "volatility": 0.004,
           "label": "Benefiting from macro uncertainty"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.001,
           "volatility": 0.003,
           "label": "High rates dampening global property"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.006,
           "volatility": 0.004,
           "label": "Currency and yield curve macro trades performing"
         }
       ],
       "optimalAllocation": {
-        "Cash": 30,
-        "Bonds": 10,
-        "Equities": 20,
-        "Gold": 15,
-        "Property": 5,
-        "Alternatives": 20
+        "CASH & T-BILLS": 30,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 20
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3253,49 +3253,49 @@
       "description": "Sector dispersion is at a 5-year high. Winners and losers are separating rapidly within every sector. Your $100,000 Bourse stake must be deployed as a long/short book — overweight quality, underweight leverage.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.1,
           "volatility": 0.1,
           "label": "Neutral — opportunity cost of cash is high here"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0,
           "volatility": 0.2,
           "label": "Flat — credit neutral environment"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.5,
           "volatility": 0.8,
           "label": "High quality equities outperforming strongly"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0,
           "volatility": 0.3,
           "label": "Neutral — not a dispersion environment for gold"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.1,
           "volatility": 0.3,
           "label": "Leveraged property facing rate pressure"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.6,
           "volatility": 0.5,
           "label": "Long/Short and market-neutral strategies outperforming"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 5,
-        "Equities": 50,
-        "Gold": 5,
-        "Property": 5,
-        "Alternatives": 30
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 50,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 30
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3371,49 +3371,49 @@
       "description": "M&A volume has surged to a 3-year high. Deal spreads are at 6.2% — well above historical averages. Merger arbitrage and special situations are offering attractive risk-adjusted returns. Your $100,000 must be deployed into the event-driven opportunity set.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.1,
           "volatility": 0.1,
           "label": "Low yield — opportunity cost is high in event-driven cycle"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.1,
           "volatility": 0.2,
           "label": "Modest gains — credit supportive of deal activity"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.3,
           "volatility": 0.6,
           "label": "Acquirers and targets moving — high dispersion"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": -0.1,
           "volatility": 0.3,
           "label": "Risk-on environment reduces gold demand"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.1,
           "volatility": 0.2,
           "label": "Neutral — not the primary opportunity here"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.7,
           "volatility": 0.4,
           "label": "Event-driven and merger arb strategies outperforming strongly"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 10,
-        "Equities": 30,
-        "Gold": 5,
-        "Property": 5,
-        "Alternatives": 45
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 30,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 45
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3489,49 +3489,49 @@
       "description": "Multiple major asset classes have crossed their 200-day moving averages simultaneously. Bonds trending down. Oil trending down. Dollar trending up. Gold trending up. The trend-following environment is at its richest in 3 years. Your $100,000 must be deployed to capture the maximum number of active trends.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Dollar strengthening — USD cash appreciating"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.6,
           "volatility": 0.5,
           "label": "Bond bear market — trend firmly downward"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.2,
           "volatility": 0.7,
           "label": "Equity correction in progress — trend down"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.5,
           "volatility": 0.4,
           "label": "Gold trending strongly upward — safe haven demand"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.3,
           "volatility": 0.3,
           "label": "Rising rates crushing property valuations"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.8,
           "volatility": 0.4,
           "label": "Managed futures and trend-following strategies at peak performance"
         }
       ],
       "optimalAllocation": {
-        "Cash": 20,
-        "Bonds": 5,
-        "Equities": 10,
-        "Gold": 25,
-        "Property": 5,
-        "Alternatives": 35
+        "CASH & T-BILLS": 20,
+        "SOVEREIGN BONDS": 5,
+        "EQUITIES — VALUE & GROWTH": 10,
+        "GOLD & PRECIOUS METALS": 25,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 35
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3607,49 +3607,49 @@
       "description": "The Trust's equity allocation has drifted to 58% against a 45% target. Bonds have fallen to 18% against a 25% target. Equity/bond correlation has turned positive (+0.28). The portfolio must be rebalanced toward efficiency. Your $100,000 must reflect the rebalanced, not the drifted, allocation.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Underweight — needs buying to restore 5% target"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Underweight — needs buying; positive real yield environment"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.1,
           "volatility": 0.7,
           "label": "Overweight — needs trimming; momentum fading"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.4,
           "volatility": 0.4,
           "label": "Positive correlation substitute for bonds — attractive"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Real assets near target — maintain"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.5,
           "volatility": 0.4,
           "label": "Underweight — diversification value rising as bond correlation increases"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 20,
-        "Equities": 35,
-        "Gold": 15,
-        "Property": 10,
-        "Alternatives": 15
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 35,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3725,49 +3725,49 @@
       "description": "The VIX has risen to 26. Portfolio Beta is 0.85 — above the 0.62 target for the current macro environment. The Beta Management Protocol requires rotating from high-Beta assets to low-Beta assets. Your $100,000 must reflect a Beta-reduced, risk-adjusted allocation.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "Low Beta (0.0) — rising VIX increases cash attractiveness"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Low Beta (0.1) — safe haven demand building"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.2,
           "volatility": 0.8,
           "label": "High Beta (1.2) — VIX spike hurts high-Beta equities most"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Negative Beta (-0.1) — gold benefits from VIX spike"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.1,
           "volatility": 0.3,
           "label": "Moderate Beta (0.6) — partial equity correlation"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.4,
           "volatility": 0.3,
           "label": "Near-zero Beta — managed futures neutral to market direction"
         }
       ],
       "optimalAllocation": {
-        "Cash": 20,
-        "Bonds": 20,
-        "Equities": 20,
-        "Gold": 15,
-        "Property": 10,
-        "Alternatives": 15
+        "CASH & T-BILLS": 20,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3843,49 +3843,49 @@
       "description": "The Value factor spread is at a 15-year high. Growth stocks (high P/E, long duration) are facing multiple compression as rates rise. Value stocks (low P/E, real earnings) are beginning a cyclical recovery. Your $100,000 must be positioned to capture the factor rotation.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Short rates rising — cash competitive"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.3,
           "volatility": 0.3,
           "label": "Rising rates hurting bonds — underweight duration"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.3,
           "volatility": 0.7,
           "label": "Value equities outperforming growth — factor rotation in progress"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.2,
           "volatility": 0.4,
           "label": "Mild inflation support for gold"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.1,
           "volatility": 0.3,
           "label": "Real assets neutral in factor rotation environment"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.5,
           "volatility": 0.4,
           "label": "Smart beta and factor strategies outperforming market-cap index"
         }
       ],
       "optimalAllocation": {
-        "Cash": 15,
-        "Bonds": 10,
-        "Equities": 40,
-        "Gold": 10,
-        "Property": 10,
-        "Alternatives": 15
+        "CASH & T-BILLS": 15,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 40,
+        "GOLD & PRECIOUS METALS": 10,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -3961,49 +3961,49 @@
       "description": "Investor sentiment is at a multi-year bullish extreme. Markets have risen 35% in 18 months. The recency bias and herding instinct are at maximum intensity — most investors expect further gains. The contrarian behavioural signal suggests trimming risk assets. Your $100,000 must override the herding impulse.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "Contrarian safe haven — underowned at sentiment extremes"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Flight to quality building — consensus is underweight"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.3,
           "volatility": 0.9,
           "label": "Sentiment extreme — crowded long positioning creates reversal risk"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.4,
           "volatility": 0.4,
           "label": "Contrarian safe haven — maximum underownership at bull extremes"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.1,
           "volatility": 0.4,
           "label": "Leveraged real assets — vulnerable at sentiment peaks"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Uncorrelated strategies benefit from contrarian positioning"
         }
       ],
       "optimalAllocation": {
-        "Cash": 25,
-        "Bonds": 20,
-        "Equities": 20,
-        "Gold": 20,
-        "Property": 5,
-        "Alternatives": 10
+        "CASH & T-BILLS": 25,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -4079,49 +4079,49 @@
       "description": "Bond yields have compressed to 2.8%. The Trust's blended return at current weights has fallen below the 7.5% minimum requirement. The IPS review has concluded: reduce bonds, increase alternatives and gold. Your $100,000 must reflect the revised strategic allocation, not the outdated one.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "T-Bills at 4.5% — attractive relative to compressed bonds"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.1,
           "volatility": 0.2,
           "label": "Compressed yields — insufficient return for strategic weight"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.4,
           "volatility": 0.6,
           "label": "Primary return engine — maintain strategic weight"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.4,
           "volatility": 0.4,
           "label": "Replacing bond insurance function — strategic weight increased"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Real assets contributing inflation protection"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.6,
           "volatility": 0.4,
           "label": "Higher return, genuine diversification — weight increased from 12% to 18%"
         }
       ],
       "optimalAllocation": {
-        "Cash": 8,
-        "Bonds": 12,
-        "Equities": 40,
-        "Gold": 8,
-        "Property": 14,
-        "Alternatives": 18
+        "CASH & T-BILLS": 8,
+        "SOVEREIGN BONDS": 12,
+        "EQUITIES — VALUE & GROWTH": 40,
+        "GOLD & PRECIOUS METALS": 8,
+        "REAL ESTATE — REITS": 14,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 18
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -4197,49 +4197,49 @@
       "description": "The equity/bond correlation has turned strongly positive (+0.68). Both asset classes are falling simultaneously in a stagflationary environment. The traditional 60/40 diversification has failed. Your $100,000 must be positioned in assets that genuinely diversify in this correlation regime.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "Short rates high — cash earns real return"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.5,
           "volatility": 0.4,
           "label": "Positive equity correlation — bonds falling with equities"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.4,
           "volatility": 0.7,
           "label": "Stagflation — multiple compression and margin pressure"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.2,
           "volatility": 0.4,
           "label": "Partial safe haven — modest positive drift"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.2,
           "volatility": 0.4,
           "label": "Rising rates and recession risk hurting real estate"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.7,
           "volatility": 0.4,
           "label": "Managed futures capturing downtrends in bonds and equities"
         }
       ],
       "optimalAllocation": {
-        "Cash": 20,
-        "Bonds": 10,
-        "Equities": 15,
-        "Gold": 15,
-        "Property": 5,
-        "Alternatives": 35
+        "CASH & T-BILLS": 20,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 15,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 35
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -4315,49 +4315,49 @@
       "description": "The central bank has begun cutting rates. Long-duration bonds are appreciating as yields fall. The Trust's distribution liability duration (14 years) requires long-dated bond exposure to maintain the duration match. Short-dated bonds are losing the duration race against liabilities.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": -0.1,
           "volatility": 0.1,
           "label": "Falling short rates — cash yield declining"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.6,
           "volatility": 0.5,
           "label": "Long-duration bonds appreciating strongly as yields fall"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.3,
           "volatility": 0.6,
           "label": "Rate cuts supportive for equity multiples"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Real rate decline supports gold"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.4,
           "volatility": 0.3,
           "label": "Falling mortgage rates support property values"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.1,
           "volatility": 0.4,
           "label": "Mixed — trend following adapting to new rate direction"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 35,
-        "Equities": 30,
-        "Gold": 10,
-        "Property": 15,
-        "Alternatives": 5
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 35,
+        "EQUITIES — VALUE & GROWTH": 30,
+        "GOLD & PRECIOUS METALS": 10,
+        "REAL ESTATE — REITS": 15,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -4433,49 +4433,49 @@
       "description": "GCC real estate has risen 22%. The Trust's real assets allocation has drifted from 20% to 28% — 8 percentage points over target. Liquidity reserve has fallen to 3% — critically below the 10% minimum. Defensive core has fallen to 9% versus 20% target. Rebalancing is mandatory.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.4,
           "volatility": 0.1,
           "label": "Underweight — urgently needs rebuilding to 10%"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Underweight — defensive core below target"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.3,
           "volatility": 0.5,
           "label": "Near target — maintain"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Underweight — absolute return below target"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.1,
           "volatility": 0.4,
           "label": "Overweight — yield compression signals overvaluation"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.4,
           "volatility": 0.4,
           "label": "Underweight — absolute return needs rebuilding"
         }
       ],
       "optimalAllocation": {
-        "Cash": 15,
-        "Bonds": 20,
-        "Equities": 30,
-        "Gold": 10,
-        "Property": 10,
-        "Alternatives": 15
+        "CASH & T-BILLS": 15,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 30,
+        "GOLD & PRECIOUS METALS": 10,
+        "REAL ESTATE — REITS": 10,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -4551,49 +4551,49 @@
       "description": "The Trust's VaR model assumed 0.72% daily volatility. Realised volatility has risen to 1.18% — 64% above assumption. Three VaR breaches in 20 days. The risk model is underestimating actual portfolio risk. Your $100,000 must be repositioned to bring true risk within acceptable parameters.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Reduces portfolio volatility toward VaR target"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.1,
           "volatility": 0.3,
           "label": "Low Beta — reduces portfolio VaR contribution"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.1,
           "volatility": 1.1,
           "label": "Primary VaR driver — high realised volatility"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.2,
           "volatility": 0.4,
           "label": "Low correlation — reduces portfolio VaR"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.1,
           "volatility": 0.5,
           "label": "Illiquid — cannot reduce VaR quickly"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Low Beta alternatives reduce overall VaR"
         }
       ],
       "optimalAllocation": {
-        "Cash": 25,
-        "Bonds": 20,
-        "Equities": 20,
-        "Gold": 15,
-        "Property": 5,
-        "Alternatives": 15
+        "CASH & T-BILLS": 25,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -4669,49 +4669,49 @@
       "description": "Geopolitical tensions have escalated. Oil spiked 20% initially, now falling on demand fears to $45. GCC equities are volatile. Regional property facing foreign capital withdrawal. A simultaneous global risk-off is amplifying GCC losses. Your $100,000 must survive this compound stress scenario.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "USD cash — safe harbour in regional stress"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Global bonds — flight to quality from GCC risk"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.3,
           "volatility": 0.8,
           "label": "Global equities — risk-off from geopolitical uncertainty"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.5,
           "volatility": 0.5,
           "label": "Geopolitical risk premium — gold classic beneficiary"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.5,
           "volatility": 0.6,
           "label": "GCC property — foreign capital withdrawal risk"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.4,
           "volatility": 0.4,
           "label": "Managed futures — capturing geopolitical trends"
         }
       ],
       "optimalAllocation": {
-        "Cash": 25,
-        "Bonds": 20,
-        "Equities": 15,
-        "Gold": 25,
-        "Property": 5,
-        "Alternatives": 10
+        "CASH & T-BILLS": 25,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 15,
+        "GOLD & PRECIOUS METALS": 25,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -4787,49 +4787,49 @@
       "description": "Rising equity volatility has pushed equity risk contribution to 42% versus a 35% budget. GCC risk contribution has hit 31% — above the critical 30% threshold. The portfolio must be rebalanced to restore risk budget compliance. Your $100,000 must reflect the risk-budgeted allocation.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Under-budget — increases reduce equity risk contribution"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.2,
           "volatility": 0.2,
           "label": "Under-budget in rate risk — increase allocation"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.1,
           "volatility": 0.9,
           "label": "Over-budget in risk contribution — reduce high-Beta exposure"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Under-budget in inflation risk — increases help"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0,
           "volatility": 0.5,
           "label": "GCC property over-budget — reduce to below 10%"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.5,
           "volatility": 0.3,
           "label": "Under-budget — increases improve risk diversification"
         }
       ],
       "optimalAllocation": {
-        "Cash": 15,
-        "Bonds": 20,
-        "Equities": 25,
-        "Gold": 10,
-        "Property": 8,
-        "Alternatives": 22
+        "CASH & T-BILLS": 15,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 25,
+        "GOLD & PRECIOUS METALS": 10,
+        "REAL ESTATE — REITS": 8,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 22
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -4905,49 +4905,49 @@
       "description": "The portfolio is down 18% from peak. Stage 2 drawdown protocol is active. Tier 1 liquidity has fallen to 11% — below the 12% minimum. Distribution coverage ratio is 1.7 — below the 2.0 floor. The Liquidity Ladder Protocol requires rebuilding liquid reserves before deploying any capital.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "Critical — must rebuild to 20% for Stage 2 compliance"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Short-dated bonds — liquid and stable; increase for coverage ratio"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.2,
           "volatility": 0.8,
           "label": "Stage 2 requires Beta reduction — do not add"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Safe haven — maintain as crisis protection"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.3,
           "volatility": 0.4,
           "label": "Illiquid — Stage 2 suspends new illiquid commitments"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Managed futures stable — maintain existing allocation"
         }
       ],
       "optimalAllocation": {
-        "Cash": 22,
-        "Bonds": 20,
-        "Equities": 20,
-        "Gold": 15,
-        "Property": 5,
-        "Alternatives": 18
+        "CASH & T-BILLS": 22,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 18
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -5023,49 +5023,49 @@
       "description": "Oil at $54/barrel — below both Saudi and UAE fiscal breakeevens. ADIA has reduced equity allocation by 6 percentage points ($54 billion outflow). GCC reserves declining. SWFs shifting from net buyers to net sellers of global assets. Your $100,000 must navigate this GCC-driven technical headwind.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "USD cash — safe as GCC assets sell off"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.1,
           "volatility": 0.4,
           "label": "GCC selling Treasuries — mild technical pressure"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.3,
           "volatility": 0.7,
           "label": "SWF equity selling creates technical headwind"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.4,
           "volatility": 0.4,
           "label": "GCC fiscal stress and USD strength positive for gold"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.3,
           "volatility": 0.5,
           "label": "GCC property under fiscal stress — reduce"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Managed futures capturing SWF-driven trends"
         }
       ],
       "optimalAllocation": {
-        "Cash": 25,
-        "Bonds": 15,
-        "Equities": 20,
-        "Gold": 20,
-        "Property": 5,
-        "Alternatives": 15
+        "CASH & T-BILLS": 25,
+        "SOVEREIGN BONDS": 15,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 20,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 15
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -5141,49 +5141,49 @@
       "description": "10-year gilt yields have fallen 80bps. DB pension liabilities have risen sharply due to the lower discount rate. Companies with large, underfunded DB pensions face increased deficit contributions and impaired equity valuations. Your $100,000 must navigate the pension-driven equity risk.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.1,
           "volatility": 0.1,
           "label": "Neutral — safe while pension equity risk assessed"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.5,
           "volatility": 0.4,
           "label": "Long bonds appreciate as rates fall — LDI benefit"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": -0.2,
           "volatility": 0.7,
           "label": "Companies with large DB pensions impaired — selective risk"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Rate fall supports gold — real rates declining"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Lower mortgage rates support property values"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Modest alternative support in rate-falling environment"
         }
       ],
       "optimalAllocation": {
-        "Cash": 10,
-        "Bonds": 35,
-        "Equities": 20,
-        "Gold": 15,
-        "Property": 15,
-        "Alternatives": 5
+        "CASH & T-BILLS": 10,
+        "SOVEREIGN BONDS": 35,
+        "EQUITIES — VALUE & GROWTH": 20,
+        "GOLD & PRECIOUS METALS": 15,
+        "REAL ESTATE — REITS": 15,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 5
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -5259,49 +5259,49 @@
       "description": "Three consecutive years of below-target returns (6.2% average) and above-target inflation (4.1%). The endowment's real purchasing power is declining at −2.7% per year. The spending rate must be reduced and the strategic allocation must be reviewed. Your $100,000 must position for a higher-return, inflation-hedged outcome.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.1,
           "volatility": 0.1,
           "label": "Low real return — reduce below target"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.2,
           "volatility": 0.3,
           "label": "Negative real yield in high inflation — underweight"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.4,
           "volatility": 0.6,
           "label": "Equity risk premium essential for endowment returns"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.4,
           "volatility": 0.4,
           "label": "Inflation hedge — increase in high inflation regime"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "Real asset — inflation-linked income"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.6,
           "volatility": 0.4,
           "label": "Illiquidity premium — increase for higher returns"
         }
       ],
       "optimalAllocation": {
-        "Cash": 5,
-        "Bonds": 8,
-        "Equities": 37,
-        "Gold": 12,
-        "Property": 18,
-        "Alternatives": 20
+        "CASH & T-BILLS": 5,
+        "SOVEREIGN BONDS": 8,
+        "EQUITIES — VALUE & GROWTH": 37,
+        "GOLD & PRECIOUS METALS": 12,
+        "REAL ESTATE — REITS": 18,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 20
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -5377,49 +5377,49 @@
       "description": "P&C insurance hard market conditions following major catastrophe losses. Premiums rising 12-18%. Federal Reserve has raised rates 250bps — float reinvestment income improving significantly. Combined ratios improving. Well-capitalised P&C insurers are in their best operating environment in a decade.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.3,
           "volatility": 0.1,
           "label": "High short rates — T-Bills competitive"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": -0.2,
           "volatility": 0.4,
           "label": "Rising rates pressure existing bond prices"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.4,
           "volatility": 0.6,
           "label": "P&C insurer equity leading — insurance sector outperforming"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.1,
           "volatility": 0.4,
           "label": "Neutral in this specific environment"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": -0.1,
           "volatility": 0.3,
           "label": "Rising rates pressure property valuations"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.5,
           "volatility": 0.4,
           "label": "Reinsurance-linked securities performing in hard market"
         }
       ],
       "optimalAllocation": {
-        "Cash": 15,
-        "Bonds": 10,
-        "Equities": 45,
-        "Gold": 5,
-        "Property": 5,
-        "Alternatives": 20
+        "CASH & T-BILLS": 15,
+        "SOVEREIGN BONDS": 10,
+        "EQUITIES — VALUE & GROWTH": 45,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 5,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 20
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -5495,49 +5495,49 @@
       "description": "Annual fund review reveals three active funds generating negative factor-adjusted alpha after fees. The Trust is paying $48,000 per year in fees for returns achievable at $8,000 in passive ETFs. The decision: redeem active funds and replace with low-cost passive/smart-beta equivalents. Your $100,000 reflects the post-redemption, optimised allocation.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Proceeds from redeemed funds temporarily in cash"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.2,
           "volatility": 0.2,
           "label": "Low-cost bond ETF replacing overpriced active bond fund"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.4,
           "volatility": 0.6,
           "label": "Low-cost passive equity ETF — same returns, 1.7% fee saving"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.2,
           "volatility": 0.4,
           "label": "Maintain existing gold allocation"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Listed infrastructure REIT ETF — low cost"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.5,
           "volatility": 0.4,
           "label": "Smart beta factor ETF replacing expensive active factor fund"
         }
       ],
       "optimalAllocation": {
-        "Cash": 8,
-        "Bonds": 18,
-        "Equities": 38,
-        "Gold": 7,
-        "Property": 12,
-        "Alternatives": 17
+        "CASH & T-BILLS": 8,
+        "SOVEREIGN BONDS": 18,
+        "EQUITIES — VALUE & GROWTH": 38,
+        "GOLD & PRECIOUS METALS": 7,
+        "REAL ESTATE — REITS": 12,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 17
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -5613,49 +5613,49 @@
       "description": "The Trust is evaluating three managers simultaneously: one passes all operational and investment criteria (allocate), one has failed operational due diligence despite strong returns (reject), and one has capacity constraints from AUM growth (reduce). Your $100,000 reflects optimal allocation after manager screening.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Redemption proceeds — awaiting reallocation"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.2,
           "volatility": 0.2,
           "label": "Low-cost passive ETF replacing rejected manager"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.4,
           "volatility": 0.5,
           "label": "Approved manager — strong operational and investment scores"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Maintain existing allocation during manager transition"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.2,
           "volatility": 0.3,
           "label": "Stable allocation — not under review"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.6,
           "volatility": 0.4,
           "label": "Capacity-unconstrained managed futures replacing GCC hedge fund"
         }
       ],
       "optimalAllocation": {
-        "Cash": 10,
-        "Bonds": 15,
-        "Equities": 35,
-        "Gold": 10,
-        "Property": 12,
-        "Alternatives": 18
+        "CASH & T-BILLS": 10,
+        "SOVEREIGN BONDS": 15,
+        "EQUITIES — VALUE & GROWTH": 35,
+        "GOLD & PRECIOUS METALS": 10,
+        "REAL ESTATE — REITS": 12,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 18
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
@@ -5731,49 +5731,49 @@
       "description": "Day 49. The 49-day Mandate is complete. All macro, instrument, and portfolio construction principles have been studied. This final Bourse represents the Trust's integrated strategic allocation — all 49 days of learning expressed in a single portfolio. Your $100,000 must reflect everything you have learned.",
       "assets": [
         {
-          "name": "Cash",
+          "name": "CASH & T-BILLS",
           "drift": 0.2,
           "volatility": 0.1,
           "label": "Liquidity reserve — maintaining 10% distribution coverage"
         },
         {
-          "name": "Bonds",
+          "name": "SOVEREIGN BONDS",
           "drift": 0.3,
           "volatility": 0.3,
           "label": "LDI duration-matched — 20% (12% gov + 8% TIPS)"
         },
         {
-          "name": "Equities",
+          "name": "EQUITIES — VALUE & GROWTH",
           "drift": 0.5,
           "volatility": 0.6,
           "label": "Growth engine — 40% (passive core + smart beta + private)"
         },
         {
-          "name": "Gold",
+          "name": "GOLD & PRECIOUS METALS",
           "drift": 0.3,
           "volatility": 0.4,
           "label": "Systemic risk hedge — 5% permanent allocation"
         },
         {
-          "name": "Property",
+          "name": "REAL ESTATE — REITS",
           "drift": 0.4,
           "volatility": 0.3,
           "label": "GCC real assets — 15% (direct property + infrastructure)"
         },
         {
-          "name": "Alternatives",
+          "name": "COMMODITIES · TIPS · HEDGE FUNDS",
           "drift": 0.6,
           "volatility": 0.4,
           "label": "Crisis alpha + absolute return — 10% CTA + alternatives"
         }
       ],
       "optimalAllocation": {
-        "Cash": 10,
-        "Bonds": 20,
-        "Equities": 40,
-        "Gold": 5,
-        "Property": 15,
-        "Alternatives": 10
+        "CASH & T-BILLS": 10,
+        "SOVEREIGN BONDS": 20,
+        "EQUITIES — VALUE & GROWTH": 40,
+        "GOLD & PRECIOUS METALS": 5,
+        "REAL ESTATE — REITS": 15,
+        "COMMODITIES · TIPS · HEDGE FUNDS": 10
       },
       "winThreshold": 0,
       "winCondition": "Portfolio P&L positive after 30 seconds",
