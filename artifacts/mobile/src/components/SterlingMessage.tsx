@@ -4,8 +4,9 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { C } from "@/constants/colors";
 import { FONT, T } from "@/src/theme/typography";
+import { characterFace } from "@/src/utils/cloudinary";
 
-const STERLING = require("../../assets/images/sterling.png");
+const STERLING_URI = characterFace("sterling", 48);
 
 type Props = {
   body: string;
@@ -27,7 +28,7 @@ export function SterlingMessage({
       <View style={[styles.bar, { backgroundColor: accent }]} />
       <View style={styles.body}>
         <View style={styles.header}>
-          <Image source={STERLING} style={styles.avatar} contentFit="cover" />
+          <Image source={{ uri: STERLING_URI }} style={styles.avatar} contentFit="cover" />
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>CORRESPONDENCE FROM</Text>
             <Text style={styles.name}>Arthur Sterling, Esq.</Text>
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 48,
     height: 48,
+    borderRadius: 24,
     backgroundColor: C.surfaceAlt,
   },
   label: {

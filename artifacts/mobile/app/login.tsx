@@ -17,8 +17,9 @@ import { BrandMark } from "@/src/components/BrandMark";
 import { Button } from "@/src/components/Button";
 import { useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
+import { characterFace } from "@/src/utils/cloudinary";
 
-const STERLING = require("../assets/images/sterling.png");
+const STERLING_URI = characterFace("sterling", 130);
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -59,7 +60,7 @@ export default function LoginScreen() {
         </View>
 
         <View style={styles.crest}>
-          <Image source={STERLING} style={styles.portrait} contentFit="cover" />
+          <Image source={{ uri: STERLING_URI }} style={styles.portrait} contentFit="cover" />
           <Text style={styles.crestLabel}>VANE-BUCKLEY TRUST</Text>
           <Text style={styles.crestTag}>EST. 1923 · ZÜRICH</Text>
         </View>
@@ -132,6 +133,7 @@ const styles = StyleSheet.create({
   portrait: {
     width: 130,
     height: 130,
+    borderRadius: 65,
     backgroundColor: C.surfaceAlt,
   },
   crestLabel: {

@@ -1,5 +1,6 @@
+import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { C } from "@/constants/colors";
@@ -8,6 +9,9 @@ import { Header } from "@/src/components/Header";
 import { useStore } from "@/src/data/store";
 import { STEP_META } from "@/src/data/types";
 import { FONT, T } from "@/src/theme/typography";
+import { cloudinaryFace, nameToPublicId } from "@/src/utils/cloudinary";
+
+const PORTRAIT_PX = 92;
 
 function initials(name: string) {
   return name
@@ -25,6 +29,12 @@ export default function TitanScreen() {
   const router = useRouter();
   const { days, recordStep, isStepDone } = useStore();
   const data = days[day - 1];
+
+  const portraitUri = useMemo(
+    () => (data ? cloudinaryFace(nameToPublicId(data.titanName), PORTRAIT_PX) : ""),
+    [data],
+  );
+  const [imageFailed, setImageFailed] = useState(false);
 
   const finish = async () => {
     if (!isStepDone(day, "titan")) {
@@ -47,8 +57,17 @@ export default function TitanScreen() {
       />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.bust}>
-          <View style={styles.portrait}>
-            <Text style={styles.initials}>{initials(data.titanName)}</Text>
+          <View style={styles.portraitFrame}>
+            {imageFailed ? (
+              <Text style={styles.initials}>{initials(data.titanName)}</Text>
+            ) : (
+              <Image
+                source={{ uri: portraitUri }}
+                style={styles.portrait}
+                contentFit="cover"
+                onError={() => setImageFailed(true)}
+              />
+            )}
           </View>
           <Text style={styles.titanName}>{data.titanName}</Text>
           {data.titanTitle ? (
@@ -92,13 +111,21 @@ const styles = StyleSheet.create({
     paddingVertical: 22,
     backgroundColor: C.ink,
   },
-  portrait: {
-    width: 92,
-    height: 92,
+  portraitFrame: {
+    width: PORTRAIT_PX,
+    height: PORTRAIT_PX,
+    borderRadius: PORTRAIT_PX / 2,
     borderWidth: 1,
     borderColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
+    backgroundColor: "#222",
+  },
+  portrait: {
+    width: PORTRAIT_PX,
+    height: PORTRAIT_PX,
+    borderRadius: PORTRAIT_PX / 2,
   },
   initials: {
     fontFamily: FONT.bodyBold,

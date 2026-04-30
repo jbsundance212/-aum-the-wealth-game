@@ -13,16 +13,15 @@ import { C } from "@/constants/colors";
 import { Button } from "@/src/components/Button";
 import { useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
+import { characterFace } from "@/src/utils/cloudinary";
 
-const BARNABY = require("../assets/images/barnaby.png");
-const STERLING = require("../assets/images/sterling.png");
-const VICTOR = require("../assets/images/victor.png");
+const PORTRAIT_SIZE = 320;
 
 const SLIDES: {
   eyebrow: string;
   title: string;
   body: string[];
-  image: any;
+  imageUri: string;
   footer: string;
 }[] = [
   {
@@ -32,7 +31,7 @@ const SLIDES: {
       "Your great-uncle on your mother's side. Late of Zürich, Hong Kong, and the Cap d'Antibes. Barnaby compounded a single inheritance into the Vane-Buckley Trust over the better part of seven decades.",
       "He believed that competence with capital is a duty, not an accident of birth. He left no instruction more frequently than this: 'Inflation is the only tax that doesn't require a vote.'",
     ],
-    image: BARNABY,
+    imageUri: characterFace("barnaby", PORTRAIT_SIZE),
     footer: "His Trust now passes — provisionally — to you.",
   },
   {
@@ -42,7 +41,7 @@ const SLIDES: {
       "Senior Partner of Sterling, Crispin & Vellacott — the Geneva firm that has served the Buckley family for three generations. Mr Sterling is the executor of the estate and the sole arbiter of the Residency.",
       "He will speak to you each evening through the Memorandum. He records every credit and every penalty against your name with the same deliberation. Address him with the respect his post demands.",
     ],
-    image: STERLING,
+    imageUri: characterFace("sterling", PORTRAIT_SIZE),
     footer: "He will not be charmed. He will not be hurried.",
   },
   {
@@ -52,7 +51,7 @@ const SLIDES: {
       "The other beneficiary. A New York proprietary trader, formerly of a firm whose name need not be repeated in this correspondence. Victor was named in the will at the same hour you were.",
       "Whichever of you ends the forty-nine days with the larger Net Asset Value receives the controlling interest. The other is given a discretionary stipend and a polite letter of dismissal. He is, by all accounts, very good.",
     ],
-    image: VICTOR,
+    imageUri: characterFace("victor", PORTRAIT_SIZE),
     footer: "You begin together at $1,000,000. The work begins tomorrow.",
   },
 ];
@@ -94,7 +93,13 @@ export default function OnboardingScreen() {
       >
         <Text style={styles.eyebrow}>{slide.eyebrow}</Text>
         <Text style={styles.title}>{slide.title}</Text>
-        <Image source={slide.image} style={styles.image} contentFit="cover" />
+        <View style={styles.imageWrap}>
+          <Image
+            source={{ uri: slide.imageUri }}
+            style={styles.image}
+            contentFit="cover"
+          />
+        </View>
         {slide.body.map((p, i) => (
           <Text key={i} style={styles.copy}>
             {p}
@@ -149,10 +154,14 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
     lineHeight: 32,
   },
-  image: {
-    width: "100%",
-    aspectRatio: 1,
+  imageWrap: {
+    alignItems: "center",
     marginTop: 24,
+  },
+  image: {
+    width: 220,
+    height: 220,
+    borderRadius: 110,
     backgroundColor: C.surfaceAlt,
   },
   copy: {

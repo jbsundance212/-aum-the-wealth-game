@@ -11,8 +11,9 @@ import { C } from "@/constants/colors";
 import { Header } from "@/src/components/Header";
 import { fmtMoney, leaderboard, useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
+import { characterFace } from "@/src/utils/cloudinary";
 
-const VICTOR = require("../../assets/images/victor.png");
+const VICTOR_URI = characterFace("victor", 56);
 
 export default function LeaderboardScreen() {
   const { profile, trustBalance, victorBalance } = useStore();
@@ -53,7 +54,7 @@ export default function LeaderboardScreen() {
             </Text>
           </View>
           <View style={[styles.duelCol, styles.duelColRight]}>
-            <Image source={VICTOR} style={styles.duelPortrait} contentFit="cover" />
+            <Image source={{ uri: VICTOR_URI }} style={styles.duelPortrait} contentFit="cover" />
             <Text style={styles.duelLabel}>VICTOR CRANE</Text>
             <Text style={styles.duelAmount}>
               {fmtMoney(victor?.balance || 0)}
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
   duelPortrait: {
     width: 56,
     height: 56,
+    borderRadius: 28,
     backgroundColor: "#222",
     marginBottom: 8,
   },
