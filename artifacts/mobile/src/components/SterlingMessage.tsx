@@ -6,7 +6,7 @@ import { C } from "@/constants/colors";
 import { FONT, T } from "@/src/theme/typography";
 import { characterFace } from "@/src/utils/cloudinary";
 
-const STERLING_URI = characterFace("sterling", 48);
+const STERLING_URI = characterFace("sterling", 48) ?? undefined;
 
 type Props = {
   body: string;

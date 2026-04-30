@@ -21,7 +21,7 @@ const SLIDES: {
   eyebrow: string;
   title: string;
   body: string[];
-  imageUri: string;
+  imageUri: string | undefined;
   footer: string;
 }[] = [
   {
@@ -31,7 +31,7 @@ const SLIDES: {
       "Your great-uncle on your mother's side. Late of Zürich, Hong Kong, and the Cap d'Antibes. Barnaby compounded a single inheritance into the Vane-Buckley Trust over the better part of seven decades.",
       "He believed that competence with capital is a duty, not an accident of birth. He left no instruction more frequently than this: 'Inflation is the only tax that doesn't require a vote.'",
     ],
-    imageUri: characterFace("barnaby", PORTRAIT_SIZE),
+    imageUri: characterFace("barnaby", PORTRAIT_SIZE) ?? undefined,
     footer: "His Trust now passes — provisionally — to you.",
   },
   {
@@ -41,7 +41,7 @@ const SLIDES: {
       "Senior Partner of Sterling, Crispin & Vellacott — the Geneva firm that has served the Buckley family for three generations. Mr Sterling is the executor of the estate and the sole arbiter of the Residency.",
       "He will speak to you each evening through the Memorandum. He records every credit and every penalty against your name with the same deliberation. Address him with the respect his post demands.",
     ],
-    imageUri: characterFace("sterling", PORTRAIT_SIZE),
+    imageUri: characterFace("sterling", PORTRAIT_SIZE) ?? undefined,
     footer: "He will not be charmed. He will not be hurried.",
   },
   {
@@ -51,7 +51,7 @@ const SLIDES: {
       "The other beneficiary. A New York proprietary trader, formerly of a firm whose name need not be repeated in this correspondence. Victor was named in the will at the same hour you were.",
       "Whichever of you ends the forty-nine days with the larger Net Asset Value receives the controlling interest. The other is given a discretionary stipend and a polite letter of dismissal. He is, by all accounts, very good.",
     ],
-    imageUri: characterFace("victor", PORTRAIT_SIZE),
+    imageUri: characterFace("victor", PORTRAIT_SIZE) ?? undefined,
     footer: "You begin together at $1,000,000. The work begins tomorrow.",
   },
 ];

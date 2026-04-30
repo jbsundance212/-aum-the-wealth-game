@@ -13,7 +13,7 @@ import { fmtMoney, leaderboard, useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
 import { characterFace } from "@/src/utils/cloudinary";
 
-const VICTOR_URI = characterFace("victor", 56);
+const VICTOR_URI = characterFace("victor", 56) ?? undefined;
 
 export default function LeaderboardScreen() {
   const { profile, trustBalance, victorBalance } = useStore();

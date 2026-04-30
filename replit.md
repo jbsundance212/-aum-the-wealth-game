@@ -126,6 +126,52 @@ on close, so the ledger always reflects real cash flows.
   the mobile app today)
 - `artifacts/mockup-sandbox: Component Preview Server` — design sandbox
 
+## Cloudinary portraits
+
+Character + Titan portraits are served from Cloudinary
+(cloud `diujqvfed`, folder `AUM-TITANS`, 32 photos covering 35 of 49
+days plus the three story characters). All portraits render as
+circular face-detected crops via the URL pattern:
+
+```
+https://res.cloudinary.com/diujqvfed/image/upload/w_<2x>,h_<2x>,c_fill,g_face,r_max/<publicId>.jpg
+```
+
+Two non-obvious requirements (both encoded in
+`src/utils/cloudinary.ts`):
+
+1. The `publicId` does NOT include the `AUM-TITANS/` folder prefix —
+   the folder is metadata only.
+2. The `.jpg` extension is mandatory because publicIds contain dots
+   (`1._Paul_A._Volcker_rxv9iv`); without `.jpg`, Cloudinary's URL
+   parser misinterprets the trailing fragment as the format.
+
+Cloudinary appends a random 6-char suffix to every upload, so
+publicIds cannot be derived from a name. The day → publicId map is
+built once via the Admin API and baked into
+`src/data/titanPhotos.json`. To refresh after new uploads:
+
+```
+cd artifacts/mobile && node scripts/build-titan-photos.cjs
+```
+
+Requires `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
+`CLOUDINARY_API_SECRET` env vars. The cloud name is also exposed to
+the app via `EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME` (it is intentionally
+public — it appears in every served URL). The API key + secret are
+build-time only.
+
+Helpers in `src/utils/cloudinary.ts`:
+- `cloudinaryFace(publicId, size)` — base URL builder
+- `characterFace("barnaby" | "sterling" | "victor", size)`
+- `titanFace(dayNumber, size)` — returns null for archetype-only days
+  (15-26, 30, 43); call sites fall back to initials in those cases.
+
+Used in: `app/login.tsx` (Sterling crest 130), `app/onboarding.tsx`
+(3 chapters 220), `src/components/SterlingMessage.tsx` (avatar 48),
+`app/(tabs)/leaderboard.tsx` (Victor 56), `app/day/[id]/titan.tsx`
+(Titan portrait 92, with initials fallback).
+
 ## Notes
 
 - `react-native-web-webview` is installed as a peer of

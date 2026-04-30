@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { C } from "@/constants/colors";
@@ -9,7 +9,7 @@ import { Header } from "@/src/components/Header";
 import { useStore } from "@/src/data/store";
 import { STEP_META } from "@/src/data/types";
 import { FONT, T } from "@/src/theme/typography";
-import { cloudinaryFace, nameToPublicId } from "@/src/utils/cloudinary";
+import { titanFace } from "@/src/utils/cloudinary";
 
 const PORTRAIT_PX = 92;
 
@@ -30,11 +30,14 @@ export default function TitanScreen() {
   const { days, recordStep, isStepDone } = useStore();
   const data = days[day - 1];
 
-  const portraitUri = useMemo(
-    () => (data ? cloudinaryFace(nameToPublicId(data.titanName), PORTRAIT_PX) : ""),
-    [data],
-  );
+  const portraitUri = useMemo(() => titanFace(day, PORTRAIT_PX), [day]);
   const [imageFailed, setImageFailed] = useState(false);
+
+  // Reset failure state when the portrait URI changes so a previous load
+  // error doesn't permanently lock later valid days into the initials fallback.
+  useEffect(() => {
+    setImageFailed(false);
+  }, [portraitUri]);
 
   const finish = async () => {
     if (!isStepDone(day, "titan")) {
@@ -58,15 +61,15 @@ export default function TitanScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.bust}>
           <View style={styles.portraitFrame}>
-            {imageFailed ? (
-              <Text style={styles.initials}>{initials(data.titanName)}</Text>
-            ) : (
+            {portraitUri && !imageFailed ? (
               <Image
                 source={{ uri: portraitUri }}
                 style={styles.portrait}
                 contentFit="cover"
                 onError={() => setImageFailed(true)}
               />
+            ) : (
+              <Text style={styles.initials}>{initials(data.titanName)}</Text>
             )}
           </View>
           <Text style={styles.titanName}>{data.titanName}</Text>

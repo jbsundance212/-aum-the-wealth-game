@@ -19,7 +19,7 @@ import { useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
 import { characterFace } from "@/src/utils/cloudinary";
 
-const STERLING_URI = characterFace("sterling", 130);
+const STERLING_URI = characterFace("sterling", 130) ?? undefined;
 
 export default function LoginScreen() {
   const router = useRouter();
