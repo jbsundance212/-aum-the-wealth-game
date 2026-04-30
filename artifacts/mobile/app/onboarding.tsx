@@ -28,8 +28,7 @@ const SLIDES: {
     eyebrow: "CHAPTER ONE",
     title: "Barnaby Buckley, 1934 – 2025",
     body: [
-      "Your great-uncle on your mother's side. Late of Zürich, Hong Kong, and the Cap d'Antibes. Barnaby compounded a single inheritance into the Vane-Buckley Trust over the better part of seven decades.",
-      "He believed that competence with capital is a duty, not an accident of birth. He left no instruction more frequently than this: 'Inflation is the only tax that doesn't require a vote.'",
+      "Built the Vane-Buckley Trust across five decades, three market crashes, and one inexplicable investment in Portuguese sardine futures that somehow returned 340%. He believed inherited wealth without financial education is merely a countdown to zero. He wrote the curriculum. He is watching. Probably from somewhere with better whisky than you have.",
     ],
     imageUri: characterFace("barnaby", PORTRAIT_SIZE) ?? undefined,
     footer: "His Trust now passes — provisionally — to you.",
@@ -38,8 +37,7 @@ const SLIDES: {
     eyebrow: "CHAPTER TWO",
     title: "Arthur Sterling, Esq.",
     body: [
-      "Senior Partner of Sterling, Crispin & Vellacott — the Geneva firm that has served the Buckley family for three generations. Mr Sterling is the executor of the estate and the sole arbiter of the Mandate.",
-      "He will speak to you each evening through the Memorandum. He records every credit and every penalty against your name with the same deliberation. Address him with the respect his post demands.",
+      "Senior Partner at Sterling, Reuter & Associates. Has managed this Trust for thirty years without losing a night's sleep — until you came along. Impeccable suit. Immovable principles. He will credit your Trust when you succeed and write you a very formal, very disapproving letter when you do not. He has many such letters already prepared.",
     ],
     imageUri: characterFace("sterling", PORTRAIT_SIZE) ?? undefined,
     footer: "He will not be charmed. He will not be hurried.",
@@ -48,8 +46,7 @@ const SLIDES: {
     eyebrow: "CHAPTER THREE",
     title: "Victor Crane",
     body: [
-      "The other beneficiary. A New York proprietary trader, formerly of a firm whose name need not be repeated in this correspondence. Victor was named in the will at the same hour you were.",
-      "Whichever of you ends the forty-nine days with the larger Net Asset Value receives the controlling interest. The other is given a discretionary stipend and a polite letter of dismissal. He is, by all accounts, very good.",
+      "Former proprietary trader. Received an identical Trust from a different branch of the family. Currently ahead of you. Made $47,000 before breakfast this morning and mentioned it twice. Considers this competition a formality. He is wrong — but nobody has told him that yet, and frankly nobody dares.",
     ],
     imageUri: characterFace("victor", PORTRAIT_SIZE) ?? undefined,
     footer: "You begin together at $1,000,000. The work begins tomorrow.",
