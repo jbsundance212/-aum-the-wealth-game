@@ -16,6 +16,7 @@ import { C } from "@/constants/colors";
 import { Button } from "@/src/components/Button";
 import { Header } from "@/src/components/Header";
 import { SterlingMessage } from "@/src/components/SterlingMessage";
+import { postBourseResult } from "@/src/data/leaderboardApi";
 import { fmtMoney, useStore } from "@/src/data/store";
 import { BourseAsset, STEP_META } from "@/src/data/types";
 import { FONT, T } from "@/src/theme/typography";
@@ -53,7 +54,16 @@ export default function BourseScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const day = parseInt(String(id || "1"), 10) || 1;
   const router = useRouter();
-  const { days, recordStep, isStepDone, applyDelta } = useStore();
+  const {
+    days,
+    recordStep,
+    isStepDone,
+    applyDelta,
+    userId,
+    displayName,
+    trustBalance,
+    daysCompleted,
+  } = useStore();
   const data = days[day - 1];
 
   const params = data?.bourseParams || null;
@@ -219,6 +229,7 @@ export default function BourseScreen() {
     setSettling(true);
     // Return the gross proceeds back to the ledger.
     const portfolio = holdings.reduce((sum, h) => sum + h.units * h.price, 0);
+    const realisedPnL = portfolio - STAKE;
     await applyDelta(
       portfolio,
       `Day ${day} — Bourse closeout (${won ? "WIN" : "LOSS"})`,
@@ -234,8 +245,34 @@ export default function BourseScreen() {
           : `Day ${day} — Bourse closed at a loss`,
       });
     }
+    // Fire-and-forget Discord/Supabase post; never block navigation on it.
+    // Math: at render time `trustBalance` already reflects the -STAKE debit
+    // applied in launch() (the 30s tick loop guarantees re-renders), so
+    // `trustBalance + portfolio` is the post-closeout NAV.
+    if (userId && displayName.trim()) {
+      void postBourseResult({
+        user_id: userId,
+        display_name: displayName,
+        day_number: day,
+        pnl: realisedPnL,
+        trust_balance: trustBalance + portfolio,
+        days_completed: daysCompleted.length,
+      });
+    }
     router.back();
-  }, [applyDelta, day, holdings, isStepDone, recordStep, router, won]);
+  }, [
+    applyDelta,
+    day,
+    daysCompleted,
+    displayName,
+    holdings,
+    isStepDone,
+    recordStep,
+    router,
+    trustBalance,
+    userId,
+    won,
+  ]);
 
   if (!data) return null;
 

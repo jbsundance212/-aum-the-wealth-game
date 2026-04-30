@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -17,14 +18,26 @@ import { characterFace } from "@/src/utils/cloudinary";
 
 const PORTRAIT_SIZE = 320;
 
-const SLIDES: {
+type ContentSlide = {
+  kind: "story";
   eyebrow: string;
   title: string;
   body: string[];
   imageUri: string | undefined;
   footer: string;
-}[] = [
+};
+
+type NameSlide = {
+  kind: "name";
+  eyebrow: string;
+  title: string;
+};
+
+type Slide = ContentSlide | NameSlide;
+
+const SLIDES: Slide[] = [
   {
+    kind: "story",
     eyebrow: "CHAPTER ONE",
     title: "Barnaby Buckley, 1934 – 2025",
     body: [
@@ -34,6 +47,7 @@ const SLIDES: {
     footer: "His Trust now passes — provisionally — to you.",
   },
   {
+    kind: "story",
     eyebrow: "CHAPTER TWO",
     title: "Arthur Sterling, Esq.",
     body: [
@@ -43,6 +57,7 @@ const SLIDES: {
     footer: "He will not be charmed. He will not be hurried.",
   },
   {
+    kind: "story",
     eyebrow: "CHAPTER THREE",
     title: "Victor Crane",
     body: [
@@ -51,19 +66,28 @@ const SLIDES: {
     imageUri: characterFace("victor", PORTRAIT_SIZE) ?? undefined,
     footer: "You begin together at $1,000,000. The work begins tomorrow.",
   },
+  {
+    kind: "name",
+    eyebrow: "FOR THE TRUSTEE LEDGER",
+    title: "Sterling requires your name.",
+  },
 ];
 
 export default function OnboardingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(0);
-  const { completeOnboarding } = useStore();
+  const { displayName, setDisplayName, completeOnboarding } = useStore();
+  const [nameInput, setNameInput] = useState(displayName);
 
-  const slide = SLIDES[step];
+  const slide = SLIDES[step]!;
   const isLast = step === SLIDES.length - 1;
+  const nameValid = nameInput.trim().length >= 2;
 
   const next = async () => {
     if (isLast) {
+      if (!nameValid) return;
+      await setDisplayName(nameInput);
       await completeOnboarding();
       router.replace("/(tabs)");
     } else {
@@ -87,22 +111,57 @@ export default function OnboardingScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <Text style={styles.eyebrow}>{slide.eyebrow}</Text>
         <Text style={styles.title}>{slide.title}</Text>
-        <View style={styles.imageWrap}>
-          <Image
-            source={{ uri: slide.imageUri }}
-            style={styles.image}
-            contentFit="cover"
-          />
-        </View>
-        {slide.body.map((p, i) => (
-          <Text key={i} style={styles.copy}>
-            {p}
-          </Text>
-        ))}
-        <Text style={styles.footer}>{slide.footer}</Text>
+
+        {slide.kind === "story" ? (
+          <>
+            <View style={styles.imageWrap}>
+              <Image
+                source={{ uri: slide.imageUri }}
+                style={styles.image}
+                contentFit="cover"
+              />
+            </View>
+            {slide.body.map((p, i) => (
+              <Text key={i} style={styles.copy}>
+                {p}
+              </Text>
+            ))}
+            <Text style={styles.footer}>{slide.footer}</Text>
+          </>
+        ) : (
+          <View style={styles.nameWrap}>
+            <Text style={styles.copy}>
+              Enter the name that will appear on the cohort leaderboard and in
+              the trustee ledger. Two characters minimum. No emojis. Sterling
+              would prefer your full Christian name, but he will accept what he
+              is given.
+            </Text>
+            <Text style={styles.fieldLabel}>DISPLAY NAME</Text>
+            <TextInput
+              value={nameInput}
+              onChangeText={setNameInput}
+              placeholder="e.g. Margaret Vane-Buckley"
+              placeholderTextColor={C.inkMuted}
+              maxLength={60}
+              autoCapitalize="words"
+              autoCorrect={false}
+              style={styles.input}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                if (nameValid) void next();
+              }}
+            />
+            <Text style={styles.fieldHint}>
+              {nameValid
+                ? "Recorded. Sterling approves (silently)."
+                : "At least 2 characters."}
+            </Text>
+          </View>
+        )}
       </ScrollView>
       <View style={styles.actions}>
         {step > 0 ? (
@@ -119,6 +178,7 @@ export default function OnboardingScreen() {
             label={isLast ? "Begin Day One" : "Continue"}
             onPress={next}
             variant="ink"
+            disabled={isLast && !nameValid}
           />
         </View>
       </View>
@@ -177,6 +237,31 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     borderTopWidth: 1,
     borderTopColor: C.divider,
+  },
+  nameWrap: { marginTop: 4 },
+  fieldLabel: {
+    fontFamily: FONT.bodyMedium,
+    fontSize: 10,
+    letterSpacing: 1.6,
+    color: C.inkMuted,
+    marginTop: 28,
+    marginBottom: 8,
+  },
+  input: {
+    fontFamily: FONT.bodySemiBold,
+    fontSize: 18,
+    color: C.ink,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: C.divider,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
+  fieldHint: {
+    fontFamily: FONT.body,
+    fontSize: 12,
+    color: C.inkMuted,
+    marginTop: 8,
   },
   actions: {
     flexDirection: "row",

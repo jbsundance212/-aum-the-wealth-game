@@ -21,7 +21,10 @@ These tokens live in `artifacts/mobile/constants/colors.ts` and
 
 ## Architecture
 
-Single artifact: `artifacts/mobile` (Expo SDK 54 + expo-router 6).
+Two artifacts:
+- `artifacts/mobile` — Expo SDK 54 + expo-router 6 mobile app (the game)
+- `artifacts/api-server` — Express service backing the public leaderboard,
+  Discord bot, and daily Victor Crane taunt cron job (mounted on `/api`)
 
 ### Data pipeline (pre-build)
 
@@ -171,6 +174,67 @@ Used in: `app/login.tsx` (Sterling crest 130), `app/onboarding.tsx`
 (3 chapters 220), `src/components/SterlingMessage.tsx` (avatar 48),
 `app/(tabs)/leaderboard.tsx` (Victor 56), `app/day/[id]/titan.tsx`
 (Titan portrait 92, with initials fallback).
+
+## Discord + Supabase leaderboard
+
+Public cohort leaderboard + Discord community integration shipped via
+`artifacts/api-server`.
+
+### Server side (`artifacts/api-server`)
+- `src/lib/supabase.ts` — lazy singleton using `SUPABASE_URL` +
+  `SUPABASE_SERVICE_KEY` (service-role key bypasses RLS, server-side only)
+- `src/lib/discord.ts` — discord.js v14 bot, lazy `getDiscordClient()` +
+  `shutdownDiscordClient()`. Posts to `#bourse-results` and
+  `#victor-crane` channels in guild `1499442445195411616`
+- `src/lib/cron.ts` — node-cron job at `0 8 * * *` in `Asia/Dubai`
+  timezone (DST-safe), posts a Victor taunt every morning at 08:00 GST
+- `src/lib/victorTaunts.ts` — pool of 60+ taunts; deterministic daily
+  rotation seeded by date
+- `src/routes/leaderboard.ts` — three endpoints:
+  - `GET  /api/leaderboard` (top 50)
+  - `POST /api/leaderboard/sync` (debounced player NAV upsert)
+  - `POST /api/leaderboard/bourse-result` (per-Bourse outcome → Discord
+    + Supabase)
+- `src/index.ts` — boots Discord + cron after `app.listen`, probes the
+  Supabase table, registers `SIGTERM`/`SIGINT` handlers for graceful
+  shutdown
+
+Required env vars (already set in Replit Secrets):
+`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_KEY`,
+`DISCORD_BOT_TOKEN`.
+
+### One-time Supabase setup (REQUIRED)
+The leaderboard table is **not** auto-created. Run
+`artifacts/api-server/scripts/supabase-leaderboard.sql` once in the
+Supabase SQL editor (project → SQL Editor → New query → paste → Run).
+The script is idempotent (`create table if not exists` + RLS deny
+policies). Until this runs, `GET /api/leaderboard` returns 500 and the
+mobile leaderboard screen only shows synthesized rows.
+
+### Mobile side (`artifacts/mobile`)
+- `src/data/store.tsx` — persists `userId` (uuid generated once) and
+  `displayName` in `AsyncStorage`. A debounced `queueSync` always reads
+  the latest snapshot via a ref (concurrent `applyDelta`/`recordStep`/
+  `finalizeDay` calls cannot post out-of-order).
+- `src/data/leaderboardApi.ts` — fetch/post helpers, fire-and-forget
+  (errors only `console.warn`, never thrown).
+- `app/onboarding.tsx` — 4th slide collects display name (≥2 chars
+  required to enable "Begin Day One").
+- `app/(tabs)/leaderboard.tsx` — polls `/api/leaderboard` every 15s
+  while focused (re-entrant fetches gated by `inFlightRef`). Always
+  synthesises a Victor row at #1 (max real NAV × 1.08, floored at
+  starting balance). Inline "SET YOUR DISPLAY NAME" editor for users
+  who completed onboarding before the name field existed. "JOIN THE
+  COMMUNITY" CTA opens `EXPO_PUBLIC_DISCORD_INVITE_URL` (defaults to
+  `https://discord.gg/NamQ6VYc`).
+- `app/day/[id]/bourse.tsx` — `finalize()` fires
+  `postBourseResult({...})` after each Bourse closeout (fire-and-forget,
+  never blocks navigation).
+
+### Known limitations
+- The POST endpoints have **no application-layer authentication** —
+  any caller who can reach the Express server can submit leaderboard
+  rows. Acceptable for an MVP cohort game; revisit if abuse appears.
 
 ## Notes
 

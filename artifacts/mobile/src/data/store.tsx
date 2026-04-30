@@ -11,6 +11,7 @@ import React, {
 import { Platform } from "react-native";
 
 import dayDataJson from "./dayData.json";
+import { syncLeaderboard } from "./leaderboardApi";
 import { DayData, STEP_ORDER, StepKey } from "./types";
 
 export const DAYS = dayDataJson as unknown as DayData[];
@@ -46,6 +47,9 @@ type Persisted = {
   transactions: Transaction[];
   completion: StepCompletion;
   daysCompleted: number[];
+  // New: stable per-device identity for the leaderboard.
+  userId: string;
+  displayName: string;
 };
 
 const KEYS = {
@@ -57,7 +61,18 @@ const KEYS = {
   transactions: "@aum/transactions",
   completion: "@aum/completion",
   daysCompleted: "@aum/days_completed",
+  userId: "@aum/user_id",
+  displayName: "@aum/display_name",
 };
+
+// RFC 4122 v4, Math.random based (sufficient as per-device identifier).
+function uuidv4(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 async function loadPersisted(): Promise<Persisted> {
   const [
@@ -69,6 +84,8 @@ async function loadPersisted(): Promise<Persisted> {
     txs,
     comp,
     done,
+    uid,
+    name,
   ] = await Promise.all([
     AsyncStorage.getItem(KEYS.profile),
     AsyncStorage.getItem(KEYS.onboarding),
@@ -78,7 +95,14 @@ async function loadPersisted(): Promise<Persisted> {
     AsyncStorage.getItem(KEYS.transactions),
     AsyncStorage.getItem(KEYS.completion),
     AsyncStorage.getItem(KEYS.daysCompleted),
+    AsyncStorage.getItem(KEYS.userId),
+    AsyncStorage.getItem(KEYS.displayName),
   ]);
+  let userId = uid ?? "";
+  if (!userId) {
+    userId = uuidv4();
+    await AsyncStorage.setItem(KEYS.userId, userId);
+  }
   return {
     profile: profile ? JSON.parse(profile) : null,
     onboardingDone: onb === "true",
@@ -88,6 +112,8 @@ async function loadPersisted(): Promise<Persisted> {
     transactions: txs ? JSON.parse(txs) : [],
     completion: comp ? JSON.parse(comp) : {},
     daysCompleted: done ? JSON.parse(done) : [],
+    userId,
+    displayName: name ?? "",
   };
 }
 
@@ -98,6 +124,7 @@ type Store = Persisted & {
   // Mutations
   signIn: (profile: Profile) => Promise<void>;
   signOut: () => Promise<void>;
+  setDisplayName: (name: string) => Promise<void>;
   completeOnboarding: () => Promise<void>;
   recordStep: (
     day: number,
@@ -141,20 +168,47 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     transactions: [],
     completion: {},
     daysCompleted: [],
+    userId: "",
+    displayName: "",
   });
   const [toast, setToast] = useState<Store["toast"]>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Debounced leaderboard sync (collapse rapid balance changes into one POST).
+  // Always reads the LATEST persisted snapshot at fire time via latestRef so
+  // concurrent applyDelta/recordStep/finalizeDay calls can't stamp out-of-order
+  // payloads — we only ever POST the freshest known state.
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestRef = useRef<Persisted | null>(null);
+  const queueSync = useCallback((next: Persisted) => {
+    latestRef.current = next;
+    if (!next.userId || !next.displayName.trim()) return; // need identity
+    if (syncTimer.current) clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => {
+      const latest = latestRef.current;
+      if (!latest || !latest.userId || !latest.displayName.trim()) return;
+      void syncLeaderboard({
+        user_id: latest.userId,
+        display_name: latest.displayName,
+        trust_balance: latest.trustBalance,
+        days_completed: latest.daysCompleted.length,
+      });
+    }, 800);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
     loadPersisted().then((p) => {
       if (!mounted) return;
       setState({ ...p, loaded: true });
+      // Initial sync if identity already exists from a prior session.
+      queueSync(p);
     });
     return () => {
       mounted = false;
+      if (syncTimer.current) clearTimeout(syncTimer.current);
     };
-  }, []);
+  }, [queueSync]);
 
   const persist = useCallback(async (next: Persisted) => {
     await Promise.all([
@@ -172,6 +226,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         KEYS.daysCompleted,
         JSON.stringify(next.daysCompleted),
       ),
+      AsyncStorage.setItem(KEYS.userId, next.userId),
+      AsyncStorage.setItem(KEYS.displayName, next.displayName),
     ]);
   }, []);
 
@@ -203,6 +259,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           transactions: s.transactions,
           completion: s.completion,
           daysCompleted: s.daysCompleted,
+          userId: s.userId,
+          displayName: s.displayName,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -213,6 +271,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
+    // Generate a fresh userId on sign-out so a new player isn't conflated.
     const fresh: Persisted = {
       profile: null,
       onboardingDone: false,
@@ -222,15 +281,40 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       transactions: [],
       completion: {},
       daysCompleted: [],
+      userId: uuidv4(),
+      displayName: "",
     };
     setState({ ...fresh, loaded: true });
     await persist(fresh);
   }, [persist]);
 
+  const setDisplayName = useCallback(
+    async (name: string) => {
+      const trimmed = name.trim().slice(0, 60);
+      let snapshot: Persisted | null = null;
+      setState((s) => {
+        const next: Persisted = { ...s, displayName: trimmed };
+        snapshot = next;
+        return { ...next, loaded: true };
+      });
+      if (snapshot) {
+        await persist(snapshot);
+        queueSync(snapshot);
+      }
+    },
+    [persist, queueSync],
+  );
+
   const completeOnboarding = useCallback(async () => {
-    setState((s) => ({ ...s, onboardingDone: true }));
+    let snapshot: Persisted | null = null;
+    setState((s) => {
+      const next = { ...s, onboardingDone: true };
+      snapshot = next;
+      return next;
+    });
     await AsyncStorage.setItem(KEYS.onboarding, "true");
-  }, []);
+    if (snapshot) queueSync(snapshot);
+  }, [queueSync]);
 
   const applyDelta = useCallback(
     async (
@@ -258,14 +342,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           transactions: [tx, ...s.transactions].slice(0, 300),
           completion: s.completion,
           daysCompleted: s.daysCompleted,
+          userId: s.userId,
+          displayName: s.displayName,
         };
         snapshot = next;
         return { ...next, loaded: true };
       });
       if (amount !== 0) showToast(amount, description);
-      if (snapshot) await persist(snapshot);
+      if (snapshot) {
+        await persist(snapshot);
+        queueSync(snapshot);
+      }
     },
-    [persist, showToast],
+    [persist, showToast, queueSync],
   );
 
   const recordStep = useCallback(
@@ -297,14 +386,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
             [key]: { correct: payload.correct, ts: Date.now() },
           },
           daysCompleted: s.daysCompleted,
+          userId: s.userId,
+          displayName: s.displayName,
         };
         snapshot = next;
         return { ...next, loaded: true };
       });
       if (payload.reward !== 0) showToast(payload.reward, payload.description);
-      if (snapshot) await persist(snapshot);
+      if (snapshot) {
+        await persist(snapshot);
+        queueSync(snapshot);
+      }
     },
-    [persist, showToast],
+    [persist, showToast, queueSync],
   );
 
   const finalizeDay = useCallback(
@@ -333,16 +427,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           transactions: [tx, ...s.transactions].slice(0, 300),
           completion: s.completion,
           daysCompleted: [...s.daysCompleted, day],
+          userId: s.userId,
+          displayName: s.displayName,
         };
         snapshot = next;
         return { ...next, loaded: true };
       });
       if (bonusGiven) {
         showToast(25_000, "Day " + day + " — Mandate complete");
-        if (snapshot) await persist(snapshot);
+        if (snapshot) {
+          await persist(snapshot);
+          queueSync(snapshot);
+        }
       }
     },
-    [persist, showToast],
+    [persist, showToast, queueSync],
   );
 
   const resetAll = useCallback(async () => {
@@ -372,6 +471,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       days: DAYS,
       signIn,
       signOut,
+      setDisplayName,
       completeOnboarding,
       recordStep,
       applyDelta,
@@ -387,6 +487,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       toast,
       signIn,
       signOut,
+      setDisplayName,
       completeOnboarding,
       recordStep,
       applyDelta,

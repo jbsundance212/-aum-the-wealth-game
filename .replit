@@ -35,3 +35,4 @@ externalPort = 3000
 
 [userenv.shared]
 EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME = "diujqvfed"
+EXPO_PUBLIC_DISCORD_INVITE_URL = "https://discord.gg/NamQ6VYc"
