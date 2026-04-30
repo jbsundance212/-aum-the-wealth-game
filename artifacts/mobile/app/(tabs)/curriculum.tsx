@@ -28,7 +28,7 @@ export default function CurriculumScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
-      <Header eyebrow="THE RESIDENCY" title="49 days. 6 pillars." />
+      <Header eyebrow="THE MANDATE" title="49 days. 6 pillars." />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {Object.entries(grouped).map(([pillar, items]) => (
           <View key={pillar} style={styles.pillarBlock}>

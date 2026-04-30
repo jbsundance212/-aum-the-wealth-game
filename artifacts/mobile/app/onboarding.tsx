@@ -38,7 +38,7 @@ const SLIDES: {
     eyebrow: "CHAPTER TWO",
     title: "Arthur Sterling, Esq.",
     body: [
-      "Senior Partner of Sterling, Crispin & Vellacott — the Geneva firm that has served the Buckley family for three generations. Mr Sterling is the executor of the estate and the sole arbiter of the Residency.",
+      "Senior Partner of Sterling, Crispin & Vellacott — the Geneva firm that has served the Buckley family for three generations. Mr Sterling is the executor of the estate and the sole arbiter of the Mandate.",
       "He will speak to you each evening through the Memorandum. He records every credit and every penalty against your name with the same deliberation. Address him with the respect his post demands.",
     ],
     imageUri: characterFace("sterling", PORTRAIT_SIZE) ?? undefined,

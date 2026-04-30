@@ -64,7 +64,7 @@ export default function LedgerScreen() {
         {transactions.length === 0 ? (
           <View style={styles.empty}>
             <Text style={styles.emptyText}>
-              The ledger is currently quiet. Begin a Residency Day to record
+              The ledger is currently quiet. Begin a Mandate Day to record
               entries against the Trust.
             </Text>
           </View>

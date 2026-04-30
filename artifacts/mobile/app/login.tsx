@@ -67,7 +67,7 @@ export default function LoginScreen() {
 
         <View style={styles.divider} />
 
-        <Text style={styles.h1}>The Residency</Text>
+        <Text style={styles.h1}>The Mandate</Text>
         <Text style={styles.copy}>
           Forty-nine days of disciplined instruction in the architecture of
           private capital. The late Barnaby Buckley's estate has selected you as

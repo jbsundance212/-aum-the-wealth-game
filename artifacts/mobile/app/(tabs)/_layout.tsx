@@ -32,7 +32,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="curriculum"
         options={{
-          title: "Residency",
+          title: "Mandate",
           tabBarIcon: ({ color }) => (
             <Feather name="grid" size={20} color={color} />
           ),

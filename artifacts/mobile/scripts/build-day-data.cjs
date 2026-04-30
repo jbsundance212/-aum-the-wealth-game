@@ -309,7 +309,15 @@ function main() {
   if (!fs.existsSync(path.dirname(OUT_PATH))) {
     fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
   }
-  fs.writeFileSync(OUT_PATH, JSON.stringify(days, null, 2));
+
+  // Brand rename: "Residency" → "Mandate" (case-preserved). The Excel
+  // source still uses the legacy "Residency" wording in many places
+  // (Sterling correspondence, slide bodies, Bourse copy), so we apply
+  // the substitution at write-time to keep the regenerated JSON aligned
+  // with the rest of the app.
+  let json = JSON.stringify(days, null, 2);
+  json = json.replace(/RESIDENCY/g, "MANDATE").replace(/Residency/g, "Mandate");
+  fs.writeFileSync(OUT_PATH, json);
 
   console.log("Parsed " + days.length + " days from " + sheetName);
   console.log("Wrote " + OUT_PATH);

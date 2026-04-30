@@ -319,7 +319,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           id: Math.random().toString(36).slice(2),
           ts: Date.now(),
           amount: bonus,
-          description: "Day " + day + " — Residency Day Complete (+bonus)",
+          description: "Day " + day + " — Mandate Day Complete (+bonus)",
           day,
           step: "system",
         };
@@ -338,7 +338,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         return { ...next, loaded: true };
       });
       if (bonusGiven) {
-        showToast(25_000, "Day " + day + " — Residency complete");
+        showToast(25_000, "Day " + day + " — Mandate complete");
         if (snapshot) await persist(snapshot);
       }
     },

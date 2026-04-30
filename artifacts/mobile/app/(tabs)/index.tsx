@@ -45,7 +45,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.kpiRow}>
           <View style={styles.kpiCell}>
-            <Text style={styles.kpiLabel}>RESIDENCY DAY</Text>
+            <Text style={styles.kpiLabel}>MANDATE DAY</Text>
             <Text style={styles.kpiValue}>{currentDay} / 49</Text>
           </View>
           <View style={styles.kpiCell}>
@@ -136,7 +136,7 @@ export default function HomeScreen() {
 
         <View style={styles.footerNote}>
           <Text style={styles.footerLine}>
-            Vane-Buckley Trust · Residency Cohort{" "}
+            Vane-Buckley Trust · Mandate Cohort{" "}
             {String(profile?.loggedInAt || Date.now()).slice(-4)}
           </Text>
           <Text style={styles.footerLine}>

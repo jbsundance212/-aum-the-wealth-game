@@ -63,7 +63,7 @@ export default function DayHub() {
                 { color: allDone ? C.positive : C.ink },
               ]}
             >
-              {allDone ? "Residency Day Complete" : "In Progress"}
+              {allDone ? "Mandate Day Complete" : "In Progress"}
             </Text>
           </View>
         </View>
@@ -86,7 +86,7 @@ export default function DayHub() {
         {allDone ? (
           <View style={styles.complete}>
             <Feather name="check-circle" size={28} color={C.positive} />
-            <Text style={[T.h2, { marginTop: 10 }]}>Residency Day Closed</Text>
+            <Text style={[T.h2, { marginTop: 10 }]}>Mandate Day Closed</Text>
             <Text style={[T.bodyMuted, { textAlign: "center", marginTop: 6 }]}>
               The Trust has recorded a $25,000 completion bonus. Day{" "}
               {Math.min(49, day + 1)} is now open for business.
