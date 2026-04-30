@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "XfImiqVoieiuCISBSZtIp"
+uri = "file://artifacts/mobile/assets/images/icon.png"
+type = "image"
+title = "AUM private bank app icon"
+
+[[generated]]
+id = "y7dT8IgPq27G6qF7Q9gBz"
+uri = "file://artifacts/mobile/assets/images/barnaby.png"
+type = "image"
+title = "Barnaby Buckley uncle portrait"
+
+[[generated]]
+id = "4RnMchpDH818UOHsXOBfO"
+uri = "file://artifacts/mobile/assets/images/sterling.png"
+type = "image"
+title = "Arthur Sterling solicitor portrait"
+
+[[generated]]
+id = "EvJMQmLElx39dGAF-4Bf4"
+uri = "file://artifacts/mobile/assets/images/victor.png"
+type = "image"
+title = "Victor Crane nemesis portrait"
