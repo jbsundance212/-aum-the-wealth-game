@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -12,18 +11,26 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { C } from "@/constants/colors";
 import { Button } from "@/src/components/Button";
+import { CharacterAvatar } from "@/src/components/CharacterAvatar";
 import { useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
 import { characterFace } from "@/src/utils/cloudinary";
 
-const PORTRAIT_SIZE = 320;
+// Rendered diameter of the chapter portrait. Sterling and Barnaby render as
+// initials avatars (no real photo yet); Victor still pulls his Cloudinary
+// portrait, so we request it at 2× this size for retina sharpness.
+const AVATAR_DIAMETER = 220;
 
 type ContentSlide = {
   kind: "story";
   eyebrow: string;
   title: string;
   body: string[];
-  imageUri: string | undefined;
+  // Avatar configuration: a real character key (renders the avatar component)
+  // plus an optional photoUri for characters who have a real photo (Victor).
+  // When `photoUri` is undefined, the avatar falls back to initials.
+  characterName: string;
+  photoUri: string | null;
   footer: string;
 };
 
@@ -41,9 +48,10 @@ const SLIDES: Slide[] = [
     eyebrow: "CHAPTER ONE",
     title: "Barnaby Buckley, 1934 – 2025",
     body: [
-      "Built the Vane-Buckley Trust across five decades, three market crashes, and one inexplicable investment in Portuguese sardine futures that somehow returned 340%. He believed inherited wealth without financial education is merely a countdown to zero. He wrote the curriculum. He is watching. Probably from somewhere with better whisky than you have.",
+      "Built the Vane-Buckley Trust across five decades, three market crashes, and one inexplicable investment in Portuguese sardine futures that somehow returned 340%. A man who once shorted the pound sterling from a payphone in Geneva and made enough to buy a small island — which he then chose not to buy, because, as he put it, islands are illiquid and impossible to rebalance. He believed inherited wealth without financial education is merely a countdown to zero. He wrote the curriculum. He is watching. Probably from somewhere with better whisky than you have.",
     ],
-    imageUri: characterFace("barnaby", PORTRAIT_SIZE) ?? undefined,
+    characterName: "Barnaby Buckley",
+    photoUri: null,
     footer: "His Trust now passes — provisionally — to you.",
   },
   {
@@ -53,7 +61,8 @@ const SLIDES: Slide[] = [
     body: [
       "Senior Partner at Sterling, Reuter & Associates. Has managed this Trust for thirty years without losing a night's sleep — until you came along. Impeccable suit. Immovable principles. He will credit your Trust when you succeed and write you a very formal, very disapproving letter when you do not. He has many such letters already prepared.",
     ],
-    imageUri: characterFace("sterling", PORTRAIT_SIZE) ?? undefined,
+    characterName: "Arthur Sterling",
+    photoUri: null,
     footer: "He will not be charmed. He will not be hurried.",
   },
   {
@@ -63,7 +72,8 @@ const SLIDES: Slide[] = [
     body: [
       "Former proprietary trader. Received an identical Trust from a different branch of the family. Currently ahead of you. Made $47,000 before breakfast this morning and mentioned it twice. Considers this competition a formality. He is wrong — but nobody has told him that yet, and frankly nobody dares.",
     ],
-    imageUri: characterFace("victor", PORTRAIT_SIZE) ?? undefined,
+    characterName: "Victor Crane",
+    photoUri: characterFace("victor", AVATAR_DIAMETER),
     footer: "You begin together at $1,000,000. The work begins tomorrow.",
   },
   {
@@ -119,10 +129,10 @@ export default function OnboardingScreen() {
         {slide.kind === "story" ? (
           <>
             <View style={styles.imageWrap}>
-              <Image
-                source={{ uri: slide.imageUri }}
-                style={styles.image}
-                contentFit="cover"
+              <CharacterAvatar
+                name={slide.characterName}
+                size={AVATAR_DIAMETER}
+                photoUri={slide.photoUri}
               />
             </View>
             {slide.body.map((p, i) => (
@@ -214,12 +224,6 @@ const styles = StyleSheet.create({
   imageWrap: {
     alignItems: "center",
     marginTop: 24,
-  },
-  image: {
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: C.surfaceAlt,
   },
   copy: {
     fontFamily: FONT.body,

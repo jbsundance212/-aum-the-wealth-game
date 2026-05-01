@@ -1,12 +1,11 @@
-import { Image } from "expo-image";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { C } from "@/constants/colors";
+import { CharacterAvatar } from "@/src/components/CharacterAvatar";
 import { FONT, T } from "@/src/theme/typography";
-import { characterFace } from "@/src/utils/cloudinary";
 
-const STERLING_URI = characterFace("sterling", 48) ?? undefined;
+const AVATAR_SIZE = 48;
 
 type Props = {
   body: string;
@@ -28,7 +27,11 @@ export function SterlingMessage({
       <View style={[styles.bar, { backgroundColor: accent }]} />
       <View style={styles.body}>
         <View style={styles.header}>
-          <Image source={{ uri: STERLING_URI }} style={styles.avatar} contentFit="cover" />
+          <CharacterAvatar
+            name="Arthur Sterling"
+            size={AVATAR_SIZE}
+            forceInitials
+          />
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>CORRESPONDENCE FROM</Text>
             <Text style={styles.name}>Arthur Sterling, Esq.</Text>
@@ -55,12 +58,6 @@ const styles = StyleSheet.create({
   bar: { width: 4 },
   body: { flex: 1, padding: 18 },
   header: { flexDirection: "row", alignItems: "center", gap: 12 },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: C.surfaceAlt,
-  },
   label: {
     fontFamily: FONT.bodyMedium,
     fontSize: 10,

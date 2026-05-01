@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -15,11 +14,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { C } from "@/constants/colors";
 import { BrandMark } from "@/src/components/BrandMark";
 import { Button } from "@/src/components/Button";
+import { CharacterAvatar } from "@/src/components/CharacterAvatar";
 import { useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
-import { characterFace } from "@/src/utils/cloudinary";
 
-const STERLING_URI = characterFace("sterling", 130) ?? undefined;
+const CREST_AVATAR_DIAMETER = 130;
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -60,9 +59,13 @@ export default function LoginScreen() {
         </View>
 
         <View style={styles.crest}>
-          <Image source={{ uri: STERLING_URI }} style={styles.portrait} contentFit="cover" />
+          <CharacterAvatar
+            name="Arthur Sterling"
+            size={CREST_AVATAR_DIAMETER}
+            forceInitials
+          />
           <Text style={styles.crestLabel}>VANE-BUCKLEY TRUST</Text>
-          <Text style={styles.crestTag}>EST. 1923 · ZÜRICH</Text>
+          <Text style={styles.crestTag}>EST. 1923 · GENEVA</Text>
         </View>
 
         <View style={styles.divider} />
@@ -130,12 +133,6 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   crest: { alignItems: "center", marginTop: 36, gap: 10 },
-  portrait: {
-    width: 130,
-    height: 130,
-    borderRadius: 65,
-    backgroundColor: C.surfaceAlt,
-  },
   crestLabel: {
     fontFamily: FONT.bodySemiBold,
     fontSize: 14,

@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { C } from "@/constants/colors";
 import { Button } from "@/src/components/Button";
+import { CharacterAvatar } from "@/src/components/CharacterAvatar";
 import { Header } from "@/src/components/Header";
 import { useStore } from "@/src/data/store";
 import { STEP_META, titanLabel } from "@/src/data/types";
@@ -29,6 +30,11 @@ export default function TitanScreen() {
   const router = useRouter();
   const { days, recordStep, isStepDone } = useStore();
   const data = days[day - 1];
+
+  // Arthur Sterling has no real photograph — on the days he appears as the
+  // Titan (Day 14, Day 49), render the house initials avatar instead of the
+  // placeholder Cloudinary portrait used for the historical Titans.
+  const isSterling = data?.titanName === "Arthur Sterling";
 
   const portraitUri = useMemo(() => titanFace(day, PORTRAIT_PX), [day]);
   const [imageFailed, setImageFailed] = useState(false);
@@ -60,18 +66,26 @@ export default function TitanScreen() {
       />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.bust}>
-          <View style={styles.portraitFrame}>
-            {portraitUri && !imageFailed ? (
-              <Image
-                source={{ uri: portraitUri }}
-                style={styles.portrait}
-                contentFit="cover"
-                onError={() => setImageFailed(true)}
-              />
-            ) : (
-              <Text style={styles.initials}>{initials(data.titanName)}</Text>
-            )}
-          </View>
+          {isSterling ? (
+            <CharacterAvatar
+              name={data.titanName}
+              size={PORTRAIT_PX}
+              forceInitials
+            />
+          ) : (
+            <View style={styles.portraitFrame}>
+              {portraitUri && !imageFailed ? (
+                <Image
+                  source={{ uri: portraitUri }}
+                  style={styles.portrait}
+                  contentFit="cover"
+                  onError={() => setImageFailed(true)}
+                />
+              ) : (
+                <Text style={styles.initials}>{initials(data.titanName)}</Text>
+              )}
+            </View>
+          )}
           <Text style={styles.titanName}>{data.titanName}</Text>
           {data.titanTitle ? (
             <Text style={styles.titanTitle}>{data.titanTitle}</Text>

@@ -170,10 +170,48 @@ Helpers in `src/utils/cloudinary.ts`:
 - `titanFace(dayNumber, size)` — returns null for archetype-only days
   (15-26, 30, 43); call sites fall back to initials in those cases.
 
-Used in: `app/login.tsx` (Sterling crest 130), `app/onboarding.tsx`
-(3 chapters 220), `src/components/SterlingMessage.tsx` (avatar 48),
-`app/(tabs)/leaderboard.tsx` (Victor 56), `app/day/[id]/titan.tsx`
-(Titan portrait 92, with initials fallback).
+Used in: `app/(tabs)/leaderboard.tsx` (Victor 56), `app/day/[id]/titan.tsx`
+(Titan portrait 92, with initials fallback), and `app/onboarding.tsx`
+slide three (Victor only — see CharacterAvatar below).
+
+## CharacterAvatar (initials placeholder)
+
+`src/components/CharacterAvatar.tsx` is the canonical placeholder for
+characters who have no real photograph (Arthur Sterling, Barnaby Buckley)
+and the onError fallback for those who do (Victor). The treatment is the
+project's "house portrait" style:
+
+- Circular, mist-grey field `#E8EBF0` (= `C.divider`)
+- Charcoal initials `#3C4858` in Public Sans SemiBold, sized at ~36% of
+  the avatar diameter
+- 2px UBS Red `#CC0000` ring (initials state only — a successful real
+  photo renders unadorned)
+
+Props: `name`, `size`, optional `photoUri`, optional `forceInitials`.
+When `photoUri` is provided and not `forceInitials`, the component
+attempts the image and falls through to initials on `onError`.
+
+Used in:
+- `app/onboarding.tsx` chapters 1–3 (Sterling + Barnaby always initials;
+  Victor uses his Cloudinary photo with initials fallback)
+- `app/login.tsx` Sterling crest portrait (forceInitials)
+- `src/components/SterlingMessage.tsx` 48px memo chip (forceInitials)
+- `app/day/[id]/titan.tsx` Days 14 + 49 — i.e. when
+  `data.titanName === "Arthur Sterling"`. Other Titan days keep the
+  Cloudinary photo + dark-bust frame.
+
+Note: Sterling's and Barnaby's Cloudinary publicIds remain in
+`src/data/titanPhotos.json` (`32.Arthur_Sterling_cisvww`,
+`31.Uncle_Buckley_mlnlal`) but are no longer fetched at runtime in story
+contexts. `titanFace(14)` and `titanFace(49)` still return the Sterling
+URL for completeness, but `app/day/[id]/titan.tsx` short-circuits to
+`CharacterAvatar` for him.
+
+## Branding copy
+
+The Vane-Buckley Trust crest reads `EST. 1923 · GENEVA`
+(`app/login.tsx`). Do not change to Zürich — the brand voice and
+on-screen copy use Geneva throughout.
 
 ## Discord + Supabase leaderboard
 
