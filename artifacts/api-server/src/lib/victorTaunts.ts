@@ -1,16 +1,16 @@
 // Victor Crane's rotating daily taunts.
 // Sourced from the AUM master prompt (VICTOR_QUOTES).
 export const VICTOR_TAUNTS: readonly string[] = [
-  "Still climbing, I see. Adorable.",
-  "The Bourse waits for no one. Especially not you.",
-  "Barnaby always did have a soft spot for underdogs.",
-  "Your allocation yesterday was… creative. I'll leave it at that.",
-  "I've seen better Bourse scores. From interns. First week.",
-  "Sterling tells me you're improving. I remain unconvinced.",
-  "The gap is closing. Slowly. Very slowly.",
-  "I made $47,000 before breakfast. Just thought you should know.",
-  "Interesting strategy. Wrong, but interesting.",
-  "You do know this is a competition? Just checking.",
+  "Good morning. I reviewed yesterday's leaderboard. Most of you are improving. I remain unimpressed.",
+  "The Bourse opens in one hour. I've already allocated. You're welcome to try.",
+  "Barnaby left us identical Trusts. The gap between our balances is entirely your fault.",
+  "Sterling tells me someone completed Day 7 yesterday. I completed Day 7 in 2019. Metaphorically speaking.",
+  "A reminder: diversification is the last refuge of those who lack conviction. I have conviction. You have sliders.",
+  "I made $47,000 before breakfast. I mention this not to boast but to educate.",
+  "The leaderboard updated overnight. I am still first. This was never in doubt.",
+  "Whoever allocated 40% to Cash & T-Bills yesterday — we need to talk. Actually, no we don't.",
+  "Another day of the Mandate. Another opportunity to close the gap. You won't, but the opportunity exists.",
+  "Barnaby would be proud of some of you. He would be concerned about most of you. He would have opinions about all of you.",
 ];
 
 // Pick today's taunt deterministically based on UTC day-of-year so
