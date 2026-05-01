@@ -62,7 +62,7 @@ const SLIDES: Slide[] = [
       "Senior Partner at Sterling, Reuter & Associates. Has managed this Trust for thirty years without losing a night's sleep — until you came along. Impeccable suit. Immovable principles. He will credit your Trust when you succeed and write you a very formal, very disapproving letter when you do not. He has many such letters already prepared.",
     ],
     characterName: "Arthur Sterling",
-    photoUri: null,
+    photoUri: characterFace("sterling", AVATAR_DIAMETER),
     footer: "He will not be charmed. He will not be hurried.",
   },
   {

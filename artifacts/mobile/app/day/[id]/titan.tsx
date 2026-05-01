@@ -70,7 +70,7 @@ export default function TitanScreen() {
             <CharacterAvatar
               name={data.titanName}
               size={PORTRAIT_PX}
-              forceInitials
+              photoUri={portraitUri}
             />
           ) : (
             <View style={styles.portraitFrame}>

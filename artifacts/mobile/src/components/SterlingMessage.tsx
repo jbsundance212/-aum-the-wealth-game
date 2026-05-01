@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { C } from "@/constants/colors";
 import { CharacterAvatar } from "@/src/components/CharacterAvatar";
 import { FONT, T } from "@/src/theme/typography";
+import { characterFace } from "@/src/utils/cloudinary";
 
 const AVATAR_SIZE = 48;
 
@@ -30,7 +31,7 @@ export function SterlingMessage({
           <CharacterAvatar
             name="Arthur Sterling"
             size={AVATAR_SIZE}
-            forceInitials
+            photoUri={characterFace("sterling", AVATAR_SIZE)}
           />
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>CORRESPONDENCE FROM</Text>

@@ -174,38 +174,43 @@ Used in: `app/(tabs)/leaderboard.tsx` (Victor 56), `app/day/[id]/titan.tsx`
 (Titan portrait 92, with initials fallback), and `app/onboarding.tsx`
 slide three (Victor only — see CharacterAvatar below).
 
-## CharacterAvatar (initials placeholder)
+## CharacterAvatar (photo + initials fallback)
 
-`src/components/CharacterAvatar.tsx` is the canonical placeholder for
-characters who have no real photograph (Arthur Sterling, Barnaby Buckley)
-and the onError fallback for those who do (Victor). The treatment is the
-project's "house portrait" style:
+`src/components/CharacterAvatar.tsx` is the canonical avatar component
+for the three story characters and acts as the onError fallback when a
+remote photo fails to load. The treatment has two states:
 
-- Circular, mist-grey field `#E8EBF0` (= `C.divider`)
-- Charcoal initials `#3C4858` in Public Sans SemiBold, sized at ~36% of
-  the avatar diameter
-- 2px UBS Red `#CC0000` ring (initials state only — a successful real
-  photo renders unadorned)
+- **Photo state**: when `photoUri` is provided and loads successfully,
+  the component renders the image as a plain circular crop with no
+  border or chrome.
+- **Initials state**: when `forceInitials` is set, no `photoUri` is
+  given, or the image errors, the component renders the project's house
+  placeholder — circular mist-grey field `#E8EBF0` (= `C.divider`),
+  charcoal initials `#3C4858` in Public Sans SemiBold sized at ~36% of
+  the diameter, and a 2px UBS Red `#CC0000` ring.
 
 Props: `name`, `size`, optional `photoUri`, optional `forceInitials`.
-When `photoUri` is provided and not `forceInitials`, the component
-attempts the image and falls through to initials on `onError`.
 
 Used in:
-- `app/onboarding.tsx` chapters 1–3 (Sterling + Barnaby always initials;
-  Victor uses his Cloudinary photo with initials fallback)
-- `app/login.tsx` Sterling crest portrait (forceInitials)
-- `src/components/SterlingMessage.tsx` 48px memo chip (forceInitials)
-- `app/day/[id]/titan.tsx` Days 14 + 49 — i.e. when
-  `data.titanName === "Arthur Sterling"`. Other Titan days keep the
-  Cloudinary photo + dark-bust frame.
+- `app/onboarding.tsx` chapters 1–3 — Barnaby always initials
+  (`forceInitials`), Sterling and Victor use their Cloudinary photos
+  with initials fallback.
+- `app/login.tsx` — Sterling crest portrait, Cloudinary photo with
+  initials fallback.
+- `src/components/SterlingMessage.tsx` — 48px memo chip, Cloudinary
+  photo with initials fallback.
+- `app/day/[id]/titan.tsx` — Days 14 + 49 (i.e. when
+  `data.titanName === "Arthur Sterling"`) render through
+  `CharacterAvatar` so they share the same photo+fallback contract.
+  Other Titan days keep the rectangular dark-bust frame.
 
-Note: Sterling's and Barnaby's Cloudinary publicIds remain in
-`src/data/titanPhotos.json` (`32.Arthur_Sterling_cisvww`,
-`31.Uncle_Buckley_mlnlal`) but are no longer fetched at runtime in story
-contexts. `titanFace(14)` and `titanFace(49)` still return the Sterling
-URL for completeness, but `app/day/[id]/titan.tsx` short-circuits to
-`CharacterAvatar` for him.
+Cloudinary publicIds for the three characters live in
+`src/data/titanPhotos.json` under `characters` (Sterling
+`32.Arthur_Sterling_cisvww`, Barnaby `31.Uncle_Buckley_mlnlal`, Victor
+`33.Victor_Crane_b4prha`). `characterFace(key, size)` builds the
+face-cropped URL used by all four call-sites above. Days 14 and 49 in
+`titanPhotos.json.days` also point to the Sterling publicId so
+`titanFace(day)` returns the same URL for the daily titan view.
 
 ## Branding copy
 

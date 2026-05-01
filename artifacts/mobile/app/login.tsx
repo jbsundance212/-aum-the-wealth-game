@@ -17,6 +17,7 @@ import { Button } from "@/src/components/Button";
 import { CharacterAvatar } from "@/src/components/CharacterAvatar";
 import { useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
+import { characterFace } from "@/src/utils/cloudinary";
 
 const CREST_AVATAR_DIAMETER = 130;
 
@@ -62,7 +63,7 @@ export default function LoginScreen() {
           <CharacterAvatar
             name="Arthur Sterling"
             size={CREST_AVATAR_DIAMETER}
-            forceInitials
+            photoUri={characterFace("sterling", CREST_AVATAR_DIAMETER)}
           />
           <Text style={styles.crestLabel}>VANE-BUCKLEY TRUST</Text>
           <Text style={styles.crestTag}>EST. 1923 · GENEVA</Text>
