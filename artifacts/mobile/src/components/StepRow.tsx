@@ -12,11 +12,16 @@ type Props = {
   day: number;
   done: boolean;
   correct?: boolean;
+  // Optional override for the row title. Used by Step III (`titan`) so the
+  // label can adapt per-day (Trustee / Specialist / Titan) without leaking
+  // day-specific logic into this presentational component.
+  titleOverride?: string;
 };
 
-export function StepRow({ step, day, done, correct }: Props) {
+export function StepRow({ step, day, done, correct, titleOverride }: Props) {
   const router = useRouter();
   const meta = STEP_META[step];
+  const title = titleOverride ?? meta.label;
   const sub =
     step === "stress" || step === "diagnostic" || step === "momentum"
       ? "Quiz · ±$" + meta.reward.toLocaleString()
@@ -34,7 +39,7 @@ export function StepRow({ step, day, done, correct }: Props) {
         <Text style={styles.num}>{meta.numeral}</Text>
       </View>
       <View style={styles.middle}>
-        <Text style={styles.title}>{meta.label}</Text>
+        <Text style={styles.title}>{title}</Text>
         <Text style={styles.sub}>{sub}</Text>
       </View>
       <View style={styles.right}>

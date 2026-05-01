@@ -13,7 +13,7 @@ import { Button } from "@/src/components/Button";
 import { Header } from "@/src/components/Header";
 import { StepRow } from "@/src/components/StepRow";
 import { useStore } from "@/src/data/store";
-import { STEP_ORDER } from "@/src/data/types";
+import { STEP_ORDER, titanLabel } from "@/src/data/types";
 import { FONT, T } from "@/src/theme/typography";
 
 export default function DayHub() {
@@ -46,7 +46,7 @@ export default function DayHub() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.summary}>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>TITAN</Text>
+            <Text style={styles.summaryLabel}>{titanLabel(data.titanName).toUpperCase()}</Text>
             <Text style={styles.summaryValue}>{data.titanName}</Text>
           </View>
           <View style={styles.summaryRow}>
@@ -78,6 +78,9 @@ export default function DayHub() {
                 day={day}
                 done={isStepDone(day, step)}
                 correct={stepResult(day, step)?.correct}
+                titleOverride={
+                  step === "titan" ? titanLabel(data.titanName) : undefined
+                }
               />
             </View>
           ))}

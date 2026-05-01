@@ -7,7 +7,7 @@ import { C } from "@/constants/colors";
 import { Button } from "@/src/components/Button";
 import { Header } from "@/src/components/Header";
 import { useStore } from "@/src/data/store";
-import { STEP_META } from "@/src/data/types";
+import { STEP_META, titanLabel } from "@/src/data/types";
 import { FONT, T } from "@/src/theme/typography";
 import { titanFace } from "@/src/utils/cloudinary";
 
@@ -56,7 +56,7 @@ export default function TitanScreen() {
       <Header
         back
         eyebrow={`DAY ${String(day).padStart(2, "0")} · III OF VIII`}
-        title="The Titan"
+        title={titanLabel(data.titanName)}
       />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.bust}>

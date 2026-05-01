@@ -81,3 +81,17 @@ export const STEP_META: Record<
   sterling: { label: "The Sterling Memorandum", reward: 5000, numeral: "VII" },
   bourse: { label: "The Bourse", reward: 0, numeral: "VIII" },
 };
+
+// Step III's label is dynamic per-day, driven by the type of figure profiled:
+//  - "Arthur Sterling"          -> the player's in-fiction Trustee
+//  - any name starting with "The " -> a composite archetype, not a real person
+//  - everything else            -> a real historical individual
+// The card layout is identical across all three; only the eyebrow / row title
+// changes. Match the title-cased default ("The Titan") so it slots in wherever
+// `STEP_META.titan.label` was used previously; uppercase at the call site if
+// the visual treatment requires all-caps (e.g. the Day Hub summary row).
+export function titanLabel(titanName: string): string {
+  if (titanName === "Arthur Sterling") return "Your Trustee";
+  if (titanName.startsWith("The ")) return "The Specialist";
+  return "The Titan";
+}
