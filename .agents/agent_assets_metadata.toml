@@ -1,5 +1,4 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "XfImiqVoieiuCISBSZtIp"
@@ -24,3 +23,21 @@ id = "EvJMQmLElx39dGAF-4Bf4"
 uri = "file://artifacts/mobile/assets/images/victor.png"
 type = "image"
 title = "Victor Crane nemesis portrait"
+
+[[outputs]]
+id = "pm7eMSIQJTHK7ag7JRGJW"
+uri = "file://attached_assets/cloudinary_proof/01_Buckley_from_diujqvfed.jpg"
+type = "image"
+title = "Cloudinary diujqvfed/31.Uncle_Buckley_mlnlal — Barnaby"
+
+[[outputs]]
+id = "Hey0DaZGAqRg4Xe4CLJGB"
+uri = "file://attached_assets/cloudinary_proof/02_Sterling_from_diujqvfed.jpg"
+type = "image"
+title = "Cloudinary diujqvfed/32.Arthur_Sterling_cisvww — Sterling"
+
+[[outputs]]
+id = "XR592iE2UxtACymSvq5ot"
+uri = "file://attached_assets/cloudinary_proof/03_Victor_from_diujqvfed.jpg"
+type = "image"
+title = "Cloudinary diujqvfed/33.Victor_Crane_b4prha — Victor"

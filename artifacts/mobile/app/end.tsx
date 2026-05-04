@@ -606,8 +606,8 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   sealLogo: {
-    width: 132,
-    height: 48,
+    width: 96,
+    height: 96,
   },
   sealRule: {
     height: 1,
