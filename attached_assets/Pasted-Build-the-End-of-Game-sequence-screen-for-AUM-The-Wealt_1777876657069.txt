@@ -1,0 +1,74 @@
+Build the End of Game sequence screen for AUM — The Wealth Game. 
+This screen triggers when the player completes Day 50.
+
+ASSETS:
+- Video file: Hyperrealistic_commercial_smal.mp4 (already in project assets folder)
+- This plays as a looping background behind all content
+
+SCREEN LAYOUT (3 layers):
+Layer 1 — VIDEO BACKGROUND
+- Loop the CHF bills video fullscreen behind everything
+- Opacity 0.35 so it stays subtle behind white content
+- autoplay, muted, loop, playsInline
+
+Layer 2 — CERTIFICATE (center of screen)
+- White card, border: 0.5px solid #e8e0d0, border-top: 2px solid #C8A96E
+- Background: #fdfcfa
+- Content top to bottom:
+  · Eyebrow text: "THE VANE-BUCKLEY TRUST · CERTIFICATE OF COMPLETION" 
+    (JetBrains Mono, 9px, letter-spacing 4px, color #C8A96E)
+  · "This certifies that" (Cormorant Garamond italic, 13px, color #aaa)
+  · Player name pulled from Supabase auth (Cormorant Garamond, 44px, 
+    font-weight 600, color #1a1a1a)
+  · Body text italic: "has completed The Mandate — fifty days as Trustee 
+    of the Vane-Buckley estate, navigating markets, characters, and crises 
+    with the discipline of a seasoned allocator."
+    (Cormorant Garamond italic, 16px, color #888)
+  · Gold divider line 48px wide
+  · Final AUM in CHF pulled from Supabase (JetBrains Mono, 26px, #1a1a1a)
+  · Sublabel: "FINAL AUM · BOURSE SEASON I" (JetBrains Mono, 9px, #bbb)
+  · Footer row: left side "Victor Crane / Chief Antagonist · AUM" 
+    right side completion date
+  · Two buttons: "DOWNLOAD CERTIFICATE" (gold fill #C8A96E, white text) 
+    and "SHARE TO DISCORD" (white fill, gold border, gold text)
+
+Layer 3 — LEADERBOARD (below certificate)
+- Title: "GLOBAL LEADERBOARD · SEASON I" with live pulsing gold dot
+- Fetch top 10 from Supabase table: leaderboard
+  · Columns to read: rank, player_name, city, days_completed, final_aum_chf
+- Render each row: rank number | player name + city tag | days | CHF amount
+- Highlight the current logged-in player's row with background #fdf9f2 
+  and gold text #C8A96E on their AUM
+- Rank 1 = gold #C8A96E, Rank 2 = silver #aaa, Rank 3 = bronze #b8966a
+- If player is not in top 10, still show their row pinned at bottom 
+  with "YOUR RANK #X" label
+
+- Victor Crane closing quote at very bottom, left border 2px #CC0000:
+  "You survived. I'll admit — I didn't think you would. 
+  The Trust is yours. Don't embarrass Barnaby."
+  Signed: — Victor Crane, Chief Antagonist
+
+SUPABASE QUERIES NEEDED:
+1. Get current player's final AUM and name from players table
+2. Get top 10 from leaderboard table ordered by final_aum_chf DESC
+3. Get current player's rank (their position in the full leaderboard)
+4. Insert current player into leaderboard table on screen load 
+   if not already present: { player_name, city, days_completed: 50, 
+   final_aum_chf, completed_at: now() }
+
+FONTS:
+- Cormorant Garamond: import from Google Fonts
+- JetBrains Mono: already in project
+
+ANIMATIONS:
+- Seal (AUM circle) fades in first
+- Certificate fades up with 0.3s delay
+- Leaderboard fades up with 0.7s delay
+- Buttons fade up with 1s delay
+- Victor Crane quote fades up with 1.3s delay
+
+COLORS:
+- Gold accent: #C8A96E
+- UBS Red: #CC0000
+- Background: #ffffff
+- Card background: #fdfcfa
