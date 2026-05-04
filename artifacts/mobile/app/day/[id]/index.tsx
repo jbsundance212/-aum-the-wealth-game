@@ -96,10 +96,10 @@ export default function DayHub() {
             </Text>
             <View style={{ height: 14 }} />
             <Button
-              label={day < 49 ? "Proceed to next day" : "Return to ledger"}
+              label={day < 49 ? "Proceed to next day" : "View Mandate Closure"}
               onPress={() => {
                 if (day < 49) router.replace(`/day/${day + 1}` as any);
-                else router.replace("/(tabs)/ledger");
+                else router.replace("/end" as any);
               }}
               variant="ink"
             />

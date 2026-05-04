@@ -63,3 +63,11 @@ export function titanFace(dayNumber: number, size = 200): string | null {
   const id = titanPublicId(dayNumber);
   return id ? cloudinaryFace(id, size) : null;
 }
+
+/**
+ * Direct stream URL for the End-of-Game looping CHF-bills video background.
+ * Uploaded once to the AUM-TITANS folder; referenced by `app/end.tsx`.
+ */
+export function endgameVideoUrl(): string {
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/v1777877151/Hyperrealistic_commercial_smal_k7d4kf.mp4`;
+}

@@ -274,6 +274,46 @@ mobile leaderboard screen only shows synthesized rows.
   `postBourseResult({...})` after each Bourse closeout (fire-and-forget,
   never blocks navigation).
 
+### End-of-Game closeout (`app/end.tsx`)
+
+Reached only after Day 49 closes — the Day Hub's "View Mandate Closure"
+button (`app/day/[id]/index.tsx`) `router.replace`s to `/end`. The
+screen has a hard guard: if `daysCompleted` does not include 49 it
+bounces to the ledger (waits for `loaded` to avoid bouncing during
+AsyncStorage hydration), so the route is safe against deep-links.
+
+Three layers + closing quote:
+- **Layer 1** — looping CHF-bills background video at 0.35 opacity via
+  `expo-av` `<Video>` (`endgameVideoUrl()` in `src/utils/cloudinary.ts`,
+  `Hyperrealistic_commercial_smal_k7d4kf.mp4`), with a parchment veil
+  on top for legibility.
+- **Layer 2** — parchment certificate card with gold (#C8A96E) top bar:
+  player name (Cormorant Garamond serif, falls back to "Anonymous
+  Steward"), italic completion blurb, final AUM via `fmtMoney()`, and a
+  Victor Crane / Day 49 footer row. Captured via
+  `react-native-view-shot` `captureRef` and shared via `expo-sharing`
+  (button: "DOWNLOAD CERTIFICATE").
+- **Layer 3** — top-10 leaderboard from `/api/leaderboard` with a
+  pulsing red LIVE dot. Current player gets a 2px red left-border
+  highlight; if the player ranks below 10 a "YOU — …" row is pinned
+  beneath the top 10. Empty/loading states render gracefully.
+- **Closing quote** — Victor Crane block with a 2px red left bar.
+
+A "JOIN THE COMMUNITY" button opens `EXPO_PUBLIC_DISCORD_INVITE_URL`
+via `Linking.openURL` (disabled if env var missing). A small dismiss X
+in the top-right returns to the ledger.
+
+Cormorant Garamond is loaded only here — `_layout.tsx` adds
+`CormorantGaramond_400Regular`, `..._400Regular_Italic`, and
+`..._600SemiBold` to `useFonts`, exposed as `FONT.serif`,
+`FONT.serifItalic`, `FONT.serifSemiBold` in
+`src/theme/typography.ts`. Public Sans / JetBrains Mono remain the rest
+of the app's voice.
+
+Animations use the RN `Animated` API: a staggered fade+slide sequence
+(seal 200ms, certificate 600ms, buttons 1100ms, leaderboard 1400ms,
+quote 1800ms) plus a looping pulse on the LIVE dot.
+
 ### Known limitations
 - The POST endpoints have **no application-layer authentication** —
   any caller who can reach the Express server can submit leaderboard

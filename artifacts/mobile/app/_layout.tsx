@@ -1,4 +1,9 @@
 import {
+  CormorantGaramond_400Regular,
+  CormorantGaramond_400Regular_Italic,
+  CormorantGaramond_600SemiBold,
+} from "@expo-google-fonts/cormorant-garamond";
+import {
   JetBrainsMono_400Regular,
   JetBrainsMono_700Bold,
 } from "@expo-google-fonts/jetbrains-mono";
@@ -52,6 +57,7 @@ function RootStack() {
       <Stack.Screen name="day/[id]/momentum" />
       <Stack.Screen name="day/[id]/sterling" />
       <Stack.Screen name="day/[id]/bourse" />
+      <Stack.Screen name="end" />
     </Stack>
   );
 }
@@ -64,6 +70,9 @@ export default function RootLayout() {
     PublicSans_700Bold,
     JetBrainsMono_400Regular,
     JetBrainsMono_700Bold,
+    CormorantGaramond_400Regular,
+    CormorantGaramond_400Regular_Italic,
+    CormorantGaramond_600SemiBold,
   });
 
   useEffect(() => {

@@ -9,6 +9,12 @@ export const FONT = {
   bodyBold: "PublicSans_700Bold",
   mono: "JetBrainsMono_400Regular",
   monoBold: "JetBrainsMono_700Bold",
+  // Cormorant Garamond — used only on the End-of-Game certificate
+  // (`app/end.tsx`). Public Sans / JetBrains Mono remain the rest of
+  // the app's voice.
+  serif: "CormorantGaramond_400Regular",
+  serifItalic: "CormorantGaramond_400Regular_Italic",
+  serifSemiBold: "CormorantGaramond_600SemiBold",
 } as const;
 
 export const T: Record<string, TextStyle> = {
