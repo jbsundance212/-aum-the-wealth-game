@@ -297,15 +297,23 @@ Three layers + memoriam + closing quote:
   Victor Crane / Day 49 footer row. Captured via
   `react-native-view-shot` `captureRef` and shared via `expo-sharing`
   (button: "DOWNLOAD CERTIFICATE").
-- **In Memoriam — Barnaby Buckley · 1934–2025** — a quiet card sitting
-  between the action buttons and the leaderboard. Renders the founder's
-  Cloudinary face crop via `characterFace("barnaby", 56)` (memoized);
-  if the URL ever returns null, falls back to a circular gold "BB" mark
-  with `accessibilityRole="image"` + `accessibilityLabel`. Card uses a
-  2px gold left bar and the same parchment-card chrome as the closing
-  quote, so it reads as a paired interstitial. The portrait is the
-  ONLY non-zero `borderRadius` on the screen (deliberate — faces are
-  circular per the rest of the app's portraiture, e.g. `titan.tsx`).
+- **THE DESK YOU SERVED** — a 3-up credits strip sitting between the
+  action buttons and the leaderboard. Renders all three named characters
+  in a single parchment card: Arthur Sterling (Your Trustee), Barnaby
+  Buckley (Founder · 1934–2025), Victor Crane (Chief Antagonist). Every
+  portrait is a Cloudinary face crop via
+  `characterFace("sterling"|"barnaby"|"victor", 56)` — the URLs are
+  memoized once per mount in a `trioFaces` object. Each column renders
+  through the local `TrioCard` subcomponent (face circle, name, sub);
+  if a Cloudinary URL ever returns null the column falls back to a
+  2-letter gold mark (AS / BB / VC) with `accessibilityRole="image"`
+  and `accessibilityLabel={name}`. The portraits are the ONLY non-zero
+  `borderRadius` on the screen (deliberate — faces are circular per the
+  rest of the app's portraiture, e.g. `titan.tsx`).
+  Local `assets/images/{barnaby,sterling,victor}.png` files exist as
+  legacy fallbacks but **must not** be `require()`'d anywhere — every
+  character face in the app is sourced from Cloudinary so we can swap
+  imagery centrally via `src/data/titanPhotos.json`.
 - **Layer 3** — top-10 leaderboard from `/api/leaderboard` with a
   pulsing red LIVE dot. Current player gets a 2px red left-border
   highlight; if the player ranks below 10 a "YOU — …" row is pinned

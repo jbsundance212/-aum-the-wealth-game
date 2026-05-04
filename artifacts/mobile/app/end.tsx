@@ -53,8 +53,8 @@ function useStaggered(): {
   certY: Animated.Value;
   buttons: Animated.Value;
   buttonsY: Animated.Value;
-  memoriam: Animated.Value;
-  memoriamY: Animated.Value;
+  trio: Animated.Value;
+  trioY: Animated.Value;
   board: Animated.Value;
   boardY: Animated.Value;
   quote: Animated.Value;
@@ -65,8 +65,8 @@ function useStaggered(): {
   const certY = useRef(new Animated.Value(18)).current;
   const buttons = useRef(new Animated.Value(0)).current;
   const buttonsY = useRef(new Animated.Value(12)).current;
-  const memoriam = useRef(new Animated.Value(0)).current;
-  const memoriamY = useRef(new Animated.Value(12)).current;
+  const trio = useRef(new Animated.Value(0)).current;
+  const trioY = useRef(new Animated.Value(12)).current;
   const board = useRef(new Animated.Value(0)).current;
   const boardY = useRef(new Animated.Value(18)).current;
   const quote = useRef(new Animated.Value(0)).current;
@@ -96,8 +96,8 @@ function useStaggered(): {
       slide(certY, 700, 600),
       fade(buttons, 500, 1100),
       slide(buttonsY, 500, 1100),
-      fade(memoriam, 600, 1300),
-      slide(memoriamY, 600, 1300),
+      fade(trio, 600, 1300),
+      slide(trioY, 600, 1300),
       fade(board, 600, 1600),
       slide(boardY, 600, 1600),
       fade(quote, 600, 2000),
@@ -109,8 +109,8 @@ function useStaggered(): {
     certY,
     buttons,
     buttonsY,
-    memoriam,
-    memoriamY,
+    trio,
+    trioY,
     board,
     boardY,
     quote,
@@ -123,8 +123,8 @@ function useStaggered(): {
     certY,
     buttons,
     buttonsY,
-    memoriam,
-    memoriamY,
+    trio,
+    trioY,
     board,
     boardY,
     quote,
@@ -166,6 +166,52 @@ function todayLabel(): string {
   });
 }
 
+// One column inside "THE DESK YOU SERVED" — a circular Cloudinary face
+// (or a 2-letter gold mark fallback if the URL is null), the character's
+// full name in serif semibold, and an italic role tagline. Three of
+// these stack horizontally with equal flex so they share the row evenly
+// at any screen width.
+function TrioCard({
+  faceUrl,
+  fallback,
+  name,
+  sub,
+}: {
+  faceUrl: string | null;
+  fallback: string;
+  name: string;
+  sub: string;
+}) {
+  return (
+    <View style={styles.trioCard}>
+      {faceUrl ? (
+        <Image
+          source={{ uri: faceUrl }}
+          style={styles.trioPortrait}
+          accessible
+          accessibilityRole="image"
+          accessibilityLabel={name}
+        />
+      ) : (
+        <View
+          style={[styles.trioPortrait, styles.trioPortraitFallback]}
+          accessible
+          accessibilityRole="image"
+          accessibilityLabel={name}
+        >
+          <Text style={styles.trioFallbackMark}>{fallback}</Text>
+        </View>
+      )}
+      <Text style={styles.trioName} numberOfLines={2}>
+        {name}
+      </Text>
+      <Text style={styles.trioSub} numberOfLines={1}>
+        {sub}
+      </Text>
+    </View>
+  );
+}
+
 export default function EndScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -195,7 +241,19 @@ export default function EndScreen() {
 
   const certRef = useRef<View>(null);
   const discordUrl = process.env.EXPO_PUBLIC_DISCORD_INVITE_URL ?? "";
-  const buckleyFaceUrl = useMemo(() => characterFace("barnaby", 56), []);
+
+  // All three named characters get Cloudinary face crops on the End
+  // screen so the closing tableau credits the full cast (Sterling the
+  // Trustee, Buckley the founder in memoriam, Victor the antagonist).
+  // URLs are stable per-character — memoize once per mount.
+  const trioFaces = useMemo(
+    () => ({
+      sterling: characterFace("sterling", 56),
+      barnaby: characterFace("barnaby", 56),
+      victor: characterFace("victor", 56),
+    }),
+    [],
+  );
 
   useEffect(() => {
     let active = true;
@@ -384,43 +442,39 @@ export default function EndScreen() {
           </Pressable>
         </Animated.View>
 
-        {/* In Memoriam — Barnaby Buckley, founder of the Vane-Buckley Trust
-            the player has just spent 49 days stewarding. Quiet, reverent
-            interstitial between the player's certificate and the public
-            standings. */}
+        {/* The three named characters who animated the 49-day mandate.
+            All three portraits are pulled from the Cloudinary AUM-TITANS
+            folder via `characterFace(...)` — never from local
+            `assets/images/*.png`, which exist only as legacy fallbacks. */}
         <Animated.View
           style={[
-            styles.memoriamWrap,
+            styles.trioWrap,
             {
-              opacity: anim.memoriam,
-              transform: [{ translateY: anim.memoriamY }],
+              opacity: anim.trio,
+              transform: [{ translateY: anim.trioY }],
             },
           ]}
         >
-          {buckleyFaceUrl ? (
-            <Image
-              source={{ uri: buckleyFaceUrl }}
-              style={styles.memoriamPortrait}
-              accessibilityLabel="Barnaby Buckley"
+          <Text style={styles.trioEyebrow}>THE DESK YOU SERVED</Text>
+          <View style={styles.trioRow}>
+            <TrioCard
+              faceUrl={trioFaces.sterling}
+              fallback="AS"
+              name="Arthur Sterling"
+              sub="Your Trustee"
             />
-          ) : (
-            <View
-              style={[styles.memoriamPortrait, styles.memoriamPortraitFallback]}
-              accessible
-              accessibilityRole="image"
-              accessibilityLabel="Barnaby Buckley"
-            >
-              <Text style={styles.memoriamFallbackMark}>BB</Text>
-            </View>
-          )}
-          <View style={styles.memoriamBody}>
-            <Text style={styles.memoriamEyebrow}>IN MEMORIAM</Text>
-            <Text style={styles.memoriamName}>
-              Barnaby Buckley · 1934–2025
-            </Text>
-            <Text style={styles.memoriamSub}>
-              Founder, Vane-Buckley Trust. The mandate you closed is his.
-            </Text>
+            <TrioCard
+              faceUrl={trioFaces.barnaby}
+              fallback="BB"
+              name="Barnaby Buckley"
+              sub="Founder · 1934–2025"
+            />
+            <TrioCard
+              faceUrl={trioFaces.victor}
+              fallback="VC"
+              name="Victor Crane"
+              sub="Chief Antagonist"
+            />
           </View>
         </Animated.View>
 
@@ -714,59 +768,66 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.85 },
   disabled: { opacity: 0.5 },
 
-  memoriamWrap: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
+  trioWrap: {
     marginTop: 22,
     backgroundColor: "rgba(255,255,255,0.92)",
     borderWidth: 1,
     borderColor: C.divider,
-    borderLeftWidth: 2,
-    borderLeftColor: GOLD,
     paddingHorizontal: 14,
-    paddingVertical: 14,
+    paddingTop: 14,
+    paddingBottom: 16,
   },
-  memoriamPortrait: {
+  trioEyebrow: {
+    fontFamily: FONT.bodySemiBold,
+    fontSize: 10,
+    color: GOLD,
+    letterSpacing: 2,
+    textAlign: "center",
+    marginBottom: 14,
+  },
+  trioRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  trioCard: {
+    flex: 1,
+    alignItems: "center",
+  },
+  trioPortrait: {
     width: 56,
     height: 56,
     borderRadius: 28,
     backgroundColor: GOLD_TINT,
   },
-  memoriamPortraitFallback: {
+  trioPortraitFallback: {
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
     borderColor: GOLD,
   },
-  memoriamFallbackMark: {
+  trioFallbackMark: {
     fontFamily: FONT.serifSemiBold,
     fontSize: 18,
     color: GOLD,
     letterSpacing: 1,
   },
-  memoriamBody: {
-    flex: 1,
-  },
-  memoriamEyebrow: {
-    fontFamily: FONT.bodySemiBold,
-    fontSize: 10,
-    color: GOLD,
-    letterSpacing: 2,
-  },
-  memoriamName: {
+  trioName: {
     fontFamily: FONT.serifSemiBold,
-    fontSize: 16,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 16,
     color: INK,
-    marginTop: 4,
+    marginTop: 8,
+    textAlign: "center",
   },
-  memoriamSub: {
+  trioSub: {
     fontFamily: FONT.serifItalic,
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: 11,
+    lineHeight: 14,
     color: SUBTLE_INK,
-    marginTop: 4,
+    marginTop: 2,
+    textAlign: "center",
   },
 
   boardWrap: {
