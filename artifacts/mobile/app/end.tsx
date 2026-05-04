@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { ResizeMode, Video } from "expo-av";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -138,16 +138,20 @@ export default function EndScreen() {
   const insets = useSafeAreaInsets();
   const { displayName, trustBalance, userId, daysCompleted, loaded } =
     useStore();
+  const { preview } = useLocalSearchParams<{ preview?: string }>();
+  const isPreview = preview === "1";
 
   // Hard gate: this screen is only reachable after Day 49 closeout. A
   // direct deep-link or accidental nav before then bounces the user back
   // to the ledger (we wait for `loaded` so we don't bounce on first paint
   // while AsyncStorage is still hydrating).
+  // The `?preview=1` query param bypasses the guard so designers / the
+  // canvas board can render the screen against fallback data.
   useEffect(() => {
-    if (loaded && !daysCompleted.includes(49)) {
+    if (loaded && !isPreview && !daysCompleted.includes(49)) {
       router.replace("/(tabs)/ledger");
     }
-  }, [loaded, daysCompleted, router]);
+  }, [loaded, daysCompleted, router, isPreview]);
 
   const anim = useStaggered();
   const pulse = usePulse();
