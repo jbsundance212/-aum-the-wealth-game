@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Easing,
+  Image,
   Linking,
   Platform,
   Pressable,
@@ -24,7 +25,9 @@ import {
 } from "@/src/data/leaderboardApi";
 import { fmtMoney, useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
-import { endgameVideoUrl } from "@/src/utils/cloudinary";
+import { characterFace, endgameVideoUrl } from "@/src/utils/cloudinary";
+
+const AUM_LOGO = require("@/assets/images/aum_logo.png");
 
 const GOLD = "#C8A96E";
 const GOLD_TINT = "#f5edd9";
@@ -50,6 +53,8 @@ function useStaggered(): {
   certY: Animated.Value;
   buttons: Animated.Value;
   buttonsY: Animated.Value;
+  memoriam: Animated.Value;
+  memoriamY: Animated.Value;
   board: Animated.Value;
   boardY: Animated.Value;
   quote: Animated.Value;
@@ -60,6 +65,8 @@ function useStaggered(): {
   const certY = useRef(new Animated.Value(18)).current;
   const buttons = useRef(new Animated.Value(0)).current;
   const buttonsY = useRef(new Animated.Value(12)).current;
+  const memoriam = useRef(new Animated.Value(0)).current;
+  const memoriamY = useRef(new Animated.Value(12)).current;
   const board = useRef(new Animated.Value(0)).current;
   const boardY = useRef(new Animated.Value(18)).current;
   const quote = useRef(new Animated.Value(0)).current;
@@ -89,14 +96,40 @@ function useStaggered(): {
       slide(certY, 700, 600),
       fade(buttons, 500, 1100),
       slide(buttonsY, 500, 1100),
-      fade(board, 600, 1400),
-      slide(boardY, 600, 1400),
-      fade(quote, 600, 1800),
-      slide(quoteY, 600, 1800),
+      fade(memoriam, 600, 1300),
+      slide(memoriamY, 600, 1300),
+      fade(board, 600, 1600),
+      slide(boardY, 600, 1600),
+      fade(quote, 600, 2000),
+      slide(quoteY, 600, 2000),
     ]).start();
-  }, [seal, cert, certY, buttons, buttonsY, board, boardY, quote, quoteY]);
+  }, [
+    seal,
+    cert,
+    certY,
+    buttons,
+    buttonsY,
+    memoriam,
+    memoriamY,
+    board,
+    boardY,
+    quote,
+    quoteY,
+  ]);
 
-  return { seal, cert, certY, buttons, buttonsY, board, boardY, quote, quoteY };
+  return {
+    seal,
+    cert,
+    certY,
+    buttons,
+    buttonsY,
+    memoriam,
+    memoriamY,
+    board,
+    boardY,
+    quote,
+    quoteY,
+  };
 }
 
 function usePulse(): Animated.Value {
@@ -162,6 +195,7 @@ export default function EndScreen() {
 
   const certRef = useRef<View>(null);
   const discordUrl = process.env.EXPO_PUBLIC_DISCORD_INVITE_URL ?? "";
+  const buckleyFaceUrl = useMemo(() => characterFace("barnaby", 56), []);
 
   useEffect(() => {
     let active = true;
@@ -251,11 +285,15 @@ export default function EndScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Seal — appears first. */}
+        {/* Seal — appears first. AUM brand logo over a thin gold rule. */}
         <Animated.View style={[styles.sealWrap, { opacity: anim.seal }]}>
-          <View style={styles.seal}>
-            <Text style={styles.sealMark}>AUM</Text>
-          </View>
+          <Image
+            source={AUM_LOGO}
+            style={styles.sealLogo}
+            resizeMode="contain"
+            accessibilityLabel="AUM"
+          />
+          <View style={styles.sealRule} />
           <Text style={styles.sealCaption}>MANDATE CLOSED · DAY 49</Text>
         </Animated.View>
 
@@ -344,6 +382,46 @@ export default function EndScreen() {
             <Feather name="message-circle" size={14} color={RED} />
             <Text style={styles.actionRedLabel}>JOIN THE COMMUNITY</Text>
           </Pressable>
+        </Animated.View>
+
+        {/* In Memoriam — Barnaby Buckley, founder of the Vane-Buckley Trust
+            the player has just spent 49 days stewarding. Quiet, reverent
+            interstitial between the player's certificate and the public
+            standings. */}
+        <Animated.View
+          style={[
+            styles.memoriamWrap,
+            {
+              opacity: anim.memoriam,
+              transform: [{ translateY: anim.memoriamY }],
+            },
+          ]}
+        >
+          {buckleyFaceUrl ? (
+            <Image
+              source={{ uri: buckleyFaceUrl }}
+              style={styles.memoriamPortrait}
+              accessibilityLabel="Barnaby Buckley"
+            />
+          ) : (
+            <View
+              style={[styles.memoriamPortrait, styles.memoriamPortraitFallback]}
+              accessible
+              accessibilityRole="image"
+              accessibilityLabel="Barnaby Buckley"
+            >
+              <Text style={styles.memoriamFallbackMark}>BB</Text>
+            </View>
+          )}
+          <View style={styles.memoriamBody}>
+            <Text style={styles.memoriamEyebrow}>IN MEMORIAM</Text>
+            <Text style={styles.memoriamName}>
+              Barnaby Buckley · 1934–2025
+            </Text>
+            <Text style={styles.memoriamSub}>
+              Founder, Vane-Buckley Trust. The mandate you closed is his.
+            </Text>
+          </View>
         </Animated.View>
 
         {/* Layer 3 — Top-10 leaderboard. */}
@@ -473,30 +551,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 18,
   },
-  seal: {
-    width: 64,
-    height: 64,
-    backgroundColor: GOLD_TINT,
-    borderWidth: 1,
-    borderColor: GOLD,
-    alignItems: "center",
-    justifyContent: "center",
-    ...Platform.select({
-      ios: {
-        shadowColor: GOLD,
-        shadowOpacity: 0.35,
-        shadowRadius: 12,
-        shadowOffset: { width: 0, height: 4 },
-      },
-      android: { elevation: 4 },
-      default: {},
-    }),
+  sealLogo: {
+    width: 132,
+    height: 48,
   },
-  sealMark: {
-    fontFamily: FONT.serifSemiBold,
-    fontSize: 20,
-    color: GOLD,
-    letterSpacing: 1.6,
+  sealRule: {
+    height: 1,
+    width: 64,
+    backgroundColor: GOLD,
+    opacity: 0.7,
+    marginTop: 10,
   },
   sealCaption: {
     fontFamily: FONT.bodySemiBold,
@@ -649,6 +713,61 @@ const styles = StyleSheet.create({
   },
   pressed: { opacity: 0.85 },
   disabled: { opacity: 0.5 },
+
+  memoriamWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginTop: 22,
+    backgroundColor: "rgba(255,255,255,0.92)",
+    borderWidth: 1,
+    borderColor: C.divider,
+    borderLeftWidth: 2,
+    borderLeftColor: GOLD,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
+  memoriamPortrait: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: GOLD_TINT,
+  },
+  memoriamPortraitFallback: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: GOLD,
+  },
+  memoriamFallbackMark: {
+    fontFamily: FONT.serifSemiBold,
+    fontSize: 18,
+    color: GOLD,
+    letterSpacing: 1,
+  },
+  memoriamBody: {
+    flex: 1,
+  },
+  memoriamEyebrow: {
+    fontFamily: FONT.bodySemiBold,
+    fontSize: 10,
+    color: GOLD,
+    letterSpacing: 2,
+  },
+  memoriamName: {
+    fontFamily: FONT.serifSemiBold,
+    fontSize: 16,
+    lineHeight: 20,
+    color: INK,
+    marginTop: 4,
+  },
+  memoriamSub: {
+    fontFamily: FONT.serifItalic,
+    fontSize: 12,
+    lineHeight: 17,
+    color: SUBTLE_INK,
+    marginTop: 4,
+  },
 
   boardWrap: {
     marginTop: 26,

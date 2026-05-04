@@ -282,17 +282,30 @@ screen has a hard guard: if `daysCompleted` does not include 49 it
 bounces to the ledger (waits for `loaded` to avoid bouncing during
 AsyncStorage hydration), so the route is safe against deep-links.
 
-Three layers + closing quote:
+Three layers + memoriam + closing quote:
 - **Layer 1** — looping CHF-bills background video at 0.35 opacity via
   `expo-av` `<Video>` (`endgameVideoUrl()` in `src/utils/cloudinary.ts`,
   `Hyperrealistic_commercial_smal_k7d4kf.mp4`), with a parchment veil
   on top for legibility.
+- **Brand seal** — the AUM brand logo (`assets/images/aum_logo.png`,
+  required at module-scope as `AUM_LOGO`) sits above a thin gold rule
+  and the "MANDATE CLOSED · DAY 49" caption. Replaced an earlier
+  text-only "AUM" gold square; the real logo carries the brand mark.
 - **Layer 2** — parchment certificate card with gold (#C8A96E) top bar:
   player name (Cormorant Garamond serif, falls back to "Anonymous
   Steward"), italic completion blurb, final AUM via `fmtMoney()`, and a
   Victor Crane / Day 49 footer row. Captured via
   `react-native-view-shot` `captureRef` and shared via `expo-sharing`
   (button: "DOWNLOAD CERTIFICATE").
+- **In Memoriam — Barnaby Buckley · 1934–2025** — a quiet card sitting
+  between the action buttons and the leaderboard. Renders the founder's
+  Cloudinary face crop via `characterFace("barnaby", 56)` (memoized);
+  if the URL ever returns null, falls back to a circular gold "BB" mark
+  with `accessibilityRole="image"` + `accessibilityLabel`. Card uses a
+  2px gold left bar and the same parchment-card chrome as the closing
+  quote, so it reads as a paired interstitial. The portrait is the
+  ONLY non-zero `borderRadius` on the screen (deliberate — faces are
+  circular per the rest of the app's portraiture, e.g. `titan.tsx`).
 - **Layer 3** — top-10 leaderboard from `/api/leaderboard` with a
   pulsing red LIVE dot. Current player gets a 2px red left-border
   highlight; if the player ranks below 10 a "YOU — …" row is pinned
@@ -303,6 +316,11 @@ A "JOIN THE COMMUNITY" button opens `EXPO_PUBLIC_DISCORD_INVITE_URL`
 via `Linking.openURL` (disabled if env var missing). A small dismiss X
 in the top-right returns to the ledger.
 
+A `?preview=1` query param bypasses the Day-49-complete route guard so
+the canvas board (and any future design tooling) can render the screen
+against fallback data without playing 49 days. Real players still hit
+the hard guard — the bypass is gated on the explicit query param only.
+
 Cormorant Garamond is loaded only here — `_layout.tsx` adds
 `CormorantGaramond_400Regular`, `..._400Regular_Italic`, and
 `..._600SemiBold` to `useFonts`, exposed as `FONT.serif`,
@@ -311,8 +329,8 @@ Cormorant Garamond is loaded only here — `_layout.tsx` adds
 of the app's voice.
 
 Animations use the RN `Animated` API: a staggered fade+slide sequence
-(seal 200ms, certificate 600ms, buttons 1100ms, leaderboard 1400ms,
-quote 1800ms) plus a looping pulse on the LIVE dot.
+(seal 200ms, certificate 600ms, buttons 1100ms, memoriam 1300ms,
+leaderboard 1600ms, quote 2000ms) plus a looping pulse on the LIVE dot.
 
 ### Known limitations
 - The POST endpoints have **no application-layer authentication** —
