@@ -51,7 +51,7 @@ const SLIDES: Slide[] = [
       "Built the Vane-Buckley Trust across five decades, three market crashes, and one inexplicable investment in Portuguese sardine futures that somehow returned 340%. A man who once shorted the pound sterling from a payphone in Geneva and made enough to buy a small island — which he then chose not to buy, because, as he put it, islands are illiquid and impossible to rebalance. He believed inherited wealth without financial education is merely a countdown to zero. He wrote the curriculum. He is watching. Probably from somewhere with better whisky than you have.",
     ],
     characterName: "Barnaby Buckley",
-    photoUri: null,
+    photoUri: characterFace("barnaby", AVATAR_DIAMETER),
     footer: "His Trust now passes — provisionally — to you.",
   },
   {

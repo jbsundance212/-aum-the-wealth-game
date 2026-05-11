@@ -192,9 +192,9 @@ remote photo fails to load. The treatment has two states:
 Props: `name`, `size`, optional `photoUri`, optional `forceInitials`.
 
 Used in:
-- `app/onboarding.tsx` chapters 1–3 — Barnaby always initials
-  (`forceInitials`), Sterling and Victor use their Cloudinary photos
-  with initials fallback.
+- `app/onboarding.tsx` chapters 1–3 — Barnaby, Sterling and Victor all
+  use their Cloudinary photos via `characterFace(...)`, with the
+  initials state as automatic onError fallback.
 - `app/login.tsx` — Sterling crest portrait, Cloudinary photo with
   initials fallback.
 - `src/components/SterlingMessage.tsx` — 48px memo chip, Cloudinary
