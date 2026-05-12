@@ -1,557 +1,366 @@
 # AUM — The Wealth Game
 
-A 49-day Expo mobile app for institutional-grade wealth management
-education with a gamified portfolio simulator. Built around the fictional
-Vane-Buckley Trust, narrated by executor Arthur Sterling, with a rival
-beneficiary (Victor Crane) who advances $50,000 per completed day.
+A 49-day Expo wealth-management game framed around the fictional
+Vane-Buckley Trust, narrated by executor Arthur Sterling, with rival
+beneficiary Victor Crane advancing $50,000 per completed day.
 
-## Visual identity — UBS Swiss White Standard
+## Artifacts
 
-- Background `#FAFAFA` (off-white)
-- Text `#3C4858` (charcoal)
-- Accent `#A35252` (crimson)
-- Hairline dividers `#E5E5E5`
-- Border radius: **0** everywhere
-- Body type: Public Sans (400 / 500 / 600 / 700)
-- Numerals: JetBrains Mono (400 / 700) — used for every $ amount and
-  ticker
+- `artifacts/mobile` — Expo SDK 54 + expo-router 6 (the game; target = Web)
+- `artifacts/api-server` — Express service mounted on `/api` (leaderboard,
+  Discord bot, daily Victor cron, Stripe paywall)
+- `artifacts/mockup-sandbox` — design sandbox
 
-These tokens live in `artifacts/mobile/constants/colors.ts` and
-`artifacts/mobile/src/theme/typography.ts`.
+## Visual identity (UBS Swiss White)
 
-## Architecture
+- BG `#FAFAFA` · Ink `#3C4858` · Crimson accent `#A35252` (UI red `#CC0000`)
+- Hairline dividers `#E5E5E5` · Gold accent `#C8A96E` (paywall + end screen)
+- **Border radius: 0** everywhere (only exception: circular face crops)
+- Body: Public Sans 400/500/600/700 · Numerals: JetBrains Mono 400/700
+- Serif: Cormorant Garamond 400/400Italic/600 (paywall, /privacy, /end only)
 
-Two artifacts:
-- `artifacts/mobile` — Expo SDK 54 + expo-router 6 mobile app (the game)
-- `artifacts/api-server` — Express service backing the public leaderboard,
-  Discord bot, and daily Victor Crane taunt cron job (mounted on `/api`)
+Tokens live in `artifacts/mobile/constants/colors.ts` and
+`artifacts/mobile/src/theme/typography.ts` (`FONT.serif`,
+`FONT.serifItalic`, `FONT.serifSemiBold`).
 
-### Data pipeline (pre-build)
+Brand copy: Vane-Buckley crest reads `EST. 1923 · GENEVA` — do **not**
+change to Zürich.
 
-The Excel workbook
-`attached_assets/AUM_Replit_DRAFT_v1_25_1777548236625.xlsx`
-is parsed at build time by
-`artifacts/mobile/scripts/build-day-data.cjs` into
-`artifacts/mobile/src/data/dayData.json` (~1MB, 49 days).
-
-To refresh after an Excel edit:
-```
-cd artifacts/mobile && node scripts/build-day-data.cjs
-```
-
-The script understands two question formats (early days use
-`CORRECT: A` / `STERLING_CORRECT:` markers; later days use inline
-`[CORRECT — …]` / `[WRONG — …]` markers) and parses the JSON in the
-`Bourse_Params` cell. Days 28-49 have narrative-only Momentum signals
-(no quiz) — flagged with `hasQuiz: false` so the Momentum screen
-renders the narrative variant.
-
-### Brand mark
-
-The AUM mark (4 ascending bars climbing grey → `#CC0000`, then bold
-"AUM" in Times serif `#CC0000`) lives as a React Native SVG component
-at `artifacts/mobile/src/components/BrandMark.tsx`. The same artwork
-is mirrored as a static SVG at `artifacts/mobile/assets/aum_logo.svg`
-and rendered to a 1200×1200 PNG splash asset at
-`artifacts/mobile/assets/images/splash.png` via
-`artifacts/mobile/scripts/render-splash.sh` (uses ImageMagick `magick`).
-
-The mark appears in three places:
-- Native splash — `app.json` → `expo.splash.image`
-- JS splash overlay — `src/components/SplashOverlay.tsx`, mounted from
-  `app/_layout.tsx`; holds for 700 ms then fades out (320 ms) once
-  fonts are loaded so the hand-off from native splash to first route
-  is seamless.
-- Login (`app/login.tsx`) and the global Header (`src/components/Header.tsx`).
-
-To regenerate the splash PNG after editing the SVG:
-```
-cd artifacts/mobile && ./scripts/render-splash.sh
-```
-
-### Routes (file-based)
+## Routes (file-based, expo-router)
 
 ```
 app/
   _layout.tsx            providers, fonts, transaction toast overlay
   index.tsx              boot router (login → onboarding → tabs)
   login.tsx              beneficiary acknowledgement
-  onboarding.tsx         3-chapter intro (Barnaby, Sterling, Victor)
+  onboarding.tsx         3-chapter intro + name slide
+  privacy.tsx            public privacy policy (app-store submission URL)
+  paywall.tsx            Stripe Checkout entry
+  paywall-success.tsx    server-verifies session, unlocks, → /day/2
+  end.tsx                Day-49 mandate closure (guarded)
   (tabs)/
-    _layout.tsx          4-tab bar
-    index.tsx            Today (KPI row + Day card + recent ledger)
-    curriculum.tsx       49-day grid grouped by pillar
-    ledger.tsx           NAV, credits / penalties, transaction log
-    leaderboard.tsx      duel header + cohort standings
+    index.tsx | curriculum.tsx | ledger.tsx | leaderboard.tsx
   day/[id]/
     index.tsx            Day Hub — 8 stations + completion bonus
-    briefing.tsx         3-slide read (+$10,000)
-    masterclass.tsx      YouTube player with browser fallback (+$20,000)
-    titan.tsx            Bio + lesson + playbook (+$15,000)
-    stress.tsx           Quiz ±$50,000 / $25,000
-    diagnostic.tsx       Quiz ±$30,000 / $15,000
-    momentum.tsx         Quiz or narrative ±$40,000 / $20,000
-    sterling.tsx         Daily memorandum (+$5,000)
-    bourse.tsx           4-phase live trading game
+    briefing.tsx         3-slide read (+$10K)
+    masterclass.tsx      YouTube w/ browser fallback (+$20K)
+    titan.tsx            Bio + lesson + playbook (+$15K)
+    stress.tsx           Quiz ±$50K / $25K
+    diagnostic.tsx       Quiz ±$30K / $15K
+    momentum.tsx         Quiz or narrative ±$40K / $20K
+    sterling.tsx         Daily memorandum (+$5K)
+    bourse.tsx           4-phase 30s mark-to-market simulator
 ```
 
-### State
+## State
 
-Single `StoreProvider` (`artifacts/mobile/src/data/store.tsx`) holds
-profile, NAV, Victor's NAV, current day, transactions, completion
-map, and days completed. Persists to AsyncStorage. All ledger writes
-also fire a top-of-screen `TransactionToast`.
+Single `StoreProvider` (`src/data/store.tsx`) — profile, NAV, Victor's
+NAV, currentDay, transactions, completion map, daysCompleted,
+audioListened, introsListened, mandateUnlocked. Persists to AsyncStorage.
+A debounced `queueSync` always reads the latest snapshot via a ref
+(concurrent `applyDelta`/`recordStep`/`finalizeDay` calls cannot post
+out-of-order).
 
-Day completion logic: when all 8 stations are recorded the Day Hub
-auto-fires `finalizeDay` — posts a +$25,000 bonus, advances
-`currentDay`, and credits Victor with $50,000.
+`finalizeDay` (8 stations done) → +$25K bonus, advances `currentDay`,
+credits Victor +$50K, fires `TransactionToast`.
 
-### The Bourse
+## The Bourse
 
-`artifacts/mobile/app/day/[id]/bourse.tsx` implements a 30-second
-mark-to-market simulator:
-
-1. **Intro** — environment label + description + win condition
-2. **Allocate** — sliders 0-100% per asset, must total 100%
-3. **Running** — 50 ticks @ 600ms; each tick:
-   `price *= 1 + drift/50 + (vol/√50) * gauss()` with a 5%
-   bankruptcy floor. Live tape, countdown, animated PnL.
-4. **Complete** — verdict card + Sterling's win/loss memo, then
-   credits the closeout proceeds back to the ledger.
-
-The $100,000 stake is debited at launch and the proceeds are credited
-on close, so the ledger always reflects real cash flows.
+`app/day/[id]/bourse.tsx` — 4 phases: **Intro** (env + win condition) →
+**Allocate** (sliders sum to 100%) → **Running** (50 ticks @ 600ms,
+`price *= 1 + drift/50 + (vol/√50)*gauss()`, 5% bankruptcy floor) →
+**Complete** (verdict + Sterling memo). $100K stake debited at launch,
+proceeds credited on close — ledger always reflects real cash flows.
 
 ## Workflows
 
-- `artifacts/mobile: expo` — runs `pnpm dev` (Expo Go web preview)
-- `artifacts/api-server: API Server` — scaffold backend (unused by
-  the mobile app today)
+- `artifacts/mobile: expo` — `pnpm dev`
+- `artifacts/api-server: API Server` — Express
 - `artifacts/mockup-sandbox: Component Preview Server` — design sandbox
 
-## Cloudinary portraits
+## Data pipeline (pre-build)
 
-Character + Titan portraits are served from Cloudinary
-(cloud `diujqvfed`, folder `AUM-TITANS`, 32 photos covering 35 of 49
-days plus the three story characters). All portraits render as
-circular face-detected crops via the URL pattern:
+Excel `attached_assets/AUM_Replit_DRAFT_v1_25_1777548236625.xlsx` →
+`scripts/build-day-data.cjs` → `src/data/dayData.json` (~1MB, 49 days).
+Refresh: `cd artifacts/mobile && node scripts/build-day-data.cjs`.
 
+The script handles two question formats (early days `CORRECT: A` /
+`STERLING_CORRECT:` markers; later days inline `[CORRECT — …]` /
+`[WRONG — …]`) and parses JSON in `Bourse_Params`. Days 28–49 have
+narrative-only Momentum (no quiz) — flagged `hasQuiz: false`.
+
+## Brand mark + splash
+
+`src/components/BrandMark.tsx` — RN-SVG component (4 ascending bars
+grey → `#CC0000`, then bold "AUM" Times serif `#CC0000`). Mirrored at
+`assets/aum_logo.svg` and rendered to `assets/images/splash.png`
+(1200×1200) via `scripts/render-splash.sh` (uses ImageMagick `magick`).
+
+Used in: native splash (`app.json` → `expo.splash.image`),
+`SplashOverlay.tsx` (700ms hold + 320ms fade once fonts load),
+`app/login.tsx`, `Header.tsx`, `app/privacy.tsx`.
+
+## Cloudinary (portraits + audio)
+
+Cloud `diujqvfed`. Images in folder `AUM-TITANS`, audio at the
+Cloudinary root. Cloud name is exposed as
+`EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME` (intentionally public). Admin-API
+build scripts need `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`,
+`CLOUDINARY_API_SECRET` (build-time only).
+
+### Portraits — `src/utils/cloudinary.ts`
+
+URL pattern (face-detected circular crops):
 ```
 https://res.cloudinary.com/diujqvfed/image/upload/w_<2x>,h_<2x>,c_fill,g_face,r_max/<publicId>.jpg
 ```
 
-Two non-obvious requirements (both encoded in
-`src/utils/cloudinary.ts`):
-
-1. The `publicId` does NOT include the `AUM-TITANS/` folder prefix —
-   the folder is metadata only.
-2. The `.jpg` extension is mandatory because publicIds contain dots
-   (`1._Paul_A._Volcker_rxv9iv`); without `.jpg`, Cloudinary's URL
+Two non-obvious requirements:
+1. `publicId` does NOT include the `AUM-TITANS/` folder prefix (folder
+   is metadata only).
+2. `.jpg` extension is **mandatory** — publicIds contain dots
+   (`1._Paul_A._Volcker_rxv9iv`); without `.jpg` Cloudinary's URL
    parser misinterprets the trailing fragment as the format.
 
-Cloudinary appends a random 6-char suffix to every upload, so
-publicIds cannot be derived from a name. The day → publicId map is
-built once via the Admin API and baked into
-`src/data/titanPhotos.json`. To refresh after new uploads:
+Helpers: `cloudinaryFace(publicId, size)`,
+`characterFace("barnaby"|"sterling"|"victor", size)`,
+`titanFace(dayNumber, size)` (returns null for archetype-only days
+15-26, 30, 43 — call sites fall back to initials).
 
-```
-cd artifacts/mobile && node scripts/build-titan-photos.cjs
-```
+Day → publicId map baked into `src/data/titanPhotos.json` (32 photos
+covering 35 of 49 days + 3 characters: Sterling `32.Arthur_Sterling_cisvww`,
+Barnaby `31.Uncle_Buckley_mlnlal`, Victor `33.Victor_Crane_b4prha`).
+Days 14 + 49 also point to Sterling. Refresh:
+`cd artifacts/mobile && node scripts/build-titan-photos.cjs`.
 
-Requires `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
-`CLOUDINARY_API_SECRET` env vars. The cloud name is also exposed to
-the app via `EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME` (it is intentionally
-public — it appears in every served URL). The API key + secret are
-build-time only.
+### Audio — `src/data/audioMap.ts`
 
-Helpers in `src/utils/cloudinary.ts`:
-- `cloudinaryFace(publicId, size)` — base URL builder
-- `characterFace("barnaby" | "sterling" | "victor", size)`
-- `titanFace(dayNumber, size)` — returns null for archetype-only days
-  (15-26, 30, 43); call sites fall back to initials in those cases.
-
-Used in: `app/(tabs)/leaderboard.tsx` (Victor 56), `app/day/[id]/titan.tsx`
-(Titan portrait 92, with initials fallback), and `app/onboarding.tsx`
-slide three (Victor only — see CharacterAvatar below).
-
-## CharacterAvatar (photo + initials fallback)
-
-`src/components/CharacterAvatar.tsx` is the canonical avatar component
-for the three story characters and acts as the onError fallback when a
-remote photo fails to load. The treatment has two states:
-
-- **Photo state**: when `photoUri` is provided and loads successfully,
-  the component renders the image as a plain circular crop with no
-  border or chrome.
-- **Initials state**: when `forceInitials` is set, no `photoUri` is
-  given, or the image errors, the component renders the project's house
-  placeholder — circular mist-grey field `#E8EBF0` (= `C.divider`),
-  charcoal initials `#3C4858` in Public Sans SemiBold sized at ~36% of
-  the diameter, and a 2px UBS Red `#CC0000` ring.
-
-Props: `name`, `size`, optional `photoUri`, optional `forceInitials`.
-
-Used in:
-- `app/onboarding.tsx` chapters 1–3 — Barnaby, Sterling and Victor all
-  use their Cloudinary photos via `characterFace(...)`, with the
-  initials state as automatic onError fallback.
-- `app/login.tsx` — Sterling crest portrait, Cloudinary photo with
-  initials fallback.
-- `src/components/SterlingMessage.tsx` — 48px memo chip, Cloudinary
-  photo with initials fallback.
-- `app/day/[id]/titan.tsx` — Days 14 + 49 (i.e. when
-  `data.titanName === "Arthur Sterling"`) render through
-  `CharacterAvatar` so they share the same photo+fallback contract.
-  Other Titan days keep the rectangular dark-bust frame.
-
-Cloudinary publicIds for the three characters live in
-`src/data/titanPhotos.json` under `characters` (Sterling
-`32.Arthur_Sterling_cisvww`, Barnaby `31.Uncle_Buckley_mlnlal`, Victor
-`33.Victor_Crane_b4prha`). `characterFace(key, size)` builds the
-face-cropped URL used by all four call-sites above. Days 14 and 49 in
-`titanPhotos.json.days` also point to the Sterling publicId so
-`titanFace(day)` returns the same URL for the daily titan view.
-
-## Branding copy
-
-The Vane-Buckley Trust crest reads `EST. 1923 · GENEVA`
-(`app/login.tsx`). Do not change to Zürich — the brand voice and
-on-screen copy use Geneva throughout.
-
-## Discord + Supabase leaderboard
-
-Public cohort leaderboard + Discord community integration shipped via
-`artifacts/api-server`.
-
-### Server side (`artifacts/api-server`)
-- `src/lib/supabase.ts` — lazy singleton using `SUPABASE_URL` +
-  `SUPABASE_SERVICE_KEY` (service-role key bypasses RLS, server-side only)
-- `src/lib/discord.ts` — discord.js v14 bot, lazy `getDiscordClient()` +
-  `shutdownDiscordClient()`. Posts to `#bourse-results` and
-  `#victor-crane` channels in guild `1499442445195411616`
-- `src/lib/cron.ts` — node-cron job at `0 8 * * *` in `Asia/Dubai`
-  timezone (DST-safe), posts a Victor taunt every morning at 08:00 GST
-- `src/lib/victorTaunts.ts` — pool of 60+ taunts; deterministic daily
-  rotation seeded by date
-- `src/routes/leaderboard.ts` — three endpoints:
-  - `GET  /api/leaderboard` (top 50)
-  - `POST /api/leaderboard/sync` (debounced player NAV upsert)
-  - `POST /api/leaderboard/bourse-result` (per-Bourse outcome → Discord
-    + Supabase)
-- `src/index.ts` — boots Discord + cron after `app.listen`, probes the
-  Supabase table, registers `SIGTERM`/`SIGINT` handlers for graceful
-  shutdown
-
-Required env vars (already set in Replit Secrets):
-`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_KEY`,
-`DISCORD_BOT_TOKEN`.
-
-### One-time Supabase setup (REQUIRED)
-The leaderboard table is **not** auto-created. Run
-`artifacts/api-server/scripts/supabase-leaderboard.sql` once in the
-Supabase SQL editor (project → SQL Editor → New query → paste → Run).
-The script is idempotent (`create table if not exists` + RLS deny
-policies). Until this runs, `GET /api/leaderboard` returns 500 and the
-mobile leaderboard screen only shows synthesized rows.
-
-### Mobile side (`artifacts/mobile`)
-- `src/data/store.tsx` — persists `userId` (uuid generated once) and
-  `displayName` in `AsyncStorage`. A debounced `queueSync` always reads
-  the latest snapshot via a ref (concurrent `applyDelta`/`recordStep`/
-  `finalizeDay` calls cannot post out-of-order).
-- `src/data/leaderboardApi.ts` — fetch/post helpers, fire-and-forget
-  (errors only `console.warn`, never thrown).
-- `app/onboarding.tsx` — 4th slide collects display name (≥2 chars
-  required to enable "Begin Day One").
-- `app/(tabs)/leaderboard.tsx` — polls `/api/leaderboard` every 15s
-  while focused (re-entrant fetches gated by `inFlightRef`). Always
-  synthesises a Victor row at #1 (max real NAV × 1.08, floored at
-  starting balance). Inline "SET YOUR DISPLAY NAME" editor for users
-  who completed onboarding before the name field existed. "JOIN THE
-  COMMUNITY" CTA opens `EXPO_PUBLIC_DISCORD_INVITE_URL` (defaults to
-  `https://discord.gg/NamQ6VYc`).
-- `app/day/[id]/bourse.tsx` — `finalize()` fires
-  `postBourseResult({...})` after each Bourse closeout (fire-and-forget,
-  never blocks navigation).
-
-### End-of-Game closeout (`app/end.tsx`)
-
-Reached only after Day 49 closes — the Day Hub's "View Mandate Closure"
-button (`app/day/[id]/index.tsx`) `router.replace`s to `/end`. The
-screen has a hard guard: if `daysCompleted` does not include 49 it
-bounces to the ledger (waits for `loaded` to avoid bouncing during
-AsyncStorage hydration), so the route is safe against deep-links.
-
-Three layers + memoriam + closing quote:
-- **Layer 1** — looping CHF-bills background video at 0.35 opacity via
-  `expo-av` `<Video>` (`endgameVideoUrl()` in `src/utils/cloudinary.ts`,
-  `Hyperrealistic_commercial_smal_k7d4kf.mp4`), with a parchment veil
-  on top for legibility.
-- **Brand seal** — the AUM brand logo (`assets/images/aum_logo.png`,
-  required at module-scope as `AUM_LOGO`) sits above a thin gold rule
-  and the "MANDATE CLOSED · DAY 49" caption. Replaced an earlier
-  text-only "AUM" gold square; the real logo carries the brand mark.
-- **Layer 2** — parchment certificate card with gold (#C8A96E) top bar:
-  player name (Cormorant Garamond serif, falls back to "Anonymous
-  Steward"), italic completion blurb, final AUM via `fmtMoney()`, and a
-  Victor Crane / Day 49 footer row. Captured via
-  `react-native-view-shot` `captureRef` and shared via `expo-sharing`
-  (button: "DOWNLOAD CERTIFICATE").
-- **THE DESK YOU SERVED** — a 3-up credits strip sitting between the
-  action buttons and the leaderboard. Renders all three named characters
-  in a single parchment card: Arthur Sterling (Your Trustee), Barnaby
-  Buckley (Founder · 1934–2025), Victor Crane (Chief Antagonist). Every
-  portrait is a Cloudinary face crop via
-  `characterFace("sterling"|"barnaby"|"victor", 56)` — the URLs are
-  memoized once per mount in a `trioFaces` object. Each column renders
-  through the local `TrioCard` subcomponent (face circle, name, sub);
-  if a Cloudinary URL ever returns null the column falls back to a
-  2-letter gold mark (AS / BB / VC) with `accessibilityRole="image"`
-  and `accessibilityLabel={name}`. The portraits are the ONLY non-zero
-  `borderRadius` on the screen (deliberate — faces are circular per the
-  rest of the app's portraiture, e.g. `titan.tsx`).
-  Local `assets/images/{barnaby,sterling,victor}.png` files exist as
-  legacy fallbacks but **must not** be `require()`'d anywhere — every
-  character face in the app is sourced from Cloudinary so we can swap
-  imagery centrally via `src/data/titanPhotos.json`.
-- **Layer 3** — top-10 leaderboard from `/api/leaderboard` with a
-  pulsing red LIVE dot. Current player gets a 2px red left-border
-  highlight; if the player ranks below 10 a "YOU — …" row is pinned
-  beneath the top 10. Empty/loading states render gracefully.
-- **Closing quote** — Victor Crane block with a 2px red left bar.
-
-A "JOIN THE COMMUNITY" button opens `EXPO_PUBLIC_DISCORD_INVITE_URL`
-via `Linking.openURL` (disabled if env var missing). A small dismiss X
-in the top-right returns to the ledger.
-
-A `?preview=1` query param bypasses the Day-49-complete route guard so
-the canvas board (and any future design tooling) can render the screen
-against fallback data without playing 49 days. Real players still hit
-the hard guard — the bypass is gated on the explicit query param only.
-
-Cormorant Garamond is loaded only here — `_layout.tsx` adds
-`CormorantGaramond_400Regular`, `..._400Regular_Italic`, and
-`..._600SemiBold` to `useFonts`, exposed as `FONT.serif`,
-`FONT.serifItalic`, `FONT.serifSemiBold` in
-`src/theme/typography.ts`. Public Sans / JetBrains Mono remain the rest
-of the app's voice.
-
-Animations use the RN `Animated` API: a staggered fade+slide sequence
-(seal 200ms, certificate 600ms, buttons 1100ms, memoriam 1300ms,
-leaderboard 1600ms, quote 2000ms) plus a looping pulse on the LIVE dot.
-
-### Known limitations
-- The POST endpoints have **no application-layer authentication** —
-  any caller who can reach the Express server can submit leaderboard
-  rows. Acceptable for an MVP cohort game; revisit if abuse appears.
-
-## Audio briefings
-
-Reusable audio narration covering every daily briefing (50 days) plus
-the three onboarding character intros (Barnaby, Sterling, Crane). All
-audio is hosted on Cloudinary alongside the portraits.
-
-### URL convention
-
-Audio files are hosted on Cloudinary at the `video/upload` path
-(Cloudinary's convention for audio):
-
+URL pattern (audio served from `video/upload`):
 ```
 https://res.cloudinary.com/<cloud>/video/upload/<publicId>.mp3
 ```
 
-Files were uploaded to the Cloudinary root (no folder prefix) with
-descriptive uppercase publicIds plus the usual 6-char random suffix:
-
-- Days 1–50: `BRIEFING_DAY_<N>_<TITLE>_<suffix>` (N is **not** zero-padded)
+PublicId conventions (Cloudinary root, 6-char random suffix on each):
+- Days 1–50: `BRIEFING_DAY_<N>_<TITLE>_<suffix>` (N **not** zero-padded)
 - Barnaby intro: `BARNABY_BUCKLEY_THE_LETTER_FROM_BEYOND_<suffix>`
 - Sterling intro: `ARTHUR_STERLING_THE_EXECUTOR_S_WELCOME_<suffix>`
-- Crane intro: `VICTOR_KRANE_WELCOME_<suffix>` (intentional "KRANE" spelling)
+- Crane intro: `VICTOR_KRANE_WELCOME_<suffix>` (intentional KRANE)
 
-### Resolved map
+`audioMap.ts` reads from `src/data/audioMapResolved.json` — ships with
+all 53 publicIds resolved. `AUDIO_STUBS_ACTIVE` auto-evaluates `false`
+when JSON is non-empty. Refresh:
+`cd artifacts/mobile && node scripts/build-audio-map.cjs`.
 
-`artifacts/mobile/src/data/audioMap.ts` reads from
-`src/data/audioMapResolved.json` (mirrors the `titanPhotos.json`
-pattern). The JSON ships with all 53 publicIds resolved
-(3/3 intros + 50/50 days, generated May 2026). `AUDIO_STUBS_ACTIVE`
-auto-evaluates to `false` whenever the JSON is non-empty.
+`AudioPlayer.tsx` is the reusable expo-av player (gold play/pause +
+progress bar + JetBrains Mono timing, auto-unloads, handles 404s,
+fires `onComplete()`). Used by:
+- `app/day/[id]/briefing.tsx` — gold ♪ "LISTEN TO BRIEFING" toggle;
+  gold ✓ once finished (`hasListenedDay(day)`)
+- `app/onboarding.tsx` — auto-plays per chapter; "Continue" gated until
+  audio completes OR 10s fallback fires; "SKIP" jumps to name slide.
 
-### Rebuilding the map after new uploads
+## CharacterAvatar
 
-```
-cd artifacts/mobile && node scripts/build-audio-map.cjs
-```
+`src/components/CharacterAvatar.tsx` — canonical component for the three
+story characters and onError fallback for any remote portrait.
 
-The script enumerates **all** Cloudinary `video` resources via the
-Admin API (needs `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`,
-`CLOUDINARY_API_SECRET`), filters by the prefixes above, normalises
-day numbers to two digits, and rewrites `audioMapResolved.json`. No
-edits to `audioMap.ts` are needed — it always reads the JSON.
+- **Photo state** — when `photoUri` loads: plain circular crop, no chrome.
+- **Initials state** — when `forceInitials`, no `photoUri`, or image
+  errors: circular `#E8EBF0` field, charcoal initials in Public Sans
+  SemiBold (~36% diameter), 2px UBS Red `#CC0000` ring.
 
-### Components + integration
+Props: `name`, `size`, optional `photoUri`, optional `forceInitials`.
 
-- `src/components/AudioPlayer.tsx` — reusable expo-av player with
-  gold (#C8A96E) play/pause + progress bar + JetBrains Mono timing.
-  Auto-unloads on unmount, handles 404s gracefully, fires
-  `onComplete()` when the file finishes. Supports `autoPlay` and a
-  `compact` variant.
-- `app/day/[id]/briefing.tsx` — gold ♪ "LISTEN TO BRIEFING" toggle
-  in the top-right reveals the player above the briefing text. Gold
-  ✓ checkmark appears once the player has finished it (state lives
-  in `hasListenedDay(day)`).
-- `app/onboarding.tsx` — each character chapter (Barnaby/Sterling/
-  Crane) auto-plays its intro audio via `AudioPlayer autoPlay`. The
-  "Continue" button is gated until either the audio reports complete
-  OR a 10-second fallback timer fires (handles autoplay blocks +
-  missing audio). Players who already heard an intro on a prior
-  visit unlock immediately. A small mono-grey "SKIP" affordance
-  bottom-right jumps straight to the name slide.
+Used in: `onboarding.tsx` (all 3 chapters), `login.tsx` (Sterling crest),
+`SterlingMessage.tsx` (48px memo chip), `day/[id]/titan.tsx` (Days 14 +
+49 only — `titanName === "Arthur Sterling"`; other Titan days keep the
+rectangular dark-bust frame).
 
-### State + Supabase tracking
+## Discord + Supabase leaderboard (api-server)
 
-`src/data/store.tsx` persists two new arrays to AsyncStorage:
-`audioListened: number[]` (day briefings) and
-`introsListened: IntroAudioKey[]`. `markAudioListened(day)` and
-`markIntroListened(who)` update both AsyncStorage and fire a
-fire-and-forget POST to `/api/leaderboard/audio` (added to
-`leaderboardApi.ts` as `recordAudioListened`).
+### Server
 
-The server route `POST /api/leaderboard/audio`
-(`artifacts/api-server/src/routes/leaderboard.ts`) merges the new
-value idempotently into the player's row via Supabase.
+- `src/lib/supabase.ts` — lazy singleton, `SUPABASE_URL` +
+  `SUPABASE_SERVICE_KEY` (service-role bypasses RLS, server-side only).
+- `src/lib/discord.ts` — discord.js v14 lazy client, posts to
+  `#bourse-results` and `#victor-crane` in guild `1499442445195411616`.
+- `src/lib/cron.ts` — node-cron `0 8 * * *` `Asia/Dubai` (DST-safe),
+  daily Victor taunt at 08:00 GST.
+- `src/lib/victorTaunts.ts` — 60+ taunts, deterministic daily rotation
+  seeded by date.
+- `src/routes/leaderboard.ts`:
+  - `GET  /api/leaderboard` (top 50)
+  - `POST /api/leaderboard/sync` (debounced player NAV upsert)
+  - `POST /api/leaderboard/bourse-result` (per-Bourse → Discord + DB)
+  - `POST /api/leaderboard/audio` (idempotent merge of audio progress)
+- `src/index.ts` — boots Discord + cron after `app.listen`, probes the
+  Supabase table, registers SIGTERM/SIGINT graceful shutdown.
 
-### Supabase migration (already applied)
+Required secrets (already set): `SUPABASE_URL`, `SUPABASE_ANON_KEY`,
+`SUPABASE_SERVICE_KEY`, `DISCORD_BOT_TOKEN`.
 
-The leaderboard table has two extra columns provisioned by
-`artifacts/api-server/scripts/supabase-audio-tracking.sql`
-(`audio_listened int[]`, `intros_listened text[]`, plus GIN indexes
-for analytics queries). The script is idempotent — re-running it is
-safe. If you ever wipe the table, re-run the script before audio
-POSTs will succeed.
+### Mobile
 
-## Notes
+- `src/data/leaderboardApi.ts` — fetch/post helpers, fire-and-forget
+  (errors `console.warn` only).
+- `app/onboarding.tsx` — name slide (≥2 chars to enable "Begin Day One").
+- `app/(tabs)/leaderboard.tsx` — polls every 15s while focused
+  (re-entrant fetches gated by `inFlightRef`); always synthesises a
+  Victor row at #1 (max real NAV × 1.08, floored at starting balance);
+  inline name editor for legacy users; "JOIN THE COMMUNITY" CTA opens
+  `EXPO_PUBLIC_DISCORD_INVITE_URL` (default `https://discord.gg/NamQ6VYc`).
+- `app/day/[id]/bourse.tsx` — `finalize()` fires `postBourseResult({...})`
+  after each closeout (fire-and-forget).
+- `src/data/store.tsx` — persists `audioListened: number[]` and
+  `introsListened: IntroAudioKey[]`; `markAudioListened(day)` and
+  `markIntroListened(who)` POST to `/api/leaderboard/audio`.
 
-- `react-native-web-webview` is installed as a peer of
-  `react-native-youtube-iframe` so the YouTube player bundles for web.
-- Some Expo version warnings (`expo-asset`, `expo-file-system`,
-  `react-native-webview`, `@react-native-community/slider`) are visible
-  in the Expo CLI startup. They are non-fatal — bundle compiles and
-  runs both on web and via Expo Go.
+### One-time SQL setup (REQUIRED — run in Supabase SQL editor)
+
+All scripts are idempotent. Run in order:
+
+1. `artifacts/api-server/scripts/supabase-leaderboard.sql` — creates
+   the `leaderboard` table + RLS deny policies. Until this runs,
+   `GET /api/leaderboard` returns 500.
+2. `artifacts/api-server/scripts/supabase-audio-tracking.sql` — adds
+   `audio_listened int[]`, `intros_listened text[]`, GIN indexes.
+3. `artifacts/api-server/scripts/supabase-mandate-unlock.sql` — adds
+   `mandate_unlocked boolean NOT NULL DEFAULT false` + partial index.
+   Until this runs, paywall routes work but `mandate_unlocked` writes
+   silently no-op.
+
+## End-of-Game closeout (`app/end.tsx`)
+
+Reached only after Day 49 closes — Day Hub's "View Mandate Closure"
+button `router.replace`s to `/end`. Hard guard: bounces to ledger if
+`daysCompleted` does not include 49 (waits for `loaded` to avoid
+bouncing during AsyncStorage hydration). `?preview=1` query param
+bypasses the guard for canvas/design tooling only.
+
+Layers:
+- **Background video** — looping CHF-bills clip at 0.35 opacity via
+  `expo-av` (`endgameVideoUrl()` → `Hyperrealistic_commercial_smal_k7d4kf.mp4`)
+  with parchment veil for legibility.
+- **Brand seal** — `assets/images/aum_logo.png` (required at module-scope
+  as `AUM_LOGO`) above gold rule + "MANDATE CLOSED · DAY 49".
+- **Certificate card** — gold (#C8A96E) top bar, player name (Cormorant
+  serif, falls back "Anonymous Steward"), italic blurb, final AUM via
+  `fmtMoney()`, Victor/Day-49 footer. Captured via `react-native-view-shot`
+  `captureRef`, shared via `expo-sharing` ("DOWNLOAD CERTIFICATE").
+- **THE DESK YOU SERVED** — 3-up credits strip (Sterling/Barnaby/Victor)
+  via `characterFace(...)` memoised once per mount; `TrioCard` subcomponent
+  with 2-letter gold mark fallback (AS / BB / VC). Portraits are the only
+  non-zero `borderRadius` here (deliberate — circular faces). Local
+  `assets/images/{barnaby,sterling,victor}.png` files exist as legacy
+  fallbacks but **must not** be `require()`'d — Cloudinary is canonical.
+- **Top-10 leaderboard** — pulsing red LIVE dot; current player gets 2px
+  red left-border; if rank > 10, "YOU — …" row pinned beneath top 10.
+- **Closing quote** — Victor block with 2px red left bar.
+- **JOIN THE COMMUNITY** — opens `EXPO_PUBLIC_DISCORD_INVITE_URL`.
+- Animations: staggered fade+slide (seal 200ms → cert 600ms → buttons
+  1100ms → memoriam 1300ms → board 1600ms → quote 2000ms) + LIVE-dot pulse.
 
 ## Stripe paywall — The Mandate Unlock
 
-A $9.99 USD one-time purchase gates access to Day 2 onwards. **Day 1
-is fully free** (all 8 stations + the $25,000 completion bonus).
-Tapping "Proceed to next day" on the Day 1 hub — or attempting to
-deep-link directly to `/day/2` or beyond — routes the player to
-`app/paywall.tsx`, which opens a Stripe-hosted Checkout Session.
+$9.99 USD one-time purchase gates Day 2+. **Day 1 is fully free** (8
+stations + $25K bonus). Tapping "Proceed" on the Day 1 hub or
+deep-linking `/day/2`+ routes to `app/paywall.tsx` → Stripe-hosted
+Checkout Session.
 
-### Architecture
-
-Source of truth: `leaderboard.mandate_unlocked boolean DEFAULT false`
-in Supabase. Local `mandateUnlocked: boolean` in the mobile store
-(`src/data/store.tsx`) is a hydrated mirror, persisted to
-AsyncStorage under `@aum/mandate_unlocked`.
-
-We do NOT use `stripe-replit-sync`. AUM has exactly one product and
-no Replit-managed Postgres — Supabase is canonical. The Replit
-native Stripe integration provides credentials via the Connectors
-proxy (no `STRIPE_SECRET_KEY` env var needed); see
-`artifacts/api-server/src/lib/stripeClient.ts`.
+**Source of truth**: `leaderboard.mandate_unlocked` in Supabase. Local
+`mandateUnlocked: boolean` is a hydrated mirror under
+`@aum/mandate_unlocked`. We do NOT use `stripe-replit-sync` (one product,
+no Replit Postgres — Supabase is canonical).
 
 ### Server (`artifacts/api-server`)
 
-- `src/lib/stripeClient.ts` — `getUncachableStripeClient()` reads
-  the connector at `$REPLIT_CONNECTORS_HOSTNAME` per request (never
-  cache — tokens expire). API version pinned to `2025-11-17.clover`
-  to match the installed `stripe@20.0.0` types.
-- `src/routes/stripe.ts` — three routes (mounted under `/api`):
+- `src/lib/stripeClient.ts` — `getUncachableStripeClient()` reads the
+  Replit Connectors proxy at `$REPLIT_CONNECTORS_HOSTNAME` per request
+  (never cache — tokens expire). API version pinned `2025-11-17.clover`
+  to match installed `stripe@20.0.0` types.
+- `src/routes/stripe.ts` (mounted under `/api`):
   - `POST /api/stripe/checkout` — body `{user_id, display_name?,
-    return_origin}` → creates a Checkout Session (mode `payment`,
-    inline price_data $9.99 USD, metadata `{user_id, display_name,
-    product:"AUM_MANDATE_SEASON_1"}`, mirrored on the
-    PaymentIntent), returns `{url, session_id}`.
+    return_origin}` → Checkout Session (mode `payment`, inline price_data
+    $9.99, metadata `{user_id, display_name,
+    product:"AUM_MANDATE_SEASON_1"}` mirrored on PaymentIntent),
+    returns `{url, session_id}`.
   - `GET /api/stripe/status?user_id=...` → `{mandate_unlocked: bool}`
-    from Supabase. Mobile polls this on every Day 2+ entry.
-  - `GET /api/stripe/session?session_id=...&user_id=...` →
-    server-trusted Stripe API verification of a Checkout Session.
-    **Primary unlock path** — also upserts `mandate_unlocked: true`
-    into Supabase when paid. The optional `user_id` query param
-    binds the verification to the calling player; if it does not
-    match `metadata.user_id` on the Stripe session the response
-    returns `paid:false, error:"user_mismatch"` and refuses the
-    upsert (stops a leaked `cs_…` URL from unlocking another
-    account). The `product` metadata tag is also checked for
-    defence in depth.
-- `src/routes/stripeWebhook.ts` — handler mounted directly on the
-  Express app in `src/app.ts` with `express.raw({type:
-  "application/json"})` BEFORE the global `express.json()` (Stripe
-  signature verification needs the exact signed bytes). Refuses all
-  traffic with 503 until `STRIPE_WEBHOOK_SECRET` is set in env. On
-  `checkout.session.completed` events with `payment_status === "paid"`
-  it upserts the same row. **Backup only** — covers users who close
-  the success tab before the redirect lands.
+    from Supabase. Mobile polls on Day 2+ entry.
+  - `GET /api/stripe/session?session_id=...&user_id=...` —
+    server-trusted Stripe verify. **Primary unlock path** — also upserts
+    `mandate_unlocked: true`. The `user_id` param binds verification to
+    the calling player; mismatch returns `paid:false,
+    error:"user_mismatch"` and refuses upsert (stops a leaked `cs_…`
+    URL unlocking another account). `product` metadata also checked.
+- `src/routes/stripeWebhook.ts` — mounted in `src/app.ts` with
+  `express.raw({type:"application/json"})` BEFORE the global
+  `express.json()` (signature verify needs exact bytes). Refuses 503
+  until `STRIPE_WEBHOOK_SECRET` is set. **Backup only** — covers users
+  who close the success tab before the redirect lands.
 
-### Mobile (`artifacts/mobile`)
+### Mobile
 
-- `src/data/store.tsx` — `mandateUnlocked: boolean` end-to-end
-  (Persisted, KEYS, loadPersisted, persist, signOut reset, all
-  setState spreads). `setMandateUnlocked(bool)` flips it in AsyncStorage;
-  `refreshMandateStatus()` polls `/api/stripe/status` and reconciles
-  local with server: a definitive server response (true OR false)
-  overrides local; a network error (`null`) leaves local untouched
-  so paid players keep playing offline. Demoting on a definitive
-  false closes the obvious bypass (writing `"true"` into
-  `@aum/mandate_unlocked` from devtools) — the next online check
-  clears it.
+- `src/data/store.tsx` — `mandateUnlocked` end-to-end (Persisted, KEYS,
+  load/persist, signOut reset). `setMandateUnlocked(bool)` flips
+  AsyncStorage; `refreshMandateStatus()` reconciles with `/status` —
+  definitive server response (true OR false) overrides local; network
+  error (`null`) leaves local untouched so paid players play offline.
+  Demoting on definitive false closes the devtools-tampering bypass
+  (writing `"true"` into AsyncStorage by hand).
 - `src/data/leaderboardApi.ts` — `createCheckoutSession`,
-  `fetchMandateStatus`, `fetchStripeSession` helpers.
-- `app/paywall.tsx` — gold AUM seal, Cormorant 36px headline "Enter
-  The Mandate", JetBrains Mono 11px subhead, italic Cormorant body,
-  USD 9.99 mono-bold price, gold (#C8A96E) primary CTA, 2px-red
-  Victor Crane quote block. On tap: POSTs to `/api/stripe/checkout`
-  with `window.location.origin` as `return_origin`, then
-  `window.location.assign(url)` on web (same-tab redirect) or
-  `Linking.openURL(url)` on native.
-- `app/paywall-success.tsx` — reads `?session_id=` from URL,
-  GETs `/api/stripe/session` to confirm payment + trigger the
-  server-side unlock, calls `setMandateUnlocked(true)`, displays
-  steward name + amount + reference, then auto-routes to `/day/2`
-  after a 3-second countdown.
-- `app/day/[id]/index.tsx` — for `day >= 2`, refreshes the server
-  status on mount and hard-redirects to `/paywall` if not unlocked
-  (waits for `loaded` so a paid player isn't bounced during cold
-  boot). The Day 1 "Proceed to next day" button routes to `/paywall`
-  when not unlocked, with the label flipped to "Unlock the Mandate".
-
-### One-time setup
-
-1. **Run the Supabase migration** —
-   `artifacts/api-server/scripts/supabase-mandate-unlock.sql` adds
-   the `mandate_unlocked boolean NOT NULL DEFAULT false` column plus
-   a partial index. Idempotent — open the Supabase SQL editor,
-   paste, Run. Until this runs the three Stripe routes still work
-   but `mandate_unlocked` writes silently no-op (column missing).
-2. **(Optional) Configure the webhook** — Stripe dashboard →
-   Developers → Webhooks → Add endpoint → URL
-   `https://<your-replit-domain>/api/stripe/webhook` → send
-   `checkout.session.completed` → copy the signing secret →
-   add to Replit Secrets as `STRIPE_WEBHOOK_SECRET`. Without this
-   the webhook returns 503 and players still unlock fine via the
-   success-URL round-trip.
+  `fetchMandateStatus`, `fetchStripeSession(sessionId, userId)`.
+- `app/paywall.tsx` — gold AUM seal, Cormorant 36px headline, USD 9.99
+  mono-bold, gold (#C8A96E) CTA, 2px-red Victor quote. POSTs `/checkout`
+  with `window.location.origin` then `window.location.assign(url)` on
+  web / `Linking.openURL(url)` on native.
+- `app/paywall-success.tsx` — reads `?session_id=`, GETs `/session` with
+  current `userId`, only `setMandateUnlocked(true)` if
+  `result.paid && result.user_id === userId`, then 3s countdown → `/day/2`.
+- `app/day/[id]/index.tsx` — for `day >= 2` refreshes server status and
+  hard-redirects to `/paywall` if not unlocked (waits for `loaded`).
+  Day 1 "Proceed" routes to `/paywall` when locked, label flips to
+  "Unlock the Mandate".
 
 ### Testing
 
-In Stripe test mode use card `4242 4242 4242 4242`, any future
-expiry, any CVC, any postal code. The Replit Stripe integration is
-`development` by default — a real production build (when
-`REPLIT_DEPLOYMENT=1`) auto-routes to the production Stripe account
-configured in the same integration.
+Stripe test mode: card `4242 4242 4242 4242`, any future expiry, any
+CVC, any postal. Replit Stripe integration is `development` by default;
+production builds (`REPLIT_DEPLOYMENT=1`) auto-route to the production
+Stripe account.
 
 ### iOS / Android caveat
 
-Mobile target is **web (Expo Web)**. Native iOS/Android App Store
-builds would need to use Apple In-App Purchase / Google Play
-Billing per platform policy; Stripe Checkout for digital goods is
-not allowed in native binaries. Wrap the paywall in a
+Target is **web (Expo Web)**. Native iOS/Android builds need Apple IAP /
+Google Play Billing per platform policy — Stripe Checkout for digital
+goods isn't allowed in native binaries. Wrap paywall in
 `Platform.OS === "web"` guard before publishing native stores.
+
+### Optional: webhook setup
+
+Stripe dashboard → Developers → Webhooks → Add endpoint
+`https://<your-replit-domain>/api/stripe/webhook` → event
+`checkout.session.completed` → copy signing secret → add to Replit
+Secrets as `STRIPE_WEBHOOK_SECRET`. Without this the webhook returns
+503 and players still unlock fine via the success-URL round-trip.
+
+## Privacy policy (`app/privacy.tsx`)
+
+Public route at `/privacy` for Huawei AppGallery + Samsung Galaxy Store
+submission. White background, AUM brand mark, Cormorant headings,
+JetBrains Mono body, gold accent. 11 numbered sections (Who We Are,
+Information We Collect, How We Use, Third-Party Services,
+Data Sharing, Data Retention, Your Rights, Children, Security, Changes,
+Governing Law). Contact: `j.bernard@matinwealth.com`. Governed by UAE
+law. Submit the deployed `https://<deployed-domain>/privacy` URL once
+published — the dev URL is temporary.
+
+## Notes / known limitations
+
+- `react-native-web-webview` installed as peer of `react-native-youtube-iframe`
+  so the YouTube player bundles for web.
+- Some Expo version warnings (`expo-asset`, `expo-file-system`,
+  `react-native-webview`, `@react-native-community/slider`) are visible
+  in CLI startup — non-fatal, runs both web + Expo Go.
+- Leaderboard POST endpoints have **no app-layer auth** — any caller
+  reaching the Express server can submit rows. Acceptable MVP; revisit
+  if abuse appears.
