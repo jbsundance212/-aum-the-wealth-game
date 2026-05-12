@@ -1,0 +1,114 @@
+Add Stripe payment integration to AUM — The Wealth Game.
+
+STRIPE ACCOUNT DETAILS:
+- Stripe account: Matin Wealth Advisory
+- Currency: USD
+- Payment model: one-time purchase $9.99
+- Product name: The Mandate Unlock
+- Stripe keys are in Replit Secrets as:
+  STRIPE_PUBLISHABLE_KEY and STRIPE_SECRET_KEY
+
+GET THE KEYS FIRST:
+Before building, remind me to add the Stripe keys to 
+Replit Secrets. I need to:
+1. Go to dashboard.stripe.com
+2. Click Developers → API Keys
+3. Copy the Publishable key and Secret key
+4. Add both to Replit Secrets
+
+WHAT TO BUILD:
+
+1. PAYWALL SCREEN
+Appears automatically after player completes Day 1.
+Player gets these for free:
+- Three character intro screens (Barnaby, Sterling, Crane)
+- Day 1 briefing including audio
+- Day 1 Bourse game
+- Day 1 Stress Test
+- Day 1 Arthur Sterling note
+From Day 2 onward: paywall activates.
+
+Screen design:
+- Background: #ffffff
+- Top: AUM gold seal
+- Headline in Cormorant Garamond 36px: "Enter The Mandate"
+- Subheading in JetBrains Mono 11px color #888:
+  "50 DAYS · THE VANE-BUCKLEY TRUST · SEASON I"
+- Body in Cormorant Garamond italic 16px color #666:
+  "You have completed Day 1. Barnaby's estate awaits.
+  Unlock the full Residency to continue."
+- Price: "USD 9.99" in JetBrains Mono 28px color #1a1a1a
+- Subtitle: "ONE TIME · NO SUBSCRIPTION" in JetBrains Mono
+  9px letter-spacing 3px color #C8A96E
+- Primary button: "UNLOCK THE MANDATE" 
+  background #C8A96E white text JetBrains Mono
+- Security text below button: "Secure payment via Stripe"
+  JetBrains Mono 9px color #ccc
+- Victor Crane quote bottom left border 2px #CC0000:
+  "Pay once. Learn what took me thirty years 
+  to understand."
+  — Victor Crane
+
+2. STRIPE CHECKOUT
+- Use Stripe Payment Links (no backend needed)
+- Create Payment Link in Stripe dashboard for $9.99 USD
+- On button tap: open Stripe hosted checkout
+- After successful payment: webhook updates Supabase
+- Add column to players table: 
+  mandate_unlocked boolean default false
+- On payment success: set mandate_unlocked = true
+- Player never sees paywall again once unlocked
+
+3. STRIPE WEBHOOK
+Create webhook endpoint that:
+- Listens for checkout.session.completed
+- Extracts player_id from session metadata
+- Updates players table: mandate_unlocked = true
+- Redirects player to Day 2 automatically
+
+4. PAYMENT METADATA
+Pass with every checkout session:
+- player_id: Supabase player UUID
+- player_email: player email address
+- product: "AUM_MANDATE_SEASON_1"
+
+5. CONFIRMATION SCREEN
+After successful payment show:
+- "The Mandate is yours." Cormorant Garamond 36px
+- Player name
+- Transaction reference from Stripe
+- "Proceeding to Day 2..." 3 second countdown
+- Auto-navigate to Day 2
+
+6. SUPABASE SQL
+Run this in Supabase SQL editor:
+ALTER TABLE public.players 
+ADD COLUMN IF NOT EXISTS 
+mandate_unlocked boolean DEFAULT false;
+
+7. MOBILE OPTIMISATION
+- Must work on Huawei and Samsung browsers
+- Stripe hosted checkout handles all card processing
+- No sensitive card data touches our servers
+- Test with Stripe test card: 4242 4242 4242 4242
+
+8. TEST MODE FIRST
+- Use test keys until Stripe review is complete
+- Test the full flow end to end before going live
+- Switch to live keys only after Stripe confirms 
+  account is fully verified
+
+STYLING:
+- Background: #ffffff
+- Gold: #C8A96E
+- UBS Red: #CC0000
+- Fonts: Cormorant Garamond + JetBrains Mono
+- No shadows, clean flat design
+- Consistent with existing AUM design system
+
+IMPORTANT:
+- Do not break any existing functionality
+- Keep test mode active until I confirm 
+  Stripe verification is complete
+- Remind me to create the Payment Link in 
+  Stripe dashboard after building
