@@ -1,27 +1,24 @@
 /**
- * AUM — Build the audio briefing URL map from Cloudinary's Admin API.
+ * AUM — Resolve audio briefing publicIds from Cloudinary's Admin API.
  *
- * Run AFTER all 53 audio files (3 character intros + 50 day briefings) have
- * been uploaded to the Cloudinary `briefings/` folder. This script enumerates
- * the folder, matches publicIds against the expected naming convention, and
- * overwrites `src/data/audioMap.ts` with real, working URLs.
+ * Real convention discovered (May 2026 upload):
+ *   Days     : BRIEFING_DAY_<N>_<TITLE>_<suffix>     (N is 1..50, NOT zero-padded)
+ *   Barnaby  : BARNABY_BUCKLEY_<TITLE>_<suffix>
+ *   Sterling : ARTHUR_STERLING_<TITLE>_<suffix>
+ *   Crane    : VICTOR_KRANE_<TITLE>_<suffix>          (intentional "KRANE" spelling)
  *
- * Naming convention expected:
- *   - briefings/barnaby_intro.<suffix>      → intro key "barnaby"
- *   - briefings/sterling_intro.<suffix>     → intro key "sterling"
- *   - briefings/crane_intro.<suffix>        → intro key "crane"
- *   - briefings/briefing_day_NN.<suffix>    → day NN (01..50)
- *
- * Cloudinary appends a random 6-char suffix to every upload by default, so
- * the actual publicIds will be e.g. `briefings/briefing_day_01_a1b2c3`. This
- * script tolerates that — it matches the leading prefix and uses whatever
- * publicId Cloudinary returned.
+ * Files were uploaded to the root (no folder prefix) so the publicId IS the
+ * full identifier. Audio uploads use the `video` resource type by Cloudinary
+ * convention.
  *
  * Required env vars:
  *   CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
  *
  * Usage:
  *   cd artifacts/mobile && node scripts/build-audio-map.cjs
+ *
+ * Writes `src/data/audioMapResolved.json`. The runtime `src/data/audioMap.ts`
+ * reads from that JSON and falls back to stub URLs if it's missing.
  */
 
 /* eslint-disable no-console */
@@ -39,48 +36,53 @@ if (!CLOUD || !KEY || !SECRET) {
   process.exit(1);
 }
 
-const auth =
-  "Basic " + Buffer.from(`${KEY}:${SECRET}`).toString("base64");
+const auth = "Basic " + Buffer.from(`${KEY}:${SECRET}`).toString("base64");
 
-async function listFolder(prefix) {
-  // Audio uploads use Cloudinary's `video` resource type.
-  const url = new URL(
-    `https://api.cloudinary.com/v1_1/${CLOUD}/resources/video`,
-  );
-  url.searchParams.set("type", "upload");
-  url.searchParams.set("prefix", prefix);
-  url.searchParams.set("max_results", "500");
-
-  const res = await fetch(url, { headers: { Authorization: auth } });
-  if (!res.ok) {
-    throw new Error(
-      `Cloudinary list failed: ${res.status} ${await res.text()}`,
+async function listAllAudio() {
+  const all = [];
+  let nextCursor;
+  do {
+    const url = new URL(
+      `https://api.cloudinary.com/v1_1/${CLOUD}/resources/video`,
     );
-  }
-  const json = await res.json();
-  return json.resources || [];
+    url.searchParams.set("type", "upload");
+    url.searchParams.set("max_results", "500");
+    if (nextCursor) url.searchParams.set("next_cursor", nextCursor);
+    const res = await fetch(url, { headers: { Authorization: auth } });
+    if (!res.ok) {
+      throw new Error(
+        `Cloudinary list failed: ${res.status} ${await res.text()}`,
+      );
+    }
+    const json = await res.json();
+    all.push(...(json.resources || []));
+    nextCursor = json.next_cursor;
+  } while (nextCursor);
+  return all;
 }
 
 (async () => {
-  const resources = await listFolder("briefings/");
-  console.log(`Found ${resources.length} audio resources in briefings/`);
+  const all = await listAllAudio();
+  console.log(`Found ${all.length} total audio resources`);
 
   const intros = { barnaby: null, sterling: null, crane: null };
   const days = {};
 
-  for (const r of resources) {
-    const id = r.public_id; // e.g. "briefings/briefing_day_01_a1b2c3"
-    const bare = id.replace(/^briefings\//, "");
-
-    if (/^barnaby_intro/.test(bare)) intros.barnaby = id;
-    else if (/^sterling_intro/.test(bare)) intros.sterling = id;
-    else if (/^crane_intro/.test(bare)) intros.crane = id;
-    else {
-      const m = bare.match(/^briefing_day_(\d{2})/);
+  for (const r of all) {
+    const id = r.public_id;
+    if (/^BARNABY_BUCKLEY_/i.test(id)) intros.barnaby = id;
+    else if (/^ARTHUR_STERLING_/i.test(id)) intros.sterling = id;
+    else if (/^VICTOR_KRANE_/i.test(id) || /^VICTOR_CRANE_/i.test(id)) {
+      intros.crane = id;
+    } else {
+      const m = id.match(/^BRIEFING_DAY_(\d{1,2})_/i);
       if (m) {
-        days[m[1]] = id;
-      } else {
-        console.warn(`Skipping unmatched: ${id}`);
+        const n = String(parseInt(m[1], 10)).padStart(2, "0");
+        if (days[n]) {
+          console.warn(`Duplicate day ${n}: keeping ${days[n]}, skipping ${id}`);
+        } else {
+          days[n] = id;
+        }
       }
     }
   }
@@ -93,10 +95,12 @@ async function listFolder(prefix) {
     const key = String(d).padStart(2, "0");
     if (!days[key]) missing.push(`day:${key}`);
   }
+  console.log(
+    `Resolved: ${Object.values(intros).filter(Boolean).length}/3 intros, ` +
+      `${Object.keys(days).length}/50 days. Missing ${missing.length}.`,
+  );
   if (missing.length) {
-    console.warn(
-      `\n⚠ Missing ${missing.length} audio file(s):\n  ${missing.join("\n  ")}\n`,
-    );
+    console.warn(`  Missing: ${missing.join(", ")}`);
   }
 
   const out = {
@@ -115,10 +119,6 @@ async function listFolder(prefix) {
   );
   fs.writeFileSync(outPath, JSON.stringify(out, null, 2) + "\n", "utf8");
   console.log(`Wrote ${outPath}`);
-  console.log(
-    `\nNext: edit src/data/audioMap.ts to read from audioMapResolved.json`,
-  );
-  console.log(`(or have the agent do it once this file exists).`);
 })().catch((err) => {
   console.error(err);
   process.exit(1);

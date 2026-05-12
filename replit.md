@@ -353,40 +353,40 @@ audio is hosted on Cloudinary alongside the portraits.
 
 ### URL convention
 
-Audio files live in the Cloudinary `briefings/` folder and are served
-via the `video/upload` path (Cloudinary's convention for audio):
+Audio files are hosted on Cloudinary at the `video/upload` path
+(Cloudinary's convention for audio):
 
 ```
 https://res.cloudinary.com/<cloud>/video/upload/<publicId>.mp3
 ```
 
-The expected publicId prefixes are `briefings/briefing_day_NN` for
-days and `briefings/<character>_intro` for intros. Cloudinary auto-
-appends a 6-char random suffix on upload, so the resolved publicIds
-are e.g. `briefings/briefing_day_01_a1b2c3`.
+Files were uploaded to the Cloudinary root (no folder prefix) with
+descriptive uppercase publicIds plus the usual 6-char random suffix:
 
-### Stub state (current)
+- Days 1–50: `BRIEFING_DAY_<N>_<TITLE>_<suffix>` (N is **not** zero-padded)
+- Barnaby intro: `BARNABY_BUCKLEY_THE_LETTER_FROM_BEYOND_<suffix>`
+- Sterling intro: `ARTHUR_STERLING_THE_EXECUTOR_S_WELCOME_<suffix>`
+- Crane intro: `VICTOR_KRANE_WELCOME_<suffix>` (intentional "KRANE" spelling)
 
-`artifacts/mobile/src/data/audioMap.ts` ships hand-built stub URLs
-that follow the convention exactly. `AUDIO_STUBS_ACTIVE = true` in
-that file flags the stubs. Until the real files are uploaded these
-URLs return 404 — the `AudioPlayer` component degrades gracefully
-to "AUDIO UNAVAILABLE" instead of crashing.
+### Resolved map
 
-### Rebuilding the map after upload
+`artifacts/mobile/src/data/audioMap.ts` reads from
+`src/data/audioMapResolved.json` (mirrors the `titanPhotos.json`
+pattern). The JSON ships with all 53 publicIds resolved
+(3/3 intros + 50/50 days, generated May 2026). `AUDIO_STUBS_ACTIVE`
+auto-evaluates to `false` whenever the JSON is non-empty.
 
-Once all 53 audio files are uploaded:
+### Rebuilding the map after new uploads
 
 ```
 cd artifacts/mobile && node scripts/build-audio-map.cjs
 ```
 
-The script enumerates the `briefings/` folder via the Cloudinary
+The script enumerates **all** Cloudinary `video` resources via the
 Admin API (needs `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`,
-`CLOUDINARY_API_SECRET`) and writes
-`src/data/audioMapResolved.json`. Update `audioMap.ts` to read from
-that JSON (mirroring the `titanPhotos.json` pattern) and flip
-`AUDIO_STUBS_ACTIVE` to `false`.
+`CLOUDINARY_API_SECRET`), filters by the prefixes above, normalises
+day numbers to two digits, and rewrites `audioMapResolved.json`. No
+edits to `audioMap.ts` are needed — it always reads the JSON.
 
 ### Components + integration
 
