@@ -20,7 +20,8 @@
     "express": "^5",
     "node-cron": "^4.2.1",
     "pino": "^9",
-    "pino-http": "^10"
+    "pino-http": "^10",
+    "stripe": "20.0.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",

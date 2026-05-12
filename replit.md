@@ -437,3 +437,121 @@ POSTs will succeed.
   `react-native-webview`, `@react-native-community/slider`) are visible
   in the Expo CLI startup. They are non-fatal — bundle compiles and
   runs both on web and via Expo Go.
+
+## Stripe paywall — The Mandate Unlock
+
+A $9.99 USD one-time purchase gates access to Day 2 onwards. **Day 1
+is fully free** (all 8 stations + the $25,000 completion bonus).
+Tapping "Proceed to next day" on the Day 1 hub — or attempting to
+deep-link directly to `/day/2` or beyond — routes the player to
+`app/paywall.tsx`, which opens a Stripe-hosted Checkout Session.
+
+### Architecture
+
+Source of truth: `leaderboard.mandate_unlocked boolean DEFAULT false`
+in Supabase. Local `mandateUnlocked: boolean` in the mobile store
+(`src/data/store.tsx`) is a hydrated mirror, persisted to
+AsyncStorage under `@aum/mandate_unlocked`.
+
+We do NOT use `stripe-replit-sync`. AUM has exactly one product and
+no Replit-managed Postgres — Supabase is canonical. The Replit
+native Stripe integration provides credentials via the Connectors
+proxy (no `STRIPE_SECRET_KEY` env var needed); see
+`artifacts/api-server/src/lib/stripeClient.ts`.
+
+### Server (`artifacts/api-server`)
+
+- `src/lib/stripeClient.ts` — `getUncachableStripeClient()` reads
+  the connector at `$REPLIT_CONNECTORS_HOSTNAME` per request (never
+  cache — tokens expire). API version pinned to `2025-11-17.clover`
+  to match the installed `stripe@20.0.0` types.
+- `src/routes/stripe.ts` — three routes (mounted under `/api`):
+  - `POST /api/stripe/checkout` — body `{user_id, display_name?,
+    return_origin}` → creates a Checkout Session (mode `payment`,
+    inline price_data $9.99 USD, metadata `{user_id, display_name,
+    product:"AUM_MANDATE_SEASON_1"}`, mirrored on the
+    PaymentIntent), returns `{url, session_id}`.
+  - `GET /api/stripe/status?user_id=...` → `{mandate_unlocked: bool}`
+    from Supabase. Mobile polls this on every Day 2+ entry.
+  - `GET /api/stripe/session?session_id=...&user_id=...` →
+    server-trusted Stripe API verification of a Checkout Session.
+    **Primary unlock path** — also upserts `mandate_unlocked: true`
+    into Supabase when paid. The optional `user_id` query param
+    binds the verification to the calling player; if it does not
+    match `metadata.user_id` on the Stripe session the response
+    returns `paid:false, error:"user_mismatch"` and refuses the
+    upsert (stops a leaked `cs_…` URL from unlocking another
+    account). The `product` metadata tag is also checked for
+    defence in depth.
+- `src/routes/stripeWebhook.ts` — handler mounted directly on the
+  Express app in `src/app.ts` with `express.raw({type:
+  "application/json"})` BEFORE the global `express.json()` (Stripe
+  signature verification needs the exact signed bytes). Refuses all
+  traffic with 503 until `STRIPE_WEBHOOK_SECRET` is set in env. On
+  `checkout.session.completed` events with `payment_status === "paid"`
+  it upserts the same row. **Backup only** — covers users who close
+  the success tab before the redirect lands.
+
+### Mobile (`artifacts/mobile`)
+
+- `src/data/store.tsx` — `mandateUnlocked: boolean` end-to-end
+  (Persisted, KEYS, loadPersisted, persist, signOut reset, all
+  setState spreads). `setMandateUnlocked(bool)` flips it in AsyncStorage;
+  `refreshMandateStatus()` polls `/api/stripe/status` and reconciles
+  local with server: a definitive server response (true OR false)
+  overrides local; a network error (`null`) leaves local untouched
+  so paid players keep playing offline. Demoting on a definitive
+  false closes the obvious bypass (writing `"true"` into
+  `@aum/mandate_unlocked` from devtools) — the next online check
+  clears it.
+- `src/data/leaderboardApi.ts` — `createCheckoutSession`,
+  `fetchMandateStatus`, `fetchStripeSession` helpers.
+- `app/paywall.tsx` — gold AUM seal, Cormorant 36px headline "Enter
+  The Mandate", JetBrains Mono 11px subhead, italic Cormorant body,
+  USD 9.99 mono-bold price, gold (#C8A96E) primary CTA, 2px-red
+  Victor Crane quote block. On tap: POSTs to `/api/stripe/checkout`
+  with `window.location.origin` as `return_origin`, then
+  `window.location.assign(url)` on web (same-tab redirect) or
+  `Linking.openURL(url)` on native.
+- `app/paywall-success.tsx` — reads `?session_id=` from URL,
+  GETs `/api/stripe/session` to confirm payment + trigger the
+  server-side unlock, calls `setMandateUnlocked(true)`, displays
+  steward name + amount + reference, then auto-routes to `/day/2`
+  after a 3-second countdown.
+- `app/day/[id]/index.tsx` — for `day >= 2`, refreshes the server
+  status on mount and hard-redirects to `/paywall` if not unlocked
+  (waits for `loaded` so a paid player isn't bounced during cold
+  boot). The Day 1 "Proceed to next day" button routes to `/paywall`
+  when not unlocked, with the label flipped to "Unlock the Mandate".
+
+### One-time setup
+
+1. **Run the Supabase migration** —
+   `artifacts/api-server/scripts/supabase-mandate-unlock.sql` adds
+   the `mandate_unlocked boolean NOT NULL DEFAULT false` column plus
+   a partial index. Idempotent — open the Supabase SQL editor,
+   paste, Run. Until this runs the three Stripe routes still work
+   but `mandate_unlocked` writes silently no-op (column missing).
+2. **(Optional) Configure the webhook** — Stripe dashboard →
+   Developers → Webhooks → Add endpoint → URL
+   `https://<your-replit-domain>/api/stripe/webhook` → send
+   `checkout.session.completed` → copy the signing secret →
+   add to Replit Secrets as `STRIPE_WEBHOOK_SECRET`. Without this
+   the webhook returns 503 and players still unlock fine via the
+   success-URL round-trip.
+
+### Testing
+
+In Stripe test mode use card `4242 4242 4242 4242`, any future
+expiry, any CVC, any postal code. The Replit Stripe integration is
+`development` by default — a real production build (when
+`REPLIT_DEPLOYMENT=1`) auto-routes to the production Stripe account
+configured in the same integration.
+
+### iOS / Android caveat
+
+Mobile target is **web (Expo Web)**. Native iOS/Android App Store
+builds would need to use Apple In-App Purchase / Google Play
+Billing per platform policy; Stripe Checkout for digital goods is
+not allowed in native binaries. Wrap the paywall in a
+`Platform.OS === "web"` guard before publishing native stores.

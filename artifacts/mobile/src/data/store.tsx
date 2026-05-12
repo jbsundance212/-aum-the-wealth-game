@@ -11,7 +11,11 @@ import React, {
 import { Platform } from "react-native";
 
 import dayDataJson from "./dayData.json";
-import { recordAudioListened, syncLeaderboard } from "./leaderboardApi";
+import {
+  fetchMandateStatus,
+  recordAudioListened,
+  syncLeaderboard,
+} from "./leaderboardApi";
 import { DayData, STEP_ORDER, StepKey } from "./types";
 
 export type IntroAudioKey = "barnaby" | "sterling" | "crane";
@@ -55,6 +59,12 @@ type Persisted = {
   // Audio briefings the player has finished listening to in full.
   audioListened: number[];
   introsListened: IntroAudioKey[];
+  // Stripe paywall — true once the player has paid the $9.99 one-time
+  // unlock. Day 1 is free; Day 2+ requires this flag. Source of truth
+  // lives server-side in `leaderboard.mandate_unlocked`; the local copy
+  // is hydrated from AsyncStorage on boot and refreshed via
+  // `refreshMandateStatus()`.
+  mandateUnlocked: boolean;
 };
 
 const KEYS = {
@@ -70,6 +80,7 @@ const KEYS = {
   displayName: "@aum/display_name",
   audioListened: "@aum/audio_listened",
   introsListened: "@aum/intros_listened",
+  mandateUnlocked: "@aum/mandate_unlocked",
 };
 
 // RFC 4122 v4, Math.random based (sufficient as per-device identifier).
@@ -95,6 +106,7 @@ async function loadPersisted(): Promise<Persisted> {
     name,
     audio,
     intros,
+    mandate,
   ] = await Promise.all([
     AsyncStorage.getItem(KEYS.profile),
     AsyncStorage.getItem(KEYS.onboarding),
@@ -108,6 +120,7 @@ async function loadPersisted(): Promise<Persisted> {
     AsyncStorage.getItem(KEYS.displayName),
     AsyncStorage.getItem(KEYS.audioListened),
     AsyncStorage.getItem(KEYS.introsListened),
+    AsyncStorage.getItem(KEYS.mandateUnlocked),
   ]);
   let userId = uid ?? "";
   if (!userId) {
@@ -127,6 +140,7 @@ async function loadPersisted(): Promise<Persisted> {
     displayName: name ?? "",
     audioListened: audio ? JSON.parse(audio) : [],
     introsListened: intros ? JSON.parse(intros) : [],
+    mandateUnlocked: mandate === "true",
   };
 }
 
@@ -161,6 +175,9 @@ type Store = Persisted & {
   hasListenedIntro: (who: IntroAudioKey) => boolean;
   markAudioListened: (day: number) => Promise<void>;
   markIntroListened: (who: IntroAudioKey) => Promise<void>;
+  // Stripe paywall
+  setMandateUnlocked: (unlocked: boolean) => Promise<void>;
+  refreshMandateStatus: () => Promise<void>;
 };
 
 const StoreContext = createContext<Store | null>(null);
@@ -190,6 +207,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     displayName: "",
     audioListened: [],
     introsListened: [],
+    mandateUnlocked: false,
   });
   const [toast, setToast] = useState<Store["toast"]>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -256,6 +274,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         KEYS.introsListened,
         JSON.stringify(next.introsListened),
       ),
+      AsyncStorage.setItem(KEYS.mandateUnlocked, String(next.mandateUnlocked)),
     ]);
   }, []);
 
@@ -291,6 +310,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           displayName: s.displayName,
           audioListened: s.audioListened,
           introsListened: s.introsListened,
+          mandateUnlocked: s.mandateUnlocked,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -315,6 +335,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       displayName: "",
       audioListened: [],
       introsListened: [],
+      mandateUnlocked: false,
     };
     setState({ ...fresh, loaded: true });
     await persist(fresh);
@@ -378,6 +399,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           displayName: s.displayName,
           audioListened: s.audioListened,
           introsListened: s.introsListened,
+          mandateUnlocked: s.mandateUnlocked,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -424,6 +446,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           displayName: s.displayName,
           audioListened: s.audioListened,
           introsListened: s.introsListened,
+          mandateUnlocked: s.mandateUnlocked,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -467,6 +490,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           displayName: s.displayName,
           audioListened: s.audioListened,
           introsListened: s.introsListened,
+          mandateUnlocked: s.mandateUnlocked,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -569,6 +593,42 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [persist],
   );
 
+  const setMandateUnlocked = useCallback(
+    async (unlocked: boolean) => {
+      let snapshot: Persisted | null = null;
+      setState((s) => {
+        if (s.mandateUnlocked === unlocked) return s;
+        const next: Persisted = { ...s, mandateUnlocked: unlocked };
+        snapshot = next;
+        return { ...next, loaded: true };
+      });
+      if (snapshot) await persist(snapshot);
+    },
+    [persist],
+  );
+
+  // Reconciles local mandate state with the server (Supabase is source
+  // of truth). A definitive server response — true OR false — overrides
+  // local; a network error (`null`) leaves local untouched so paid
+  // players keep playing offline. Demoting local on a definitive false
+  // closes the obvious paywall bypass (writing `true` into AsyncStorage
+  // by hand on web). The server-side gate in /api/stripe/session is the
+  // only path that can flip local TRUE legitimately.
+  const refreshMandateStatus = useCallback(async () => {
+    const uid = latestRef.current?.userId ?? state.userId;
+    if (!uid) return;
+    const remote = await fetchMandateStatus(uid);
+    if (remote === null) return;
+    let snapshot: Persisted | null = null;
+    setState((s) => {
+      if (s.mandateUnlocked === remote) return s;
+      const next: Persisted = { ...s, mandateUnlocked: remote };
+      snapshot = next;
+      return { ...next, loaded: true };
+    });
+    if (snapshot) await persist(snapshot);
+  }, [persist, state.userId]);
+
   const value = useMemo<Store>(
     () => ({
       ...state,
@@ -590,6 +650,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       hasListenedIntro,
       markAudioListened,
       markIntroListened,
+      setMandateUnlocked,
+      refreshMandateStatus,
     }),
     [
       state,
@@ -610,6 +672,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       hasListenedIntro,
       markAudioListened,
       markIntroListened,
+      setMandateUnlocked,
+      refreshMandateStatus,
     ],
   );
 

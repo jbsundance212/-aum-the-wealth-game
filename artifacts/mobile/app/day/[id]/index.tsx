@@ -20,17 +20,47 @@ export default function DayHub() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const day = parseInt(String(id || "1"), 10) || 1;
   const router = useRouter();
-  const { days, isStepDone, stepResult, isDayComplete, finalizeDay } = useStore();
+  const {
+    days,
+    isStepDone,
+    stepResult,
+    isDayComplete,
+    finalizeDay,
+    mandateUnlocked,
+    refreshMandateStatus,
+    loaded,
+  } = useStore();
 
   const data = days[day - 1];
   const allDone = isDayComplete(day);
+  const isLockedDay = day >= 2 && !mandateUnlocked;
+
+  // Always re-check the server when arriving at any locked day so a
+  // payment from another tab/device unlocks immediately.
+  useEffect(() => {
+    if (day >= 2) void refreshMandateStatus();
+  }, [day, refreshMandateStatus]);
+
+  // Hard paywall gate for Day 2+. Wait for AsyncStorage hydration so we
+  // don't bounce a paid player to the paywall during a cold boot.
+  useEffect(() => {
+    if (loaded && isLockedDay) {
+      router.replace("/paywall" as never);
+    }
+  }, [loaded, isLockedDay, router]);
 
   useEffect(() => {
-    if (allDone) {
+    if (allDone && !isLockedDay) {
       // Mark day complete + post bonus + advance currentDay
       finalizeDay(day);
     }
-  }, [allDone, day, finalizeDay]);
+  }, [allDone, day, finalizeDay, isLockedDay]);
+
+  if (isLockedDay) {
+    // Render nothing while the redirect runs — avoids flashing locked
+    // station content for a single frame.
+    return <View style={{ flex: 1, backgroundColor: C.bg }} />;
+  }
 
   if (!data) {
     return (
@@ -96,10 +126,24 @@ export default function DayHub() {
             </Text>
             <View style={{ height: 14 }} />
             <Button
-              label={day < 49 ? "Proceed to next day" : "View Mandate Closure"}
+              label={
+                day < 49
+                  ? day === 1 && !mandateUnlocked
+                    ? "Unlock the Mandate"
+                    : "Proceed to next day"
+                  : "View Mandate Closure"
+              }
               onPress={() => {
-                if (day < 49) router.replace(`/day/${day + 1}` as any);
-                else router.replace("/end" as any);
+                if (day >= 49) {
+                  router.replace("/end" as any);
+                  return;
+                }
+                // Day 1 → Day 2 needs the unlock; route to paywall otherwise.
+                if (day === 1 && !mandateUnlocked) {
+                  router.replace("/paywall" as any);
+                  return;
+                }
+                router.replace(`/day/${day + 1}` as any);
               }}
               variant="ink"
             />

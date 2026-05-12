@@ -2,6 +2,7 @@ import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import router from "./routes";
+import { stripeWebhookHandler } from "./routes/stripeWebhook";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -26,6 +27,17 @@ app.use(
   }),
 );
 app.use(cors());
+
+// Stripe webhook MUST be registered with the raw body BEFORE the global
+// `express.json()` middleware — signature verification needs the exact
+// payload bytes Stripe signed. Registering it here on the app (not on the
+// /api sub-router) keeps the route ordering clean.
+app.post(
+  "/api/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhookHandler,
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
