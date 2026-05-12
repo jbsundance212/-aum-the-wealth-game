@@ -216,10 +216,9 @@ router.post("/leaderboard/audio", async (req, res) => {
     introKey = body.intro_key;
   }
 
-  // Read existing arrays so we can merge idempotently. The audio columns are
-  // added by `scripts/supabase-audio-tracking.sql`. If they're not yet present
-  // (script not yet run), Supabase returns column errors — we surface 503 so
-  // the client treats it as "feature not yet available" and moves on.
+  // Read existing arrays so we can merge idempotently. The `audio_listened`
+  // and `intros_listened` columns are provisioned by
+  // `scripts/supabase-audio-tracking.sql` (run once at setup time).
   const { data: row, error: selectErr } = await sb
     .from("leaderboard")
     .select("audio_listened, intros_listened")
@@ -227,11 +226,8 @@ router.post("/leaderboard/audio", async (req, res) => {
     .maybeSingle();
 
   if (selectErr) {
-    req.log.warn(
-      { err: selectErr },
-      "Audio columns missing? Run supabase-audio-tracking.sql in Supabase",
-    );
-    res.status(503).json({ error: "audio_columns_missing" });
+    req.log.error({ err: selectErr }, "Audio listened select failed");
+    res.status(500).json({ error: "select_failed", detail: selectErr.message });
     return;
   }
 

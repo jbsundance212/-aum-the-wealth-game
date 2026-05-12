@@ -420,15 +420,14 @@ The server route `POST /api/leaderboard/audio`
 (`artifacts/api-server/src/routes/leaderboard.ts`) merges the new
 value idempotently into the player's row via Supabase.
 
-### One-time Supabase migration (REQUIRED before audio sync)
+### Supabase migration (already applied)
 
-The leaderboard table needs two extra columns. Run
-`artifacts/api-server/scripts/supabase-audio-tracking.sql` once in
-the Supabase SQL editor (idempotent, uses `add column if not exists`
-and adds GIN indexes for analytics queries). Until this runs,
-`POST /api/leaderboard/audio` returns 503 — the mobile client
-silently ignores the failure and tracking still works locally via
-AsyncStorage.
+The leaderboard table has two extra columns provisioned by
+`artifacts/api-server/scripts/supabase-audio-tracking.sql`
+(`audio_listened int[]`, `intros_listened text[]`, plus GIN indexes
+for analytics queries). The script is idempotent — re-running it is
+safe. If you ever wipe the table, re-run the script before audio
+POSTs will succeed.
 
 ## Notes
 
