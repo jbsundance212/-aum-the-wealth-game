@@ -1,0 +1,75 @@
+Add a full audio briefing system to AUM — The Wealth Game.
+
+CLOUDINARY SETUP:
+All audio files are stored in Cloudinary under the folder: /briefings/
+File naming convention: briefing_day_01.mp3 through briefing_day_50.mp3
+Character intros: barnaby_intro.mp3, sterling_intro.mp3, crane_intro.mp3
+Base Cloudinary URL: https://console.cloudinary.com/app/c-0198351cb9cb17e59587c831b57f33/assets/media_library/folders/cf0d8704cf8945ae48f56de5dbf236ad52?view_mode=list&sortField=displayName&sortDirection=asc
+WHAT TO BUILD:
+
+1. AUDIO PLAYER COMPONENT
+Create a reusable AudioPlayer component that appears on every daily briefing screen.
+- Elegant play/pause button in gold #C8A96E
+- Progress bar in gold showing playback position
+- Duration display in JetBrains Mono font
+- Auto-stops when player navigates away from the screen
+- Remembers if the player has already listened (store in Supabase)
+
+2. BRIEFING SCREEN INTEGRATION
+On each day's briefing screen add:
+- Small headphone icon in gold top right corner
+- Tap to reveal the audio player
+- Text underneath the icon: "LISTEN TO BRIEFING" in JetBrains Mono 9px letter-spacing 3px color #C8A96E
+- The briefing text remains visible while audio plays
+- Player sits above the briefing text
+
+3. CHARACTER INTRO SCREENS
+Three separate intro screens triggered at game start:
+- Screen 1: Barnaby's letter — plays barnaby_intro.mp3 automatically on load
+- Screen 2: Arthur Sterling's welcome — plays sterling_intro.mp3 automatically
+- Screen 3: Victor Crane's opening — plays crane_intro.mp3 automatically
+Each screen has:
+  · Character name in Cormorant Garamond 44px
+  · Character title in JetBrains Mono 10px gold
+  · Auto-playing audio with progress bar
+  · "CONTINUE" button appears only after audio completes OR after 10 seconds
+  · Skip button bottom right: "SKIP" in JetBrains Mono 9px color #888
+
+4. AUDIO URL MAPPING
+Create a data file audioMap.js with this structure:
+export const audioMap = {
+  intro_barnaby: "https://res.cloudinary.com/YOUR_CLOUD/video/upload/briefings/barnaby_intro.mp3",
+  intro_sterling: "https://res.cloudinary.com/YOUR_CLOUD/video/upload/briefings/sterling_intro.mp3",
+  intro_crane: "https://res.cloudinary.com/YOUR_CLOUD/video/upload/briefings/crane_intro.mp3",
+  day_01: "https://res.cloudinary.com/YOUR_CLOUD/video/upload/briefings/briefing_day_01.mp3",
+  day_02: "https://res.cloudinary.com/YOUR_CLOUD/video/upload/briefings/briefing_day_02.mp3",
+  // continue through day_50
+}
+
+5. SUPABASE TRACKING
+Add a column to the players table: audio_listened (array of day numbers)
+When a player completes listening to a briefing audio:
+- Add that day number to their audio_listened array
+- Show a small gold checkmark next to the headphone icon
+- This data feeds into player analytics
+
+6. MOBILE OPTIMISATION
+- Audio player must work on Huawei and Samsung mobile browsers
+- Use HTML5 audio element not Web Audio API (better mobile compatibility)
+- Preload: "none" — do not preload audio until player taps play
+- Handle autoplay restrictions on mobile: show play button rather than autoplay
+
+7. STYLING
+All audio player elements follow AUM design system:
+- Background: #fdfcfa (warm white)
+- Border: 0.5px solid #e8e0d0
+- Gold accent: #C8A96E
+- Font: JetBrains Mono for controls and timing
+- Font: Cormorant Garamond for character names
+- No shadows — clean flat design
+
+IMPORTANT:
+Replace YOUR_CLOUD_NAME with the actual Cloudinary cloud name from the existing 
+Cloudinary integration already in the project.
+Do not break any existing functionality.
+Test audio plays correctly on both desktop and mobile preview.
