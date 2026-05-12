@@ -11,8 +11,10 @@ import React, {
 import { Platform } from "react-native";
 
 import dayDataJson from "./dayData.json";
-import { syncLeaderboard } from "./leaderboardApi";
+import { recordAudioListened, syncLeaderboard } from "./leaderboardApi";
 import { DayData, STEP_ORDER, StepKey } from "./types";
+
+export type IntroAudioKey = "barnaby" | "sterling" | "crane";
 
 export const DAYS = dayDataJson as unknown as DayData[];
 export const STARTING_BALANCE = 1_000_000;
@@ -50,6 +52,9 @@ type Persisted = {
   // New: stable per-device identity for the leaderboard.
   userId: string;
   displayName: string;
+  // Audio briefings the player has finished listening to in full.
+  audioListened: number[];
+  introsListened: IntroAudioKey[];
 };
 
 const KEYS = {
@@ -63,6 +68,8 @@ const KEYS = {
   daysCompleted: "@aum/days_completed",
   userId: "@aum/user_id",
   displayName: "@aum/display_name",
+  audioListened: "@aum/audio_listened",
+  introsListened: "@aum/intros_listened",
 };
 
 // RFC 4122 v4, Math.random based (sufficient as per-device identifier).
@@ -86,6 +93,8 @@ async function loadPersisted(): Promise<Persisted> {
     done,
     uid,
     name,
+    audio,
+    intros,
   ] = await Promise.all([
     AsyncStorage.getItem(KEYS.profile),
     AsyncStorage.getItem(KEYS.onboarding),
@@ -97,6 +106,8 @@ async function loadPersisted(): Promise<Persisted> {
     AsyncStorage.getItem(KEYS.daysCompleted),
     AsyncStorage.getItem(KEYS.userId),
     AsyncStorage.getItem(KEYS.displayName),
+    AsyncStorage.getItem(KEYS.audioListened),
+    AsyncStorage.getItem(KEYS.introsListened),
   ]);
   let userId = uid ?? "";
   if (!userId) {
@@ -114,6 +125,8 @@ async function loadPersisted(): Promise<Persisted> {
     daysCompleted: done ? JSON.parse(done) : [],
     userId,
     displayName: name ?? "",
+    audioListened: audio ? JSON.parse(audio) : [],
+    introsListened: intros ? JSON.parse(intros) : [],
   };
 }
 
@@ -143,6 +156,11 @@ type Store = Persisted & {
   stepResult: (day: number, step: StepKey) => { correct?: boolean } | null;
   isDayComplete: (day: number) => boolean;
   dismissToast: () => void;
+  // Audio briefings
+  hasListenedDay: (day: number) => boolean;
+  hasListenedIntro: (who: IntroAudioKey) => boolean;
+  markAudioListened: (day: number) => Promise<void>;
+  markIntroListened: (who: IntroAudioKey) => Promise<void>;
 };
 
 const StoreContext = createContext<Store | null>(null);
@@ -170,6 +188,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     daysCompleted: [],
     userId: "",
     displayName: "",
+    audioListened: [],
+    introsListened: [],
   });
   const [toast, setToast] = useState<Store["toast"]>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -228,6 +248,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       ),
       AsyncStorage.setItem(KEYS.userId, next.userId),
       AsyncStorage.setItem(KEYS.displayName, next.displayName),
+      AsyncStorage.setItem(
+        KEYS.audioListened,
+        JSON.stringify(next.audioListened),
+      ),
+      AsyncStorage.setItem(
+        KEYS.introsListened,
+        JSON.stringify(next.introsListened),
+      ),
     ]);
   }, []);
 
@@ -261,6 +289,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           daysCompleted: s.daysCompleted,
           userId: s.userId,
           displayName: s.displayName,
+          audioListened: s.audioListened,
+          introsListened: s.introsListened,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -283,6 +313,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       daysCompleted: [],
       userId: uuidv4(),
       displayName: "",
+      audioListened: [],
+      introsListened: [],
     };
     setState({ ...fresh, loaded: true });
     await persist(fresh);
@@ -344,6 +376,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           daysCompleted: s.daysCompleted,
           userId: s.userId,
           displayName: s.displayName,
+          audioListened: s.audioListened,
+          introsListened: s.introsListened,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -388,6 +422,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           daysCompleted: s.daysCompleted,
           userId: s.userId,
           displayName: s.displayName,
+          audioListened: s.audioListened,
+          introsListened: s.introsListened,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -429,6 +465,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           daysCompleted: [...s.daysCompleted, day],
           userId: s.userId,
           displayName: s.displayName,
+          audioListened: s.audioListened,
+          introsListened: s.introsListened,
         };
         snapshot = next;
         return { ...next, loaded: true };
@@ -464,6 +502,73 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [state.completion],
   );
 
+  const hasListenedDay = useCallback(
+    (day: number) => state.audioListened.includes(day),
+    [state.audioListened],
+  );
+
+  const hasListenedIntro = useCallback(
+    (who: IntroAudioKey) => state.introsListened.includes(who),
+    [state.introsListened],
+  );
+
+  const markAudioListened = useCallback(
+    async (day: number) => {
+      let snapshot: Persisted | null = null;
+      let userIdAtFire = "";
+      setState((s) => {
+        if (s.audioListened.includes(day)) return s;
+        const next: Persisted = {
+          ...s,
+          audioListened: [...s.audioListened, day].sort((a, b) => a - b),
+        };
+        snapshot = next;
+        userIdAtFire = s.userId;
+        return { ...next, loaded: true };
+      });
+      if (snapshot) {
+        await persist(snapshot);
+        // Fire-and-forget Supabase write (skipped silently if endpoint unwired).
+        if (userIdAtFire) {
+          void recordAudioListened({
+            user_id: userIdAtFire,
+            kind: "day",
+            day_number: day,
+          });
+        }
+      }
+    },
+    [persist],
+  );
+
+  const markIntroListened = useCallback(
+    async (who: IntroAudioKey) => {
+      let snapshot: Persisted | null = null;
+      let userIdAtFire = "";
+      setState((s) => {
+        if (s.introsListened.includes(who)) return s;
+        const next: Persisted = {
+          ...s,
+          introsListened: [...s.introsListened, who],
+        };
+        snapshot = next;
+        userIdAtFire = s.userId;
+        return { ...next, loaded: true };
+      });
+      if (snapshot) {
+        await persist(snapshot);
+        if (userIdAtFire) {
+          void recordAudioListened({
+            user_id: userIdAtFire,
+            kind: "intro",
+            intro_key: who,
+          });
+        }
+      }
+    },
+    [persist],
+  );
+
   const value = useMemo<Store>(
     () => ({
       ...state,
@@ -481,6 +586,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       stepResult,
       isDayComplete,
       dismissToast,
+      hasListenedDay,
+      hasListenedIntro,
+      markAudioListened,
+      markIntroListened,
     }),
     [
       state,
@@ -497,6 +606,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       stepResult,
       isDayComplete,
       dismissToast,
+      hasListenedDay,
+      hasListenedIntro,
+      markAudioListened,
+      markIntroListened,
     ],
   );
 

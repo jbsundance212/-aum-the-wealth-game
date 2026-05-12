@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,16 +11,23 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { C } from "@/constants/colors";
+import { AudioPlayer } from "@/src/components/AudioPlayer";
 import { Button } from "@/src/components/Button";
 import { CharacterAvatar } from "@/src/components/CharacterAvatar";
-import { useStore } from "@/src/data/store";
+import { audioForIntro } from "@/src/data/audioMap";
+import { type IntroAudioKey, useStore } from "@/src/data/store";
 import { FONT } from "@/src/theme/typography";
 import { characterFace } from "@/src/utils/cloudinary";
 
-// Rendered diameter of the chapter portrait. Sterling and Barnaby render as
-// initials avatars (no real photo yet); Victor still pulls his Cloudinary
-// portrait, so we request it at 2× this size for retina sharpness.
+// Rendered diameter of the chapter portrait. We request 2× this size from
+// Cloudinary for retina sharpness.
 const AVATAR_DIAMETER = 220;
+
+// "CONTINUE" is unlocked when audio finishes OR after this many ms — whichever
+// comes first. Per the audio brief: 10 seconds.
+const CONTINUE_UNLOCK_MS = 10_000;
+
+const SKIP_INK = "#888888";
 
 type ContentSlide = {
   kind: "story";
@@ -27,11 +35,13 @@ type ContentSlide = {
   title: string;
   body: string[];
   // Avatar configuration: a real character key (renders the avatar component)
-  // plus an optional photoUri for characters who have a real photo (Victor).
-  // When `photoUri` is undefined, the avatar falls back to initials.
+  // plus an optional photoUri for characters who have a real photo. When
+  // `photoUri` is null, the avatar falls back to initials.
   characterName: string;
   photoUri: string | null;
   footer: string;
+  // Cloudinary intro audio — auto-plays, gates "CONTINUE" on completion.
+  introKey: IntroAudioKey;
 };
 
 type NameSlide = {
@@ -53,6 +63,7 @@ const SLIDES: Slide[] = [
     characterName: "Barnaby Buckley",
     photoUri: characterFace("barnaby", AVATAR_DIAMETER),
     footer: "His Trust now passes — provisionally — to you.",
+    introKey: "barnaby",
   },
   {
     kind: "story",
@@ -64,6 +75,7 @@ const SLIDES: Slide[] = [
     characterName: "Arthur Sterling",
     photoUri: characterFace("sterling", AVATAR_DIAMETER),
     footer: "He will not be charmed. He will not be hurried.",
+    introKey: "sterling",
   },
   {
     kind: "story",
@@ -75,6 +87,7 @@ const SLIDES: Slide[] = [
     characterName: "Victor Crane",
     photoUri: characterFace("victor", AVATAR_DIAMETER),
     footer: "You begin together at $1,000,000. The work begins tomorrow.",
+    introKey: "crane",
   },
   {
     kind: "name",
@@ -87,12 +100,53 @@ export default function OnboardingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(0);
-  const { displayName, setDisplayName, completeOnboarding } = useStore();
+  const {
+    displayName,
+    setDisplayName,
+    completeOnboarding,
+    markIntroListened,
+    hasListenedIntro,
+  } = useStore();
   const [nameInput, setNameInput] = useState(displayName);
+  // Per-step "continue unlocked" gate for character chapters. Resets when
+  // `step` changes; flips true on either audio completion or the 10s timer.
+  const [continueUnlocked, setContinueUnlocked] = useState(false);
+  const unlockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const slide = SLIDES[step]!;
   const isLast = step === SLIDES.length - 1;
+  const isStory = slide.kind === "story";
   const nameValid = nameInput.trim().length >= 2;
+
+  // (Re)arm the 10-second unlock fallback whenever we land on a story slide.
+  // If the player has already listened to this intro on a prior visit (or in
+  // a previous app session), unlock immediately — no penalty for revisiting.
+  useEffect(() => {
+    if (unlockTimer.current) {
+      clearTimeout(unlockTimer.current);
+      unlockTimer.current = null;
+    }
+    if (!isStory) {
+      setContinueUnlocked(true);
+      return;
+    }
+    const storySlide = slide as ContentSlide;
+    if (hasListenedIntro(storySlide.introKey)) {
+      setContinueUnlocked(true);
+      return;
+    }
+    setContinueUnlocked(false);
+    unlockTimer.current = setTimeout(() => {
+      setContinueUnlocked(true);
+    }, CONTINUE_UNLOCK_MS);
+    return () => {
+      if (unlockTimer.current) {
+        clearTimeout(unlockTimer.current);
+        unlockTimer.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   const next = async () => {
     if (isLast) {
@@ -104,6 +158,15 @@ export default function OnboardingScreen() {
       setStep((s) => s + 1);
     }
   };
+
+  const skip = () => {
+    // Skip remaining intros — jump to the name-entry slide. Audio cleanup
+    // happens via the AudioPlayer's unmount effect.
+    setStep(SLIDES.length - 1);
+  };
+
+  const continueDisabled =
+    (isStory && !continueUnlocked) || (isLast && !nameValid);
 
   return (
     <View style={[styles.flex, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -126,21 +189,38 @@ export default function OnboardingScreen() {
         <Text style={styles.eyebrow}>{slide.eyebrow}</Text>
         <Text style={styles.title}>{slide.title}</Text>
 
-        {slide.kind === "story" ? (
+        {isStory ? (
           <>
             <View style={styles.imageWrap}>
               <CharacterAvatar
-                name={slide.characterName}
+                name={(slide as ContentSlide).characterName}
                 size={AVATAR_DIAMETER}
-                photoUri={slide.photoUri}
+                photoUri={(slide as ContentSlide).photoUri}
               />
             </View>
-            {slide.body.map((p, i) => (
+
+            <AudioPlayer
+              key={`intro-${(slide as ContentSlide).introKey}`}
+              uri={audioForIntro((slide as ContentSlide).introKey)}
+              autoPlay
+              style={styles.introPlayer}
+              onComplete={() => {
+                setContinueUnlocked(true);
+                void markIntroListened((slide as ContentSlide).introKey);
+              }}
+              onError={() => {
+                // Audio missing or failed to load — don't punish the player
+                // with a 10-second wait; unlock CONTINUE immediately.
+                setContinueUnlocked(true);
+              }}
+            />
+
+            {(slide as ContentSlide).body.map((p, i) => (
               <Text key={i} style={styles.copy}>
                 {p}
               </Text>
             ))}
-            <Text style={styles.footer}>{slide.footer}</Text>
+            <Text style={styles.footer}>{(slide as ContentSlide).footer}</Text>
           </>
         ) : (
           <View style={styles.nameWrap}>
@@ -188,10 +268,22 @@ export default function OnboardingScreen() {
             label={isLast ? "Begin Day One" : "Continue"}
             onPress={next}
             variant="ink"
-            disabled={isLast && !nameValid}
+            disabled={continueDisabled}
           />
         </View>
       </View>
+      {/* Skip — only visible during character chapters, bottom-right. */}
+      {isStory && !isLast ? (
+        <Pressable
+          onPress={skip}
+          accessibilityRole="button"
+          accessibilityLabel="Skip character introductions"
+          style={styles.skipBtn}
+          hitSlop={10}
+        >
+          <Text style={styles.skipText}>SKIP</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -224,6 +316,9 @@ const styles = StyleSheet.create({
   imageWrap: {
     alignItems: "center",
     marginTop: 24,
+  },
+  introPlayer: {
+    marginTop: 18,
   },
   copy: {
     fontFamily: FONT.body,
@@ -275,5 +370,18 @@ const styles = StyleSheet.create({
     backgroundColor: C.bg,
     borderTopWidth: 1,
     borderTopColor: C.divider,
+  },
+  skipBtn: {
+    position: "absolute",
+    right: 18,
+    bottom: 70,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
+  skipText: {
+    fontFamily: FONT.mono,
+    fontSize: 9,
+    color: SKIP_INK,
+    letterSpacing: 3,
   },
 });

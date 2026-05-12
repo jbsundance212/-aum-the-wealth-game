@@ -164,4 +164,101 @@ router.post("/leaderboard/bourse-result", async (req, res) => {
   res.json({ ok: true });
 });
 
+// POST /api/leaderboard/audio --------------------------------------------------
+// Records that a player has finished listening to a briefing or intro audio.
+// Idempotent: appends to the array only if the value is not already present.
+router.post("/leaderboard/audio", async (req, res) => {
+  const sb = getSupabase();
+  if (!sb) {
+    res.status(503).json({ error: "leaderboard_unavailable" });
+    return;
+  }
+
+  const body = (req.body ?? {}) as {
+    user_id?: unknown;
+    kind?: unknown;
+    day_number?: unknown;
+    intro_key?: unknown;
+  };
+
+  if (!isUuid(body.user_id)) {
+    res.status(400).json({ error: "invalid_user_id" });
+    return;
+  }
+  const kind = body.kind;
+  if (kind !== "day" && kind !== "intro") {
+    res.status(400).json({ error: "invalid_kind" });
+    return;
+  }
+
+  let dayNum: number | null = null;
+  let introKey: string | null = null;
+  if (kind === "day") {
+    if (
+      typeof body.day_number !== "number" ||
+      !Number.isFinite(body.day_number) ||
+      body.day_number < 1 ||
+      body.day_number > 50
+    ) {
+      res.status(400).json({ error: "invalid_day_number" });
+      return;
+    }
+    dayNum = Math.round(body.day_number);
+  } else {
+    if (
+      body.intro_key !== "barnaby" &&
+      body.intro_key !== "sterling" &&
+      body.intro_key !== "crane"
+    ) {
+      res.status(400).json({ error: "invalid_intro_key" });
+      return;
+    }
+    introKey = body.intro_key;
+  }
+
+  // Read existing arrays so we can merge idempotently. The audio columns are
+  // added by `scripts/supabase-audio-tracking.sql`. If they're not yet present
+  // (script not yet run), Supabase returns column errors — we surface 503 so
+  // the client treats it as "feature not yet available" and moves on.
+  const { data: row, error: selectErr } = await sb
+    .from("leaderboard")
+    .select("audio_listened, intros_listened")
+    .eq("user_id", body.user_id)
+    .maybeSingle();
+
+  if (selectErr) {
+    req.log.warn(
+      { err: selectErr },
+      "Audio columns missing? Run supabase-audio-tracking.sql in Supabase",
+    );
+    res.status(503).json({ error: "audio_columns_missing" });
+    return;
+  }
+
+  const audioListened = new Set<number>(
+    (row?.audio_listened as number[] | null) ?? [],
+  );
+  const introsListened = new Set<string>(
+    (row?.intros_listened as string[] | null) ?? [],
+  );
+  if (dayNum !== null) audioListened.add(dayNum);
+  if (introKey !== null) introsListened.add(introKey);
+
+  const { error: updateErr } = await sb
+    .from("leaderboard")
+    .update({
+      audio_listened: Array.from(audioListened).sort((a, b) => a - b),
+      intros_listened: Array.from(introsListened),
+      last_updated: new Date().toISOString(),
+    })
+    .eq("user_id", body.user_id);
+
+  if (updateErr) {
+    req.log.error({ err: updateErr }, "Audio listened update failed");
+    res.status(500).json({ error: "update_failed", detail: updateErr.message });
+    return;
+  }
+  res.json({ ok: true });
+});
+
 export default router;

@@ -345,6 +345,91 @@ leaderboard 1600ms, quote 2000ms) plus a looping pulse on the LIVE dot.
   any caller who can reach the Express server can submit leaderboard
   rows. Acceptable for an MVP cohort game; revisit if abuse appears.
 
+## Audio briefings
+
+Reusable audio narration covering every daily briefing (50 days) plus
+the three onboarding character intros (Barnaby, Sterling, Crane). All
+audio is hosted on Cloudinary alongside the portraits.
+
+### URL convention
+
+Audio files live in the Cloudinary `briefings/` folder and are served
+via the `video/upload` path (Cloudinary's convention for audio):
+
+```
+https://res.cloudinary.com/<cloud>/video/upload/<publicId>.mp3
+```
+
+The expected publicId prefixes are `briefings/briefing_day_NN` for
+days and `briefings/<character>_intro` for intros. Cloudinary auto-
+appends a 6-char random suffix on upload, so the resolved publicIds
+are e.g. `briefings/briefing_day_01_a1b2c3`.
+
+### Stub state (current)
+
+`artifacts/mobile/src/data/audioMap.ts` ships hand-built stub URLs
+that follow the convention exactly. `AUDIO_STUBS_ACTIVE = true` in
+that file flags the stubs. Until the real files are uploaded these
+URLs return 404 — the `AudioPlayer` component degrades gracefully
+to "AUDIO UNAVAILABLE" instead of crashing.
+
+### Rebuilding the map after upload
+
+Once all 53 audio files are uploaded:
+
+```
+cd artifacts/mobile && node scripts/build-audio-map.cjs
+```
+
+The script enumerates the `briefings/` folder via the Cloudinary
+Admin API (needs `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`,
+`CLOUDINARY_API_SECRET`) and writes
+`src/data/audioMapResolved.json`. Update `audioMap.ts` to read from
+that JSON (mirroring the `titanPhotos.json` pattern) and flip
+`AUDIO_STUBS_ACTIVE` to `false`.
+
+### Components + integration
+
+- `src/components/AudioPlayer.tsx` — reusable expo-av player with
+  gold (#C8A96E) play/pause + progress bar + JetBrains Mono timing.
+  Auto-unloads on unmount, handles 404s gracefully, fires
+  `onComplete()` when the file finishes. Supports `autoPlay` and a
+  `compact` variant.
+- `app/day/[id]/briefing.tsx` — gold ♪ "LISTEN TO BRIEFING" toggle
+  in the top-right reveals the player above the briefing text. Gold
+  ✓ checkmark appears once the player has finished it (state lives
+  in `hasListenedDay(day)`).
+- `app/onboarding.tsx` — each character chapter (Barnaby/Sterling/
+  Crane) auto-plays its intro audio via `AudioPlayer autoPlay`. The
+  "Continue" button is gated until either the audio reports complete
+  OR a 10-second fallback timer fires (handles autoplay blocks +
+  missing audio). Players who already heard an intro on a prior
+  visit unlock immediately. A small mono-grey "SKIP" affordance
+  bottom-right jumps straight to the name slide.
+
+### State + Supabase tracking
+
+`src/data/store.tsx` persists two new arrays to AsyncStorage:
+`audioListened: number[]` (day briefings) and
+`introsListened: IntroAudioKey[]`. `markAudioListened(day)` and
+`markIntroListened(who)` update both AsyncStorage and fire a
+fire-and-forget POST to `/api/leaderboard/audio` (added to
+`leaderboardApi.ts` as `recordAudioListened`).
+
+The server route `POST /api/leaderboard/audio`
+(`artifacts/api-server/src/routes/leaderboard.ts`) merges the new
+value idempotently into the player's row via Supabase.
+
+### One-time Supabase migration (REQUIRED before audio sync)
+
+The leaderboard table needs two extra columns. Run
+`artifacts/api-server/scripts/supabase-audio-tracking.sql` once in
+the Supabase SQL editor (idempotent, uses `add column if not exists`
+and adds GIN indexes for analytics queries). Until this runs,
+`POST /api/leaderboard/audio` returns 503 — the mobile client
+silently ignores the failure and tracking still works locally via
+AsyncStorage.
+
 ## Notes
 
 - `react-native-web-webview` is installed as a peer of

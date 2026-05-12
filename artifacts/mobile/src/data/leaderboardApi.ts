@@ -25,6 +25,10 @@ export type BourseResultPayload = SyncPayload & {
   pnl: number;
 };
 
+export type AudioListenedPayload =
+  | { user_id: string; kind: "day"; day_number: number }
+  | { user_id: string; kind: "intro"; intro_key: "barnaby" | "sterling" | "crane" };
+
 async function postJson(path: string, body: unknown): Promise<void> {
   try {
     const res = await fetch(`${API_BASE}${path}`, {
@@ -47,6 +51,12 @@ export function syncLeaderboard(payload: SyncPayload): Promise<void> {
 
 export function postBourseResult(payload: BourseResultPayload): Promise<void> {
   return postJson("/leaderboard/bourse-result", payload);
+}
+
+export function recordAudioListened(
+  payload: AudioListenedPayload,
+): Promise<void> {
+  return postJson("/leaderboard/audio", payload);
 }
 
 export async function fetchLeaderboard(): Promise<LeaderboardPlayer[]> {
