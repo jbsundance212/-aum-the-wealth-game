@@ -264,8 +264,24 @@ Layers:
 
 $9.99 USD one-time purchase gates Day 2+. **Day 1 is fully free** (8
 stations + $25K bonus). Tapping "Proceed" on the Day 1 hub or
-deep-linking `/day/2`+ routes to `app/paywall.tsx` → Stripe-hosted
-Checkout Session.
+deep-linking `/day/2`+ routes to `app/paywall.tsx`.
+
+**Checkout = static Stripe Payment Link** (not a server-created session).
+The paywall opens `EXPO_PUBLIC_STRIPE_PAYMENT_LINK` (public URL, safe
+client-side; literal fallback in `paywall.tsx`) with the player's
+`userId` appended as `?client_reference_id=…`. Stripe carries that id
+onto the Checkout Session so the unlock stays bound to the right player.
+The legacy server-created session route (`POST /api/stripe/checkout`)
+still exists and works but is no longer called by the client.
+
+**Stripe Dashboard config (REQUIRED for auto-unlock)**: the Payment Link
+must be set to redirect after payment to
+`https://<deployed-domain>/paywall-success` (Stripe → Payment Links →
+this link → After payment → Redirect). Stripe auto-appends
+`?session_id=cs_…`; the success screen verifies it and unlocks. Without
+this redirect the payment still succeeds but the player lands on
+Stripe's default confirmation page and never returns — the mandate then
+only unlocks via the webhook backup (needs `STRIPE_WEBHOOK_SECRET`).
 
 **Source of truth**: `leaderboard.mandate_unlocked` in Supabase. Local
 `mandateUnlocked: boolean` is a hydrated mirror under
@@ -288,10 +304,13 @@ no Replit Postgres — Supabase is canonical).
     from Supabase. Mobile polls on Day 2+ entry.
   - `GET /api/stripe/session?session_id=...&user_id=...` —
     server-trusted Stripe verify. **Primary unlock path** — also upserts
-    `mandate_unlocked: true`. The `user_id` param binds verification to
-    the calling player; mismatch returns `paid:false,
-    error:"user_mismatch"` and refuses upsert (stops a leaked `cs_…`
-    URL unlocking another account). `product` metadata also checked.
+    `mandate_unlocked: true`. The player id is read from
+    `metadata.user_id` (server sessions) OR `client_reference_id`
+    (Payment Links). The `user_id` param binds verification to the
+    calling player; mismatch returns `paid:false, error:"user_mismatch"`
+    and refuses upsert (stops a leaked `cs_…` URL unlocking another
+    account). `product` metadata also checked (null-safe for Payment
+    Links).
 - `src/routes/stripeWebhook.ts` — mounted in `src/app.ts` with
   `express.raw({type:"application/json"})` BEFORE the global
   `express.json()` (signature verify needs exact bytes). Refuses 503

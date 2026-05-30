@@ -5,10 +5,13 @@
 // day" button on Day 1's hub also routes here once Day 1 closes if
 // the player hasn't paid.
 //
-// On tap we POST to /api/stripe/checkout, get back a Stripe-hosted
-// Checkout URL, and redirect the browser to it. After payment Stripe
-// returns the player to /paywall-success?session_id=… which verifies
-// with Stripe and flips the local + server unlock flags.
+// On tap we open the Stripe Payment Link with the player's userId
+// attached as `client_reference_id`. Stripe carries that id onto the
+// resulting Checkout Session, so the unlock stays bound to this player:
+//   - if the Payment Link is configured (in the Stripe Dashboard) to
+//     redirect to <domain>/paywall-success, Stripe appends ?session_id=…
+//     and the success screen verifies + unlocks via GET /api/stripe/session
+//   - the webhook (backup) reads the same client_reference_id.
 
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -24,7 +27,6 @@ import {
 
 import { Header } from "@/src/components/Header";
 import { useStore } from "@/src/data/store";
-import { createCheckoutSession } from "@/src/data/leaderboardApi";
 import { FONT } from "@/src/theme/typography";
 
 const GOLD = "#C8A96E";
@@ -35,14 +37,20 @@ const INK_DIM = "#888888";
 const INK_FAINT = "#cccccc";
 const PAGE_BG = "#FFFFFF";
 
-function getReturnOrigin(): string {
-  if (Platform.OS === "web" && typeof window !== "undefined") {
-    return window.location.origin;
-  }
-  // Native fallback — Expo dev tunnel domain.
-  const dev = process.env["EXPO_PUBLIC_DOMAIN"];
-  if (dev) return `https://${dev}`;
-  return "";
+// Public Stripe Payment Link. The URL is safe to ship client-side — it
+// is meant to be shared with customers. Configurable via env so it can
+// be swapped (e.g. live vs test) without a code change; the literal
+// fallback keeps the button working if the env var isn't picked up.
+const PAYMENT_LINK =
+  process.env["EXPO_PUBLIC_STRIPE_PAYMENT_LINK"] ||
+  "https://buy.stripe.com/6oU4gAgmX8GU8Fj8jO2go00";
+
+// client_reference_id binds the payment to this player so the server can
+// unlock the right account. UUIDs (hex + hyphens) satisfy Stripe's
+// allowed [A-Za-z0-9_-] charset.
+function buildCheckoutUrl(userId: string): string {
+  const sep = PAYMENT_LINK.includes("?") ? "&" : "?";
+  return `${PAYMENT_LINK}${sep}client_reference_id=${encodeURIComponent(userId)}`;
 }
 
 export default function Paywall() {
@@ -66,7 +74,7 @@ export default function Paywall() {
     void refreshMandateStatus();
   }, [refreshMandateStatus]);
 
-  const onUnlock = async () => {
+  const onUnlock = () => {
     if (busy) return;
     setError(null);
     if (!userId) {
@@ -75,31 +83,13 @@ export default function Paywall() {
       );
       return;
     }
-    const origin = getReturnOrigin();
-    if (!origin) {
-      setError(
-        "Can't determine the return URL on this device. Open the game in a browser and try again.",
-      );
-      return;
-    }
     setBusy(true);
-    const result = await createCheckoutSession({
-      user_id: userId,
-      display_name: displayName || "",
-      return_origin: origin,
-    });
-    if (!result) {
-      setError(
-        "Couldn't open the secure checkout. Please try again in a moment.",
-      );
-      setBusy(false);
-      return;
-    }
+    const url = buildCheckoutUrl(userId);
     if (Platform.OS === "web" && typeof window !== "undefined") {
       // Same-tab redirect on web for cleanest UX.
-      window.location.assign(result.url);
+      window.location.assign(url);
     } else {
-      Linking.openURL(result.url).catch(() => {
+      Linking.openURL(url).catch(() => {
         setError("Couldn't open the secure checkout in your browser.");
         setBusy(false);
       });

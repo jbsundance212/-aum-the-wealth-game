@@ -1,0 +1,1 @@
+- [Stripe mandate unlock](stripe-paywall-unlock.md) — unlock gate must require positive product proof (not fail-open); live Payment Link is invisible from dev/test Stripe account.

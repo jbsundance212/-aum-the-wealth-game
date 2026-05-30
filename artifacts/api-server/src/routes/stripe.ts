@@ -28,6 +28,15 @@ const PRODUCT_DESCRIPTION =
 const PRODUCT_TAG = "AUM_MANDATE_SEASON_1";
 const PRICE_USD_CENTS = 999;
 
+// Optional hard allowlist for Payment Link sessions. If set to the
+// `plink_…` id of the AUM mandate Payment Link, only sessions created
+// from that exact link can unlock. Leave unset to fall back to the
+// amount + currency gate below (safe for a single-product account).
+function expectedPaymentLinkId(): string | null {
+  const v = process.env["STRIPE_MANDATE_PAYMENT_LINK_ID"];
+  return typeof v === "string" && v.startsWith("plink_") ? v : null;
+}
+
 function isUuid(v: unknown): v is string {
   return (
     typeof v === "string" &&
@@ -202,10 +211,15 @@ router.get("/stripe/session", async (req, res) => {
   }
 
   const stripePaid = session.payment_status === "paid";
+  // Server-created Checkout Sessions carry the player id in metadata;
+  // Stripe Payment Links carry it in client_reference_id (appended to the
+  // link URL on the paywall). Accept either so both flows can unlock.
   const userId =
     typeof session.metadata?.["user_id"] === "string"
       ? session.metadata["user_id"]
-      : null;
+      : typeof session.client_reference_id === "string"
+        ? session.client_reference_id
+        : null;
   const productTag =
     typeof session.metadata?.["product"] === "string"
       ? session.metadata["product"]
@@ -223,10 +237,25 @@ router.get("/stripe/session", async (req, res) => {
   // not paid by them. This is the security gate the client trusts.
   const userMismatch =
     callerUserId !== null && userId !== null && callerUserId !== userId;
-  // Defence in depth — a paid session for some OTHER product (if we ever
-  // add more) should not unlock the mandate.
-  const productMismatch = productTag !== null && productTag !== PRODUCT_TAG;
-  const paid = stripePaid && !userMismatch && !productMismatch;
+  // Positive authorization — the session must prove it is for OUR product
+  // before we unlock. Two acceptable proofs:
+  //   (a) legacy server-created session carrying our product metadata tag;
+  //   (b) a Stripe Payment Link session (no product metadata) for the
+  //       correct $9.99 USD amount — optionally pinned to an exact
+  //       `plink_…` id via STRIPE_MANDATE_PAYMENT_LINK_ID.
+  // A bare paid session with neither proof (e.g. some other product in the
+  // same Stripe account) is refused.
+  const linkId =
+    typeof session.payment_link === "string" ? session.payment_link : null;
+  const expectedLink = expectedPaymentLinkId();
+  const amountOk =
+    (session.amount_total ?? 0) === PRICE_USD_CENTS &&
+    (session.currency ?? "").toLowerCase() === "usd";
+  const linkIdOk = expectedLink === null ? true : linkId === expectedLink;
+  const fromValidPaymentLink = linkId !== null && amountOk && linkIdOk;
+  const productAuthorized =
+    productTag === PRODUCT_TAG || fromValidPaymentLink;
+  const paid = stripePaid && !userMismatch && productAuthorized;
 
   if (paid && userId && isUuid(userId)) {
     const sb = getSupabase();
@@ -263,10 +292,10 @@ router.get("/stripe/session", async (req, res) => {
     // Surfaced for clearer client error messages.
     error: userMismatch
       ? "user_mismatch"
-      : productMismatch
-        ? "product_mismatch"
-        : !stripePaid
-          ? "not_paid"
+      : !stripePaid
+        ? "not_paid"
+        : !productAuthorized
+          ? "product_mismatch"
           : null,
   });
 });

@@ -66,11 +66,41 @@ export const stripeWebhookHandler: RequestHandler = async (req, res) => {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as {
       payment_status?: string;
+      client_reference_id?: string | null;
       metadata?: Record<string, string> | null;
+      payment_link?: string | null;
+      amount_total?: number | null;
+      currency?: string | null;
     };
-    const paid = session.payment_status === "paid";
-    const userId = session.metadata?.["user_id"];
+    const stripePaid = session.payment_status === "paid";
+    // Checkout Sessions store the player id in metadata; Payment Links
+    // store it in client_reference_id. Accept either.
+    const userId =
+      session.metadata?.["user_id"] ?? session.client_reference_id ?? undefined;
     const displayName = session.metadata?.["display_name"] ?? "";
+
+    // Mirror the positive-authorization gate from GET /api/stripe/session:
+    // require either our product metadata tag (server sessions) OR a valid
+    // Payment Link session for the correct $9.99 USD amount (optionally
+    // pinned to an exact plink_ id). Stops an unrelated paid session in the
+    // same Stripe account from unlocking the mandate.
+    const productTag = session.metadata?.["product"] ?? null;
+    const linkId =
+      typeof session.payment_link === "string" ? session.payment_link : null;
+    const expectedLinkEnv = process.env["STRIPE_MANDATE_PAYMENT_LINK_ID"];
+    const expectedLink =
+      typeof expectedLinkEnv === "string" &&
+      expectedLinkEnv.startsWith("plink_")
+        ? expectedLinkEnv
+        : null;
+    const amountOk =
+      (session.amount_total ?? 0) === 999 &&
+      (session.currency ?? "").toLowerCase() === "usd";
+    const linkIdOk = expectedLink === null ? true : linkId === expectedLink;
+    const fromValidPaymentLink = linkId !== null && amountOk && linkIdOk;
+    const productAuthorized =
+      productTag === "AUM_MANDATE_SEASON_1" || fromValidPaymentLink;
+    const paid = stripePaid && productAuthorized;
 
     if (paid && typeof userId === "string" && userId) {
       const sb = getSupabase();
