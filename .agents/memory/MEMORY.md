@@ -1,2 +1,3 @@
 - [Stripe mandate unlock](stripe-paywall-unlock.md) — unlock gate must require positive product proof (not fail-open); live Payment Link is invisible from dev/test Stripe account.
 - [expo-router back dead-end](expo-router-back-deadend.md) — bare router.back() is a no-op on Expo Web direct-load/refresh; use guarded nav helpers (exitToHub/safeBack).
+- [Expo Web iframe embeds](expo-web-iframe-embed.md) — raw <iframe> renders+typechecks on Expo Web; gate behind Platform.OS==="web", keep native player in else; use YouTube /embed/<id>.

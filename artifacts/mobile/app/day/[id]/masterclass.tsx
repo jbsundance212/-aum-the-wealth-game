@@ -1,11 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { exitToHub } from "@/src/utils/nav";
-import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
 import {
   Dimensions,
-  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -48,17 +46,12 @@ export default function MasterclassScreen() {
     exitToHub(router, day);
   };
 
-  const openExternally = () => {
-    if (Platform.OS === "web") {
-      Linking.openURL(data.masterclassUrl);
-    } else {
-      WebBrowser.openBrowserAsync(data.masterclassUrl).catch(() => {});
-    }
-  };
-
   if (!data) return null;
   const width = Dimensions.get("window").width - 36;
   const height = Math.round((width * 9) / 16);
+  const embedUrl = data.masterclassYouTubeId
+    ? `https://www.youtube.com/embed/${data.masterclassYouTubeId}`
+    : null;
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
@@ -69,7 +62,22 @@ export default function MasterclassScreen() {
       />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={[styles.player, { height }]}>
-          {YoutubePlayer && data.masterclassYouTubeId ? (
+          {Platform.OS === "web" ? (
+            embedUrl ? (
+              <iframe
+                src={embedUrl}
+                title="The Masterclass"
+                style={{ width: "100%", height: "100%", border: "none" }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <View style={styles.fallback}>
+                <Feather name="play-circle" size={56} color={C.inkMuted} />
+                <Text style={styles.fallbackText}>Lecture unavailable</Text>
+              </View>
+            )
+          ) : YoutubePlayer && data.masterclassYouTubeId ? (
             <YoutubePlayer
               height={height}
               width={width}
@@ -82,25 +90,10 @@ export default function MasterclassScreen() {
           ) : (
             <View style={styles.fallback}>
               <Feather name="play-circle" size={56} color={C.inkMuted} />
-              <Text style={styles.fallbackText}>
-                Open the lecture in your browser
-              </Text>
-              <Text style={styles.fallbackHint}>
-                {data.masterclassUrl}
-              </Text>
+              <Text style={styles.fallbackText}>Lecture unavailable</Text>
             </View>
           )}
         </View>
-
-        {Platform.OS === "web" || !YoutubePlayer ? (
-          <View style={{ marginTop: 14 }}>
-            <Button
-              label="Open Masterclass in Browser"
-              variant="outline"
-              onPress={openExternally}
-            />
-          </View>
-        ) : null}
 
         <View style={styles.note}>
           <Text style={styles.noteLabel}>EXECUTOR'S NOTE</Text>
@@ -146,12 +139,6 @@ const styles = StyleSheet.create({
     fontFamily: FONT.bodySemiBold,
     fontSize: 14,
     color: C.ink,
-  },
-  fallbackHint: {
-    fontFamily: FONT.mono,
-    fontSize: 11,
-    color: C.inkMuted,
-    textAlign: "center",
   },
   note: {
     marginTop: 22,
