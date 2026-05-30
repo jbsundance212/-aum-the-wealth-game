@@ -22,14 +22,14 @@ account with a UUID `client_reference_id` could have unlocked the mandate. Posit
 closes that cross-product hole. The player-binding gate (caller `user_id` must match the
 session's `metadata.user_id` OR `client_reference_id`) is separate and already correct.
 
-## Gotcha: the live Payment Link is invisible from the dev/test Stripe account
-`getUncachableStripeClient()` routes to the **development (test-mode)** Stripe account
-unless `REPLIT_DEPLOYMENT=1`. The user's `buy.stripe.com/...` Payment Link lives in their
-**live** account, so: listing payment links from dev returns 0, and a live `cs_…` session
-cannot be retrieved/verified by the dev server. The full pay→verify→unlock round-trip only
-works in the **deployed** app. This is why end-to-end payment can't be tested in dev.
-
-## Sandbox note
-`code_execution` sandbox has NO `process.env` (empty) and `node` is not on its shell PATH,
-so connector-credentialed Stripe calls can't run there. Use a throwaway `.mjs` run via the
-`bash` tool (which has the connector env) instead.
+## Credentials: direct Secrets, NOT the Replit Stripe connector
+`getUncachableStripeClient()` reads the `STRIPE_SECRET_KEY` secret directly (and
+`getStripePublishableKey()` reads `STRIPE_PUBLISHABLE_KEY`). The Replit Stripe
+connector/sandbox was removed at the user's request — they manage **live** `sk_live_…`
+keys in Secrets and the app accepts real payments.
+**Why:** the user already had live keys + a confirmed live transaction and explicitly did
+not want the Replit sandbox in the loop.
+**How to apply:** secrets are global (available in dev + prod), so dev and prod both hit
+the **live** Stripe account now — there is no `REPLIT_DEPLOYMENT`-based dev/prod account
+switch anymore. Test card `4242…` only works if the configured keys are swapped to
+`sk_test_…`/`pk_test_…`. Don't reintroduce `$REPLIT_CONNECTORS_HOSTNAME` logic.

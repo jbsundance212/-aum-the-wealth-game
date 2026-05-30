@@ -291,9 +291,11 @@ no Replit Postgres — Supabase is canonical).
 ### Server (`artifacts/api-server`)
 
 - `src/lib/stripeClient.ts` — `getUncachableStripeClient()` reads the
-  Replit Connectors proxy at `$REPLIT_CONNECTORS_HOSTNAME` per request
-  (never cache — tokens expire). API version pinned `2025-11-17.clover`
-  to match installed `stripe@20.0.0` types.
+  `STRIPE_SECRET_KEY` secret directly (live `sk_live_…` keys managed by
+  the user in Secrets); `getStripePublishableKey()` reads
+  `STRIPE_PUBLISHABLE_KEY`. We do **not** use Replit's native Stripe
+  connector/sandbox — the same live keys apply in dev + prod. API version
+  pinned `2025-11-17.clover`.
 - `src/routes/stripe.ts` (mounted under `/api`):
   - `POST /api/stripe/checkout` — body `{user_id, display_name?,
     return_origin}` → Checkout Session (mode `payment`, inline price_data
@@ -342,10 +344,12 @@ no Replit Postgres — Supabase is canonical).
 
 ### Testing
 
-Stripe test mode: card `4242 4242 4242 4242`, any future expiry, any
-CVC, any postal. Replit Stripe integration is `development` by default;
-production builds (`REPLIT_DEPLOYMENT=1`) auto-route to the production
-Stripe account.
+Credentials come straight from the `STRIPE_SECRET_KEY` /
+`STRIPE_PUBLISHABLE_KEY` secrets (live keys), so dev and production both
+hit the **live** Stripe account and process real payments. There is no
+Replit Stripe sandbox/connector in the loop. (Test card
+`4242 4242 4242 4242` only works while the configured keys are test-mode
+`sk_test_…`/`pk_test_…`.)
 
 ### iOS / Android caveat
 
