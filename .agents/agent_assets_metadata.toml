@@ -24,3 +24,9 @@ id = "CCWPbh9citvWqqTifGtgn"
 uri = "file://attached_assets/qr/aum_expo_qr.png"
 type = "image"
 title = "AUM — Expo Go QR (scan with Expo Go on Android, Camera on iOS)"
+
+[[outputs]]
+id = "_oAMho0IKny3YQ6EOk-GR"
+uri = "file://attached_assets/aum-preview-qr.png"
+type = "image"
+title = "AUM — iPhone Preview QR (opens web build in Safari)"
