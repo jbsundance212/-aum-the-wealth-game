@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { exitToHub } from "@/src/utils/nav";
 import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -52,7 +53,7 @@ export default function TitanScreen() {
         description: `Day ${day} — Titan studied (${data.titanName})`,
       });
     }
-    router.back();
+    exitToHub(router, day);
   };
 
   if (!data) return null;

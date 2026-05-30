@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { exitToHub } from "@/src/utils/nav";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
@@ -24,7 +25,7 @@ export default function SterlingScreen() {
         description: `Day ${day} — Memorandum acknowledged`,
       });
     }
-    router.back();
+    exitToHub(router, day);
   };
 
   return (

@@ -1,6 +1,7 @@
 import Slider from "@react-native-community/slider";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { exitToHub } from "@/src/utils/nav";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -259,7 +260,7 @@ export default function BourseScreen() {
         days_completed: daysCompleted.length,
       });
     }
-    router.back();
+    exitToHub(router, day);
   }, [
     applyDelta,
     day,

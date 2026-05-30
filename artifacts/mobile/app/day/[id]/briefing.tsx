@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { exitToHub } from "@/src/utils/nav";
 import React, { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -34,7 +35,7 @@ export default function BriefingScreen() {
         description: `Day ${day} — Briefing studied`,
       });
     }
-    router.back();
+    exitToHub(router, day);
   };
 
   if (!data) return null;

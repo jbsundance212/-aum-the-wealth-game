@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { exitToHub } from "@/src/utils/nav";
 import React from "react";
 import { View } from "react-native";
 
@@ -42,7 +43,7 @@ export default function MomentumScreen() {
                   : `Day ${day} — Momentum signal misread`,
               });
             }
-            router.back();
+            exitToHub(router, day);
           }}
         />
       ) : (
@@ -57,7 +58,7 @@ export default function MomentumScreen() {
                 description: `Day ${day} — Momentum signal acknowledged`,
               });
             }
-            router.back();
+            exitToHub(router, day);
           }}
         />
       )}

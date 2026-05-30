@@ -1,5 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+
+import { safeBack } from "@/src/utils/nav";
 import React from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -30,7 +32,7 @@ export function Header({ title, eyebrow, back, showBalance = true }: Props) {
     >
       <View style={styles.row}>
         {back ? (
-          <Pressable onPress={() => router.back()} style={styles.back} hitSlop={10}>
+          <Pressable onPress={() => safeBack(router)} style={styles.back} hitSlop={10}>
             <Feather name="chevron-left" size={22} color={C.ink} />
             <Text style={styles.backText}>BACK</Text>
           </Pressable>

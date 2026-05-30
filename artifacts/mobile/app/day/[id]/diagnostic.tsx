@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { exitToHub } from "@/src/utils/nav";
 import React from "react";
 import { View } from "react-native";
 
@@ -38,7 +39,7 @@ export default function DiagnosticScreen() {
                 : `Day ${day} — Diagnosis incorrect`,
             });
           }
-          router.back();
+          exitToHub(router, day);
         }}
       />
     </View>

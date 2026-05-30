@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { exitToHub } from "@/src/utils/nav";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
 import {
@@ -44,7 +45,7 @@ export default function MasterclassScreen() {
         description: `Day ${day} — Masterclass viewed`,
       });
     }
-    router.back();
+    exitToHub(router, day);
   };
 
   const openExternally = () => {
