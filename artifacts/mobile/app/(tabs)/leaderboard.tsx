@@ -308,6 +308,9 @@ export default function LeaderboardScreen() {
                   maxLength={60}
                   autoCapitalize="words"
                   autoCorrect={false}
+                  autoComplete="off"
+                  textContentType="none"
+                  importantForAutofill="no"
                   style={styles.input}
                   returnKeyType="done"
                   onSubmitEditing={saveName}
