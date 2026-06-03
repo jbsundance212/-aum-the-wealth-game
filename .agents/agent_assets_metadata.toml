@@ -30,3 +30,9 @@ id = "_oAMho0IKny3YQ6EOk-GR"
 uri = "file://attached_assets/aum-preview-qr.png"
 type = "image"
 title = "AUM — iPhone Preview QR (opens web build in Safari)"
+
+[[outputs]]
+id = "unJbZve9lF0eY80T7jYj2"
+uri = "file://exports/aum-published-qr.png"
+type = "image"
+title = "AUM — Live App QR (aum-the-wealth-game.replit.app)"
